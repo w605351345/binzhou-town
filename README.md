@@ -2,6 +2,7 @@
 
 > **黑龙江黑土地治愈系种田游戏** · Godot 4.3 + GDScript
 > 代号 `BZC-001` · 企划版本 v4.0
+> **CI 状态**:![CI](https://github.com/w605351345/binzhou-town/actions/workflows/ci.yml/badge.svg)
 
 ---
 
@@ -22,12 +23,12 @@ AI 改变工作生活后,主角厌倦了大城市的喧嚣,回到黑龙江哈尔
 
 ### 秋冬作物区分(核心设计)
 
-| 季 | 物候 | 农事 | 玩法 |
-|---|---|---|---|
-| **春** | 惊蛰开河,地化冻 | 翻土、播种 | 备耕 + 选种 + 押注天气 |
-| **夏** | 白昼漫长,日照足 | 浇水、除草、追肥 | 长线管理,躲伏旱 |
-| **秋** | 霜降收秋,场院打粮 | 收割、晾晒、入窖、囤秋菜 | 丰收结算 + 加工链 |
-| **冬** | 漫长休耕,火炕守岁 | **禁播种** | 加工/腌制/熏制/年货/走亲戚 |
+| 季 | 月份 | 物候 | 农事 | 玩法 |
+|---|---|---|---|---|
+| **春** | 4-5月(60天) | 惊蛰开河,地化冻 | 翻土、播种 | **全年唯一播种窗口** |
+| **夏** | 6-8月(90天) | 白昼漫长,日照足 | 浇水、除草、追肥 | 长线管理 + 早收腾茬复种 |
+| **秋** | 9-10月(60天) | 霜降收秋,场院打粮 | 收割、晾晒、入窖、囤秋菜 | 丰收结算 + **秋霜压力** |
+| **冬** | 11-3月(150天) | 漫长休耕,火炕守岁 | **禁播种**;可秋翻地 | 加工/腌制/熏制/年货/走亲戚 |
 
 **所有作物均为「春播 - 秋收」型,无越冬作物** —— 这条规则由 `tools/validate_data.py` 和 GDScript 单元测试双重守护。
 
@@ -64,28 +65,28 @@ AI 改变工作生活后,主角厌倦了大城市的喧嚣,回到黑龙江哈尔
 BinzhouTown/
 ├── project.godot              # Godot 4.3 项目配置
 ├── data/
-│   └── crops.json             # 作物静态数据(8 种作物 + 6 项冬季产出)
-├── docs/                      # 企划书全套(见下)
+│   └── crops.json             # 9 种作物 + 6 项冬季产出 + 农时元数据
+├── docs/                      # 企划书 5 份
 ├── scenes/
 │   ├── main_menu.tscn         # 主菜单(含性别选择)
 │   └── game.tscn              # 游戏根场景 + HUD
 ├── scripts/
 │   ├── core/
-│   │   ├── game_calendar.gd   # 四季与物候(一年一熟)
+│   │   ├── game_calendar.gd   # 四季农时(真实月份驱动)
 │   │   ├── game_state.gd      # 全局状态(可序列化)
 │   │   └── game_manager.gd    # autoload:日推进 + 存读档
 │   ├── farming/
-│   │   ├── crop.gd            # 作物模型
+│   │   ├── crop.gd            # 作物模型(月份窗口/早收晚收/储藏)
 │   │   ├── crop_database.gd   # 作物库 + 季节查询
-│   │   ├── farm_plot.gd       # 地块状态机
+│   │   ├── farm_plot.gd       # 地块状态机(8 态 + 秋翻地)
 │   │   └── farm_system.gd     # 3x3 农场闭环
 │   ├── player/
-│   │   └── player_profile.gd  # 主角档案(双主角)
+│   │   └── player_profile.gd  # 主角档案(双主角 D10)
 │   ├── ui/
 │   │   ├── main_menu.gd
 │   │   └── game_hud.gd
 │   └── tests/
-│       └── test_core.gd       # headless 核心逻辑自测(8 组)
+│       └── test_core.gd       # headless 核心逻辑自测(10 组 92 项)
 ├── tools/
 │   └── validate_data.py       # 静态数据校验(CI 必跑)
 └── .github/workflows/ci.yml   # CI:自测 + 导出
@@ -93,14 +94,26 @@ BinzhouTown/
 
 ---
 
+## 四大差异化机制(已实装并通过 CI 验证)
+
+| 机制 | 说明 |
+|---|---|
+| **一年一熟 / 冬季禁播** | 播种窗口仅 **4-5 月共 60 天**,错过即当年绝收;冬季 150 天不能播种 |
+| **早收腾茬 → 复种秋菜** | 马铃薯/春小麦/亚麻 7-8 月早收,**腾茬后 7 月可复种一茬秋菜** → 一年两茬 |
+| **秋霜冻死** | 晚收作物收获窗口紧贴 10 月秋霜,**过了霜降未割则冻死在地里,颗粒无收** |
+| **秋翻地 +15%** | 秋收后或冬季深翻积肥,次年同地块增产 —— **黑土地保护核心农法** |
+
+> 这四条由 `tools/validate_data.py`(静态校验)与 `scripts/tests/test_core.gd`(92 项运行时断言)**双重守护**。
+
+---
+
 ## 本地开发
 
 ```bash
-# 1. 获取 Godot 4.3
-#    https://godotengine.org/download/archive/4.3-stable/
+# 1. 获取 Godot 4.3(https://godotengine.org/download/archive/4.3-stable/)
 
-# 2. 用编辑器打开本目录,或命令行:
-godot --path . --editor
+# 2. 导入项目
+godot --path . --import
 
 # 3. headless 跑核心逻辑自测
 godot --headless --script res://scripts/tests/test_core.gd
@@ -108,21 +121,27 @@ godot --headless --script res://scripts/tests/test_core.gd
 # 4. 静态数据校验
 python3 tools/validate_data.py data/
 
-# 5. 直接运行
-godot --path . res://scenes/game.tscn
+# 5. 用编辑器打开
+godot --path . --editor
 ```
 
----
+### 当前实测结果
+
+```
+本地:  92 通过 / 0 失败   ✅
+CI:    92 通过 / 0 失败   ✅  (run 43151833492, job 130962601383)
+数据校验: 9 种作物 / 6 项冬季产出 ✅
+```
 
 ## 文档链
 
 | 文档 | 说明 |
 |---|---|
 | `docs/宾州小镇_完整游戏企划_v4.md` | 主企划书 v4(黑龙江世界观版) |
+| `docs/黑龙江资料卡.md` | 黑龙江农业地理与民俗**核实版**资料(含"未核实"清单) |
 | `docs/BZC-MVP-TechSpec-v4.md` | MVP 8 周技术规格 |
-| `docs/BZC-ArtProposals-v4.md` | 美术方案(已锁 B+A 混合) |
+| `docs/BZC-ArtProposals-v4.md` | 美术方案(D8 已锁 B+A 混合) |
 | `docs/BZC-进度追踪-v4.md` | 周更进度追踪 |
-| `docs/黑龙江资料卡.md` | 黑龙江农业地理与民俗核实资料 |
 
 ---
 
