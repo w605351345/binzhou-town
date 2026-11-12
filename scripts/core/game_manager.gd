@@ -16,17 +16,16 @@ func _ready() -> void:
 	_last_season = state.calendar.get_season()
 	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
 
-func _process(delta: float) -> void:
-	if _paused or state == null:
-		return
-	# MVP:每 12 现实分钟推进 1 游戏日,这里用较短周期便于测试
-	# 正式版按 GameCalendar.REAL_SECONDS_PER_GAME_DAY
-	pass
+## 睡醒后体力回满(黑龙江农活是重体力活,一天干不动太多活)
+func rest_and_recover() -> void:
+	if state.player.stamina != null:
+		state.player.stamina.sleep()
 
-## 推进一个游戏日(供 UI/调试调用)
+## 推进一个游戏日(供 UI/调试/自动推进调用)
 func advance_day() -> void:
 	state.farm.advance_day()
 	state.calendar.advance_day()
+	rest_and_recover()
 	var s := state.calendar.get_season()
 	if s != _last_season:
 		_last_season = s

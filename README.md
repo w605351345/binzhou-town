@@ -64,33 +64,72 @@ AI 改变工作生活后,主角厌倦了大城市的喧嚣,回到黑龙江哈尔
 ```
 BinzhouTown/
 ├── project.godot              # Godot 4.3 项目配置
+├── assets/sprites/             # 占位精灵表(程序化生成,美术到位后替换)
 ├── data/
-│   └── crops.json             # 9 种作物 + 6 项冬季产出 + 农时元数据
-├── docs/                      # 企划书 5 份
+│   ├── crops.json             # 9 种作物 + 6 项冬季产出 + 农时元数据
+│   ├── items.json             # 数值表 v1:12 件道具 + 3 条作物收购价
+│   └── npcs.json              # 数值表 v1:张婶(4 季对白 + 每日位置)
+├── docs/                      # 企划书 5 份 + 数值表
 ├── scenes/
 │   ├── main_menu.tscn         # 主菜单(含性别选择)
-│   └── game.tscn              # 游戏根场景 + HUD
+│   ├── game.tscn              # 游戏根场景 + HUD + 暂停菜单
+│   ├── farm.tscn              # L01 自家院 · 3×3 黑土地
+│   ├── town_street.tscn       # L02 宾州镇 · 镇大街
+│   ├── player.tscn            # 主角(4 方向 8 帧)
+│   ├── npc_zhangshen.tscn     # 张婶
+│   └── pause_menu.tscn        # 暂停菜单(存档/读档/回主菜单/退出)
 ├── scripts/
 │   ├── core/
 │   │   ├── game_calendar.gd   # 四季农时(真实月份驱动)
 │   │   ├── game_state.gd      # 全局状态(可序列化)
-│   │   └── game_manager.gd    # autoload:日推进 + 存读档
+│   │   ├── game_manager.gd    # autoload:日推进 + 存读档
+│   │   └── stamina_system.gd  # 体力系统(农活消耗 + 夜间回满)
 │   ├── farming/
 │   │   ├── crop.gd            # 作物模型(月份窗口/早收晚收/储藏)
 │   │   ├── crop_database.gd   # 作物库 + 季节查询
 │   │   ├── farm_plot.gd       # 地块状态机(8 态 + 秋翻地)
-│   │   └── farm_system.gd     # 3x3 农场闭环
+│   │   ├── farm_system.gd     # 3x3 农场闭环
+│   │   ├── farm_plot_view.gd  # 地块可视化(按状态着色)
+│   │   ├── farm_scene.gd      # 农场场景(工具操作 + 场景切换)
+│   │   └── tool_bar.gd        # 工具栏(J翻土/K浇水/L播种/I收获/R秋翻)
 │   ├── player/
-│   │   └── player_profile.gd  # 主角档案(双主角 D10)
+│   │   ├── player_profile.gd  # 主角档案(双主角 D10)
+│   │   ├── player_controller.gd # 移动与动画逻辑(4 方向 8 帧)
+│   │   └── player.gd          # 主角节点
+│   ├── npc/
+│   │   ├── npc_base.gd        # NPC 基类(好感度/收购/每日位置)
+│   │   ├── npc_node.gd        # NPC 场景节点
+│   │   └── zhang_shen.gd      # 张婶(收购作物 + 4 季对白)
+│   ├── world/
+│   │   ├── world_map.gd       # 地图边界(不出地图)
+│   │   ├── interaction_system.gd # NPC 距离与朝向判定
+│   │   ├── scene_router.gd    # 4 地点场景路由
+│   │   └── town_street.gd     # 镇大街场景
 │   ├── ui/
 │   │   ├── main_menu.gd
-│   │   └── game_hud.gd
+│   │   ├── game_hud.gd        # HUD + 农时提示
+│   │   └── pause_menu.gd
 │   └── tests/
-│       └── test_core.gd       # headless 核心逻辑自测(10 组 92 项)
+│       └── test_core.gd       # headless 核心逻辑自测(22 组 220 项)
 ├── tools/
-│   └── validate_data.py       # 静态数据校验(CI 必跑)
-└── .github/workflows/ci.yml   # CI:自测 + 导出
+│   ├── validate_data.py       # 静态数据校验(CI 必跑)
+│   └── gen_sprites.py         # 占位精灵表生成器(无外部依赖)
+└── .github/workflows/ci.yml   # CI:自测 + 场景冒烟 + 导出
 ```
+
+### 操作键位
+
+| 键 | 作用 |
+|---|---|
+| `WASD` | 移动(4 方向,斜向取主轴) |
+| `J` | 翻土 |
+| `K` | 浇水 |
+| `L` | 播种 |
+| `I` | 收获 |
+| `R` | 秋翻地(深翻积肥) |
+| `E` | 对话 / 与 NPC 交互 |
+| `F` | 前往下一个地点(农场 ↔ 镇大街) |
+| `ESC` | 暂停菜单(存档/读档/回主菜单/退出) |
 
 ---
 
@@ -128,10 +167,12 @@ godot --path . --editor
 ### 当前实测结果
 
 ```
-本地:  92 通过 / 0 失败   ✅
-CI:    92 通过 / 0 失败   ✅  (run 43151833492, job 130962601383)
-数据校验: 9 种作物 / 6 项冬季产出 ✅
+本地:  220 通过 / 0 失败   ✅
+数据校验: 9 种作物 / 6 项冬季产出 / 12 件道具 / 1 位 NPC ✅
+场景冒烟: main_menu / game / farm / town_street 全部无报错 ✅
 ```
+
+> CI 徽章对应的是上一次推送的运行结果;本地已用 Godot 4.3-stable 复现全部通过。
 
 ## 文档链
 
@@ -141,6 +182,7 @@ CI:    92 通过 / 0 失败   ✅  (run 43151833492, job 130962601383)
 | `docs/黑龙江资料卡.md` | 黑龙江农业地理与民俗**核实版**资料(含"未核实"清单) |
 | `docs/BZC-MVP-TechSpec-v4.md` | MVP 8 周技术规格 |
 | `docs/BZC-ArtProposals-v4.md` | 美术方案(D8 已锁 B+A 混合) |
+| `docs/BZC-数值表-v1.md` | 数值表 v1(3 作物 + 1 NPC + 12 道具 + 体力表) |
 | `docs/BZC-进度追踪-v4.md` | 周更进度追踪 |
 
 ---

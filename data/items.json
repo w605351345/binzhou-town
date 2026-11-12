@@ -1,0 +1,166 @@
+{
+  "_meta": {
+    "version": "v1.0",
+    "updated": "2026-11-12",
+    "scope": "MVP 数值表 v1 —— 3 作物 + 1 NPC + 种子/工具/商品",
+    "note": "作物本体数据在 crops.json,本表只管非作物道具、种子商品价与商品收购价。张婶的收购价 = crops.json 的 sell_price × buy_ratio。"
+  },
+  "items": [
+    {
+      "id": "seed_corn",
+      "name": "玉米种",
+      "category": "seed",
+      "crop_id": "corn",
+      "buy_price": 30,
+      "sell_price": 15,
+      "icon": "res://assets/sprites/items/seed_corn.png",
+      "desc": "松嫩平原的当家种,晚收,得抢在秋霜前割完",
+      "mvp": true
+    },
+    {
+      "id": "seed_potato",
+      "name": "马铃薯种",
+      "category": "seed",
+      "crop_id": "potato",
+      "buy_price": 20,
+      "sell_price": 10,
+      "icon": "res://assets/sprites/items/seed_potato.png",
+      "desc": "克山马铃薯,7 月就能收,腾茬早能再种一茬秋菜",
+      "mvp": true
+    },
+    {
+      "id": "seed_autumn_vegetable",
+      "name": "秋菜种",
+      "category": "seed",
+      "crop_id": "autumn_vegetable",
+      "buy_price": 18,
+      "sell_price": 9,
+      "icon": "res://assets/sprites/items/seed_autumn_vegetable.png",
+      "desc": "大白菜萝卜黄瓜,早收腾茬后 7 月抢种,9 月秋收",
+      "mvp": true
+    },
+    {
+      "id": "tool_hoe",
+      "name": "铁锹",
+      "category": "tool",
+      "buy_price": 120,
+      "sell_price": 60,
+      "icon": "res://assets/sprites/items/tool_hoe.png",
+      "desc": "开春翻地用,深翻能杀虫晒垡保墒",
+      "mvp": true
+    },
+    {
+      "id": "tool_bucket",
+      "name": "水桶",
+      "category": "tool",
+      "buy_price": 45,
+      "sell_price": 20,
+      "icon": "res://assets/sprites/items/tool_bucket.png",
+      "desc": "从井边打水浇地,黑土地最怕旱",
+      "mvp": true
+    },
+    {
+      "id": "tool_sickle",
+      "name": "镰刀",
+      "category": "tool",
+      "buy_price": 90,
+      "sell_price": 45,
+      "icon": "res://assets/sprites/items/tool_sickle.png",
+      "desc": "秋收割稻麦,刀快人快",
+      "mvp": true
+    },
+    {
+      "id": "food_sticky_bean_bun",
+      "name": "黏豆包",
+      "category": "food",
+      "buy_price": 15,
+      "sell_price": 8,
+      "icon": "res://assets/sprites/items/food_sticky_bean_bun.png",
+      "desc": "大黄米面做的,冻在院子里随吃随蒸,是年货",
+      "mvp": true
+    },
+    {
+      "id": "food_sour_cabbage",
+      "name": "酸菜",
+      "category": "food",
+      "buy_price": 12,
+      "sell_price": 6,
+      "icon": "res://assets/sprites/items/food_sour_cabbage.png",
+      "desc": "白菜腌渍,酸菜炖粉条是杀猪菜的灵魂",
+      "mvp": true
+    },
+    {
+      "id": "food_frozen_pear",
+      "name": "冻梨",
+      "category": "food",
+      "buy_price": 10,
+      "sell_price": 5,
+      "icon": "res://assets/sprites/items/food_frozen_pear.png",
+      "desc": "梨冻成黑褐色,凉水泡开拔凉拔凉还爆汁",
+      "mvp": true
+    },
+    {
+      "id": "food_dried_corn",
+      "name": "干玉米",
+      "category": "food",
+      "buy_price": 8,
+      "sell_price": 4,
+      "icon": "res://assets/sprites/items/food_dried_corn.png",
+      "desc": "场院晾晒编成玉米辫子挂房梁,熏过的有老味道",
+      "mvp": true
+    },
+    {
+      "id": "material_fertilizer",
+      "name": "农家肥",
+      "category": "material",
+      "buy_price": 30,
+      "sell_price": 12,
+      "icon": "res://assets/sprites/items/material_fertilizer.png",
+      "desc": "牲口圈里攒的粪土,上到地里攒劲,黑土地越种越肥",
+      "mvp": false
+    },
+    {
+      "id": "material_salt",
+      "name": "大粒盐",
+      "category": "material",
+      "buy_price": 6,
+      "sell_price": 3,
+      "icon": "res://assets/sprites/items/material_salt.png",
+      "desc": "腌菜用,一缸酸菜少不了它",
+      "mvp": false
+    }
+  ],
+  "crop_buy_prices": [
+    {
+      "crop_id": "corn",
+      "name": "玉米",
+      "base_sell_price": 26,
+      "buy_ratio": 0.9,
+      "note": "晚收作物,抢在秋霜前收完"
+    },
+    {
+      "crop_id": "potato",
+      "name": "马铃薯",
+      "base_sell_price": 18,
+      "buy_ratio": 0.9,
+      "note": "早收作物,7 月腾茬可复种秋菜"
+    },
+    {
+      "crop_id": "autumn_vegetable",
+      "name": "秋菜",
+      "base_sell_price": 14,
+      "buy_ratio": 0.9,
+      "note": "抢茬秋菜,9 月秋收"
+    }
+  ],
+  "consumables": [
+    {
+      "id": "consume_stamina_meal",
+      "name": "农家饭",
+      "category": "restore",
+      "restore_energy": 30,
+      "buy_price": 20,
+      "desc": "苞米面饼子就咸菜,吃一顿顶半宿"
+    }
+  ]
+}

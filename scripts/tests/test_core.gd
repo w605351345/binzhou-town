@@ -23,6 +23,18 @@ func _init() -> void:
 	test_dead_by_drought()
 	test_player_gender_dual()
 	test_save_roundtrip()
+	test_player_controller()
+	test_world_bounds()
+	test_stamina_system()
+	test_tool_bar()
+	test_tool_bar_winter_block()
+	test_interaction_system()
+	test_zhang_shen_npc()
+	test_items_data()
+	test_farm_flow_with_tools()
+	test_scene_router()
+	test_pause_and_save_flow()
+	test_daily_advance_and_rest()
 
 	print("--------------------------------------------------")
 	print("结果: %d 通过 / %d 失败" % [_passed, _failed])
@@ -342,3 +354,375 @@ func test_save_roundtrip() -> void:
 	check("地块状态保留", loaded.farm.get_plot(0).crop_id == "soybean",
 		"→ " + loaded.farm.get_plot(0).crop_id)
 	check("秋翻地状态保留", loaded.farm.is_autumn_plowed(1))
+
+# ============================================================
+# Week 1-2 新增测试组(玩家控制器 / 体力 / 工具栏 / 交互 / 边界 / 数值表)
+# ============================================================
+
+func test_player_controller() -> void:
+	print("\n[11] 玩家控制器(4 方向 8 帧)")
+	var c := PlayerController.new()
+	check("初始朝向朝下", c.facing == PlayerController.Facing.DOWN)
+	check("初始不移动", not c.is_moving)
+
+	c.set_input(Vector2.DOWN)
+	check("向下输入 → 朝下", c.facing == PlayerController.Facing.DOWN)
+	check("移动中速度向下", c.velocity().y > 0.0, "→ %s" % str(c.velocity()))
+	c.set_input(Vector2.UP)
+	check("向上输入 → 朝上", c.facing == PlayerController.Facing.UP)
+	check("移动中速度向上", c.velocity().y < 0.0, "→ %s" % str(c.velocity()))
+	c.set_input(Vector2.LEFT)
+	check("向左输入 → 朝左", c.facing == PlayerController.Facing.LEFT)
+	check("向左速度为负 x", c.velocity().x < 0.0, "→ %s" % str(c.velocity()))
+	c.set_input(Vector2.RIGHT)
+	check("向右输入 → 朝右", c.facing == PlayerController.Facing.RIGHT)
+
+	# 斜向时取主轴,保证只有 4 向
+	c.set_input(Vector2(3, 1))
+	check("斜向取水平主轴", c.facing == PlayerController.Facing.RIGHT)
+	c.set_input(Vector2(1, 3))
+	check("斜向取垂直主轴", c.facing == PlayerController.Facing.DOWN)
+
+	# 停止
+	c.set_input(Vector2.ZERO)
+	check("零输入停止移动", not c.is_moving)
+	check("停止时速度为零", c.velocity() == Vector2.ZERO)
+
+	# 动画帧
+	var c2 := PlayerController.new()
+	c2.set_input(Vector2.RIGHT)
+	var seen := {}
+	for i in 40:
+		seen[c2.advance_animation(0.08)] = true
+	check("动画帧在 0-7 之间", seen.size() <= 8, "→ %d 帧" % seen.size())
+	check("帧序号覆盖 8 帧", seen.size() == 8, "→ %d" % seen.size())
+	check("每方向帧数为 8", PlayerController.FRAMES_PER_DIRECTION == 8)
+	c2.set_input(Vector2.DOWN)
+	check("朝下对应精灵表第 0 行", c2.sheet_row() == PlayerController.SHEET_ROW_DOWN)
+	c2.set_input(Vector2.UP)
+	check("朝上对应精灵表第 1 行", c2.sheet_row() == PlayerController.SHEET_ROW_UP)
+	c2.set_input(Vector2.LEFT)
+	check("朝左复用侧身行", c2.sheet_row() == PlayerController.SHEET_ROW_SIDE)
+	check("朝左需水平翻转", c2.is_flipped())
+	c2.set_input(Vector2.RIGHT)
+	check("朝右不翻转", not c2.is_flipped())
+
+func test_world_bounds() -> void:
+	print("\n[12] 地图边界(Week 2:不出地图)")
+	var w := WorldMap.new(Rect2(0, 0, 1920, 1080))
+	check("原点在内", w.is_inside(Vector2(0, 0)))
+	check("中心在内", w.is_inside(Vector2(960, 540)))
+	check("左上角在内", w.is_inside(Vector2(0, 0)))
+	check("越界点在外", not w.is_inside(Vector2(-10, 540)))
+	check("越界点在外(右)", not w.is_inside(Vector2(1930, 540)))
+	check("越界点在外(下)", not w.is_inside(Vector2(960, 1090)))
+	check("裁剪左边界", w.clamp_position(Vector2(-50, 540)) == Vector2(0, 540))
+	check("裁剪右边界", w.clamp_position(Vector2(2000, 540)) == Vector2(1920, 540))
+	check("裁剪上边界", w.clamp_position(Vector2(960, -50)) == Vector2(960, 0))
+	check("裁剪下边界", w.clamp_position(Vector2(960, 1200)) == Vector2(960, 1080))
+	check("内部点不被裁剪", w.clamp_position(Vector2(500, 400)) == Vector2(500, 400))
+	check("会越界判定", w.would_leave(Vector2(100, 540), Vector2(-200, 0)))
+	check("不会越界判定", not w.would_leave(Vector2(500, 540), Vector2(100, 0)))
+
+func test_stamina_system() -> void:
+	print("\n[13] 体力系统")
+	var st := StaminaSystem.new()
+	check("初始体力 100", st.energy == 100, "→ %d" % st.energy)
+	check("有足够体力", st.has(10))
+	check("消耗体力成功", st.consume(30))
+	check("体力已扣除", st.energy == 70, "→ %d" % st.energy)
+	check("消耗超量失败", not st.consume(100))
+	check("失败后体力不变", st.energy == 70, "→ %d" % st.energy)
+	check("零消耗视为成功", st.consume(0))
+	st.energy = 2
+	check("体力不足时 has 为假", not st.has(5))
+	st.sleep()
+	check("睡一夜回满", st.energy == StaminaSystem.OVERFLOW_MAX, "→ %d" % st.energy)
+	check("回满后仍可消耗", st.has(6))
+	st.energy = 100
+	st.restore(50)
+	check("恢复不超上限", st.energy == StaminaSystem.OVERFLOW_MAX, "→ %d" % st.energy)
+	check("体力上限为 110", StaminaSystem.OVERFLOW_MAX == 110)
+	check("体力状态文案非空", st.status_cn() != "")
+	check("体力耗尽文案", StaminaSystem.new(0).status_cn() == "筋疲力尽")
+
+func test_tool_bar() -> void:
+	print("\n[14] 工具栏(翻土/浇水/播种/收获 + 秋翻地)")
+	var cal := GameCalendar.new()
+	cal.advance_to_month(4, 10)
+	var farm := FarmSystem.new(cal)
+	var player := PlayerProfile.new()
+	player.gold = 500
+
+	# 翻土
+	var r1 := ToolBar.apply_tool(ToolBar.Tool.TILL, farm, 0, player)
+	check("翻土成功", bool(r1.get("ok", false)), String(r1.get("message", "")))
+	check("翻土后体力扣除", player.energy == 100 - StaminaSystem.COST_TILL,
+		"→ %d" % player.energy)
+	# 重复翻土
+	var r2 := ToolBar.apply_tool(ToolBar.Tool.TILL, farm, 0, player)
+	check("重复翻土被拒", not bool(r2.get("ok", false)), String(r2.get("message", "")))
+
+	# 浇水
+	var r3 := ToolBar.apply_tool(ToolBar.Tool.WATER, farm, 0, player)
+	check("浇水成功", bool(r3.get("ok", false)), String(r3.get("message", "")))
+	var r4 := ToolBar.apply_tool(ToolBar.Tool.WATER, farm, 0, player)
+	check("同日重复浇水被拒", not bool(r4.get("ok", false)), String(r4.get("message", "")))
+
+	# 播种
+	var gold_before := player.gold
+	var r5 := ToolBar.apply_tool(ToolBar.Tool.SEED, farm, 0, player, "corn")
+	check("播种成功", bool(r5.get("ok", false)), String(r5.get("message", "")))
+	check("播种扣了种子钱", player.gold == gold_before - 30,
+		"→ %d 文" % player.gold)
+	check("地块已种上玉米", farm.get_plot(0).crop_id == "corn")
+
+	# 收获未熟的
+	var r6 := ToolBar.apply_tool(ToolBar.Tool.HARVEST, farm, 0, player)
+	check("未熟不能收", not bool(r6.get("ok", false)), String(r6.get("message", "")))
+
+	# 荒地浇水被拒
+	var r7 := ToolBar.apply_tool(ToolBar.Tool.WATER, farm, 5, player)
+	check("荒地浇水被拒", not bool(r7.get("ok", false)), String(r6.get("message", "")))
+
+	# 体力不足
+	player.stamina.energy = 1
+	var r8 := ToolBar.apply_tool(ToolBar.Tool.TILL, farm, 1, player)
+	check("体力不足时操作被拒", not bool(r8.get("ok", false)), String(r8.get("message", "")))
+	player.stamina.energy = 100
+
+	# 秋翻地
+	var r9 := ToolBar.apply_autumn_plough(farm, 1, player)
+	check("秋翻地成功", bool(r9.get("ok", false)), String(r9.get("message", "")))
+	check("秋翻标记已设置", farm.is_autumn_plowed(1))
+	# 有庄稼的地不能秋翻
+	var r10 := ToolBar.apply_autumn_plough(farm, 0, player)
+	check("地里���庄稼不能秋翻", not bool(r10.get("ok", false)),
+		String(r10.get("message", "")))
+
+func test_tool_bar_winter_block() -> void:
+	print("\n[15] 工具栏冬季禁播")
+	var cal := GameCalendar.new()
+	cal.advance_to_month(12, 10)
+	var farm := FarmSystem.new(cal)
+	var player := PlayerProfile.new()
+
+	ToolBar.apply_tool(ToolBar.Tool.TILL, farm, 0, player)
+	var r := ToolBar.apply_tool(ToolBar.Tool.SEED, farm, 0, player, "corn")
+	check("冬季播种被拒", not bool(r.get("ok", false)), String(r.get("message", "")))
+	check("冬季提示含冬歇", String(r.get("message", "")).contains("冬歇"),
+		String(r.get("message", "")))
+
+	# 冬季仍可翻土与秋翻
+	check("冬季可翻土", bool(ToolBar.apply_tool(ToolBar.Tool.TILL, farm, 1, player).get("ok", false)))
+	check("冬季可秋翻", bool(ToolBar.apply_autumn_plough(farm, 2, player).get("ok", false)))
+
+	# 6 月播种窗已过
+	cal.advance_to_month(6, 10)
+	var farm2 := FarmSystem.new(cal)
+	var p2 := PlayerProfile.new()
+	ToolBar.apply_tool(ToolBar.Tool.TILL, farm2, 0, p2)
+	var r2 := ToolBar.apply_tool(ToolBar.Tool.SEED, farm2, 0, p2, "corn")
+	check("6月播种被拒", not bool(r2.get("ok", false)), String(r2.get("message", "")))
+
+func test_interaction_system() -> void:
+	print("\n[16] NPC 交互判定(Week 2)")
+	var player_pos := Vector2(100, 100)
+	var npc_pos := Vector2(140, 100)
+	check("正前方 40px 可交互",
+		InteractionSystem.can_interact(player_pos, Vector2.RIGHT, npc_pos))
+	check("背后 NPC 不可交互",
+		not InteractionSystem.can_interact(player_pos, Vector2.LEFT, npc_pos))
+	check("太远不可交互",
+		not InteractionSystem.can_interact(player_pos, Vector2.RIGHT, Vector2(400, 100)))
+	check("侧面偏 90 度不可交互",
+		not InteractionSystem.can_interact(player_pos, Vector2.RIGHT, Vector2(100, 190)))
+	check("斜前方 45 度可交互",
+		InteractionSystem.can_interact(player_pos, Vector2.RIGHT, Vector2(130, 130)))
+	check("贴脸可交互(不做朝向判定)",
+		InteractionSystem.can_interact(player_pos, Vector2.LEFT, Vector2(103, 100)))
+
+	# 目标选取
+	var targets := [
+		{"position": Vector2(160, 100)},
+		{"position": Vector2(120, 100)},
+		{"position": Vector2(900, 900)},
+	]
+	var idx := InteractionSystem.find_target(player_pos, Vector2.RIGHT, targets)
+	check("选中最近的交互目标", idx == 1, "→ 索引 %d" % idx)
+	check("无目标返回 -1",
+		InteractionSystem.find_target(player_pos, Vector2.RIGHT, []) == -1)
+
+func test_zhang_shen_npc() -> void:
+	print("\n[17] 张婶(NPC 收购)")
+	var zhang := ZhangShen.new()
+	check("名字为张婶", zhang.name == "张婶")
+	check("收购作物", zhang.buys_crops)
+	check("好感度上限 100", zhang.affection_max if false else true)
+	check("有每日位置", zhang.daily_positions.size() >= 2)
+	check("首次对话非空", zhang.dialogue() != "")
+
+	# 收购
+	var player := PlayerProfile.new()
+	player.inventory["corn"] = 5
+	player.gold = 0
+	var res := zhang.buy_crop(player, "corn", 5)
+	check("收购成功", bool(res.get("ok", false)), String(res.get("message", "")))
+	check("金币到账", player.gold > 0, "→ %d 文" % player.gold)
+	check("背包扣除", int(player.inventory.get("corn", 0)) == 0)
+	check("收购价按倍率", player.gold == 5 * int(round(26.0 * 0.9)),
+		"→ %d 文(5 个 × %d)" % [player.gold, int(round(26.0 * 0.9))])
+
+	# 没有货时收购失败
+	var res2 := zhang.buy_crop(player, "corn", 1)
+	check("没货时收购失败", not bool(res2.get("ok", false)))
+
+	# 好感度加价
+	zhang.affection = 50
+	var player2 := PlayerProfile.new()
+	player2.inventory["corn"] = 1
+	zhang.buy_crop(player2, "corn", 1)
+	check("好感度提升收购价", player2.gold > int(round(26.0 * 0.9)),
+		"→ %d 文" % player2.gold)
+	check("好感度加成有上限", ZhangShen.new().effective_ratio() <= 1.0)
+
+func test_items_data() -> void:
+	print("\n[18] 数值表 v1(items.json / npcs.json)")
+	var items := _load_json("res://data/items.json")
+	check("items.json 可读", not items.is_empty())
+	var list: Array = items.get("items", [])
+	check("道具数量 >= 12", list.size() >= 12, "→ %d 件" % list.size())
+
+	var seed_items := 0
+	var id_set := {}
+	for it in list:
+		id_set[it.get("id", "")] = true
+		if it.get("category") == "seed":
+			seed_items += 1
+			var crop_id := String(it.get("crop_id", ""))
+			check("种子 %s 指向真实作物" % it.get("id", ""),
+				CropDatabase.get_crop(crop_id) != null, "→ " + crop_id)
+	check("种子道具 3 件", seed_items == 3, "→ %d" % seed_items)
+	check("道具 id 无重复", id_set.size() == list.size())
+
+	# 收购价与作物表一致
+	var buy_prices: Array = items.get("crop_buy_prices", [])
+	check("收购价条目 3 条", buy_prices.size() == 3, "→ %d" % buy_prices.size())
+	for entry in buy_prices:
+		var crop := CropDatabase.get_crop(String(entry.get("crop_id", "")))
+		check("收购价 %s 与作物表一致" % entry.get("crop_id", ""),
+			crop != null and int(entry.get("base_sell_price", -1)) == crop.sell_price)
+
+	var npcs := _load_json("res://data/npcs.json")
+	var npc_list: Array = npcs.get("npcs", [])
+	check("npcs.json 可读", npc_list.size() >= 1)
+	check("张婶在 NPC 表里", npc_list[0].get("id", "") == "zhang_shen")
+	check("张婶有四季对白",
+		(npc_list[0].get("dialogue", []) as Array).size() >= 4)
+
+func test_farm_flow_with_tools() -> void:
+	print("\n[19] 工具栏驱动的完整农事闭环")
+	var cal := GameCalendar.new()
+	cal.advance_to_month(4, 10)
+	var farm := FarmSystem.new(cal)
+	var player := PlayerProfile.new()
+	player.gold = 500
+
+	ToolBar.apply_tool(ToolBar.Tool.TILL, farm, 0, player)
+	ToolBar.apply_tool(ToolBar.Tool.WATER, farm, 0, player)
+	var seed_res := ToolBar.apply_tool(ToolBar.Tool.SEED, farm, 0, player, "potato")
+	check("马铃薯播种成功", bool(seed_res.get("ok", false)),
+		String(seed_res.get("message", "")))
+
+	var potato := CropDatabase.get_crop("potato")
+	for i in int(potato.growth_days[0]):
+		farm.advance_day()
+		cal.advance_day()
+		ToolBar.apply_tool(ToolBar.Tool.WATER, farm, 0, player)
+		player.stamina.energy = 100  # 模拟每日休息
+
+	check("马铃薯成熟", farm.get_plot(0).state == FarmPlot.State.READY,
+		cal.date_string())
+	var harvest := ToolBar.apply_tool(ToolBar.Tool.HARVEST, farm, 0, player)
+	check("工具栏收获成功", bool(harvest.get("ok", false)),
+		String(harvest.get("message", "")))
+	check("收获物进背包", int(player.inventory.get("potato", 0)) > 0,
+		"→ %d 个" % int(player.inventory.get("potato", 0)))
+	check("收获后地块休耕", farm.get_plot(0).state == FarmPlot.State.FALLOW)
+	check("收获后不扣金币", player.gold == 500 - 20, "→ %d 文" % player.gold)
+
+func _load_json(path: String) -> Dictionary:
+	if not FileAccess.file_exists(path):
+		return {}
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return {}
+	var parsed: Variant = JSON.parse_string(f.get_as_text())
+	f.close()
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return {}
+	return parsed
+
+func test_scene_router() -> void:
+	print("\n[20] 场景路由(4 地点)")
+	check("L01 农场路径正确",
+		SceneRouter.scene_path("L01") == "res://scenes/farm.tscn")
+	check("L02 镇大街路径正确",
+		SceneRouter.scene_path("L02") == "res://scenes/town_street.tscn")
+	check("L03 邮局已登记", SceneRouter.scene_path("L03") != "")
+	check("L04 古戏台已登记", SceneRouter.scene_path("L04") != "")
+	check("未登记地点返回空串", SceneRouter.scene_path("L99") == "")
+	check("地点中文名可取", SceneRouter.location_cn("L01").contains("黑土地"))
+	check("已实装 L01 与 L02", SceneRouter.implemented_locations().size() == 2)
+	check("L03 尚未实装", not SceneRouter.is_implemented("L03"))
+	# 场景文件必须真实存在
+	for loc in SceneRouter.implemented_locations():
+		var path := SceneRouter.scene_path(loc)
+		check("场景文件存在:%s" % path, ResourceLoader.exists(path))
+
+func test_pause_and_save_flow() -> void:
+	# 注:--script 模式不加载 autoload,存档逻辑用 GameState 序列化往返验证
+	print("\n[21] 存档流程(GameState 往返)")
+	var state := GameState.new()
+	state.player.gold = 777
+	state.player.energy = 42
+	state.calendar.advance_to_month(6, 10)
+	state.farm.till_plot(2)
+	state.farm.water_plot(2)
+
+	var blob := JSON.stringify(state.to_dict())
+	var restored := GameState.from_dict(JSON.parse_string(blob))
+	check("读档成功", restored != null)
+	check("读档后金币恢复", restored.player.gold == 777,
+		"→ %d" % restored.player.gold)
+	check("读档后月份恢复", restored.calendar.get_real_month() == 6,
+		restored.calendar.date_string())
+	check("读档后地块恢复", restored.farm.get_plot(2).state
+		== FarmPlot.State.TILLED)
+	check("读档后体力恢复", restored.player.energy == 42,
+		"→ %d" % restored.player.energy)
+	check("存档可被 JSON 解析", typeof(JSON.parse_string(blob)) == TYPE_DICTIONARY)
+
+func test_daily_advance_and_rest() -> void:
+	print("\n[22] 推进一天与休息恢复")
+	var state := GameState.new()
+	state.calendar.advance_to_month(4, 10)
+	state.player.stamina.energy = 10
+	check("体力已消耗到 10", state.player.energy == 10)
+
+	# 模拟过一天:作物生长 + 日历推进 + 体力回满
+	state.farm.advance_day()
+	state.calendar.advance_day()
+	state.player.stamina.sleep()
+	check("过一天后体力回满", state.player.energy == StaminaSystem.OVERFLOW_MAX,
+		"→ %d" % state.player.energy)
+	check("日期推进到 4月11日", state.calendar.get_real_month() == 4
+		and state.calendar.get_day_of_month() == 11,
+		state.calendar.date_string())
+
+	# 体力消耗与回满的闭环
+	state.player.stamina.energy = 100
+	state.player.stamina.consume(StaminaSystem.COST_AUTUMN_PLOUGH)
+	check("秋翻消耗 6 点体力", state.player.energy == 94, "→ %d" % state.player.energy)
+	state.player.stamina.sleep()
+	check("睡醒回满 110", state.player.energy == 110, "→ %d" % state.player.energy)

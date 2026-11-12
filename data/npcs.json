@@ -1,0 +1,45 @@
+{
+  "_meta": {
+    "version": "v1.0",
+    "updated": "2026-11-12",
+    "scope": "MVP 数值表 v1 —— 1 位 NPC(张婶)",
+    "note": "MVP 铁三角要求:种田 + 1 位 NPC(收购作物) + 1 张明信片"
+  },
+  "npcs": [
+    {
+      "id": "zhang_shen",
+      "name": "张婶",
+      "title": "镇大街的婶子",
+      "gender": "female",
+      "buys_crops": true,
+      "buy_ratio": 0.9,
+      "affection_max": 100,
+      "scene": "town_street",
+      "spawn_position": [760, 520],
+      "daily_positions": [
+        [760, 520],
+        [980, 560],
+        [640, 620]
+      ],
+      "dialogue": [
+        {
+          "condition": "winter",
+          "text": "歇着吧?这节气儿啥也种不了,猫冬呢,炕上待着吧。"
+        },
+        {
+          "condition": "spring",
+          "text": "地化冻了,抓紧把地翻了,晚霜一过就没时候啦。"
+        },
+        {
+          "condition": "summer",
+          "text": "庄稼正长呢,别忘了浇水,黑土地也怕旱。"
+        },
+        {
+          "condition": "autumn",
+          "text": "秋了,霜要下来了,赶紧收,晚收的冻地里就白瞎了。"
+        }
+      ],
+      "flavor": "说话带着东北味儿,每句都跟农时挂钩 —— 她是玩家理解「一年一熟」的活教材。"
+    }
+  ]
+}

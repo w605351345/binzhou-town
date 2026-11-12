@@ -23,11 +23,22 @@ jobs:
       - name: 静态数据校验
         run: python3 tools/validate_data.py data/
 
+      - name: 生成占位精灵表
+        run: python3 tools/gen_sprites.py assets/sprites
+
       - name: 导入项目资源
         run: godot --headless --import --quit
 
       - name: 运行核心逻辑自测
         run: godot --headless --script res://scripts/tests/test_core.gd
+
+      - name: 场景冒烟测试
+        run: |
+          for scene in scenes/main_menu.tscn scenes/game.tscn scenes/farm.tscn scenes/town_street.tscn; do
+            echo "--- $scene ---"
+            godot --headless --quit-after 90 "$scene" 2>&1 | grep -iE "SCRIPT ERROR|Parse Error" && exit 1 || true
+          done
+          echo "场景冒烟测试通过"
 
   export:
     name: 导出 Linux 构建

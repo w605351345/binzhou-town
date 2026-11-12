@@ -13,6 +13,11 @@
   6. 售价 >= 进价
   7. winter_produce 至少 4 项(冬季加工玩法)
   8. 作物 id 不重复
+
+数值表 v1(Week 1 交付物)追加校验:
+  9. items.json 道具字段齐全、种子必须指向真实作物、售价 >= 进价
+ 10. crop_buy_prices 的 base_sell_price 必须与 crops.json 的 sell_price 一致
+ 11. npcs.json NPC 字段齐全、收购比例在 (0, 1] 区间、对话条目非空
 """
 import json
 import sys
@@ -24,7 +29,17 @@ REQUIRED_KEYS = {
         "growth_days", "buy_price", "sell_price", "seed_price",
         "yield_min", "yield_max", "water_per_day",
     ],
+    "items.json": [
+        "id", "name", "category", "buy_price", "sell_price",
+    ],
+    "npcs.json": [],
 }
+
+## items.json 道具分类白名单
+VALID_ITEM_CATEGORIES = {"seed", "tool", "food", "material", "gift"}
+
+## 种子道具必须带 crop_id
+SEED_CATEGORY = "seed"
 
 VALID_SEASONS = {"spring", "summer", "autumn", "winter"}
 VALID_SOW_SEASONS = {"spring", "summer"}
@@ -125,6 +140,132 @@ def validate_crops(path: Path) -> None:
     print(f"  · {path.name}: {len(crops)} 种作物, {len(winter)} 项冬季产出")
 
 
+def load_json(path: Path):
+    """读取 JSON,失败时登记错误并返回 None。"""
+    try:
+        return json.loads(path.read_text("utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        ERRORS.append(f"{path.name}: JSON 解析失败 -> {exc}")
+        return None
+
+
+def validate_items(path: Path, crops_data) -> None:
+    """数值表 v1:道具 + 作物收购价。"""
+    data = load_json(path)
+    if data is None:
+        return
+
+    crop_ids = set()
+    if crops_data:
+        crop_ids = {c.get("id") for c in crops_data.get("crops", [])}
+
+    items = data.get("items", [])
+    if not items:
+        ERRORS.append(f"{path.name}: items 列表为空")
+
+    seen = set()
+    for item in items:
+        iid = item.get("id", "?")
+        for key in REQUIRED_KEYS["items.json"]:
+            if key not in item:
+                ERRORS.append(f"{path.name}: {iid} 缺少字段 {key}")
+        if iid in seen:
+            ERRORS.append(f"{path.name}: 重复的道具 id {iid}")
+        seen.add(iid)
+
+        cat = item.get("category")
+        if cat not in VALID_ITEM_CATEGORIES:
+            ERRORS.append(
+                f"{path.name}: {iid} category 非法 -> {cat}"
+                f"(允许 {sorted(VALID_ITEM_CATEGORIES)})")
+
+        if cat == SEED_CATEGORY:
+            crop_id = item.get("crop_id")
+            if not crop_id:
+                ERRORS.append(f"{path.name}: {iid} 是种子,必须指定 crop_id")
+            elif crop_ids and crop_id not in crop_ids:
+                ERRORS.append(
+                    f"{path.name}: {iid} 指向不存在的作物 '{crop_id}'")
+
+        # 道具是"买入 / 卖出"两个方向,半价出售属于正常(收购商压价),
+        # 因此不套用农作物的"售价 >= 进价"规则;这里只校验价格为正。
+        if int(item.get("buy_price", 0)) <= 0:
+            ERRORS.append(f"{path.name}: {iid} buy_price 必须大于 0")
+        if int(item.get("sell_price", 0)) < 0:
+            ERRORS.append(f"{path.name}: {iid} sell_price 不能为负")
+
+    # 作物收购价必须与 crops.json 的 sell_price 保持一致
+    for entry in data.get("crop_buy_prices", []):
+        cid = entry.get("crop_id", "?")
+        base = entry.get("base_sell_price")
+        ratio = entry.get("buy_ratio")
+        if ratio is None or not (0.0 < float(ratio) <= 1.0):
+            ERRORS.append(
+                f"{path.name}: {cid} buy_ratio 必须在 (0, 1] 区间 -> {ratio}")
+        if crop_ids and cid not in crop_ids:
+            ERRORS.append(f"{path.name}: 收购价条目指向不存在的作物 '{cid}'")
+        if crops_data:
+            match = next(
+                (c for c in crops_data.get("crops", []) if c.get("id") == cid), None)
+            if match is not None and base is not None:
+                if int(base) != int(match.get("sell_price", 0)):
+                    ERRORS.append(
+                        f"{path.name}: {cid} base_sell_price {base} 与 crops.json "
+                        f"的 sell_price {match.get('sell_price')} 不一致")
+
+    consumables = data.get("consumables", [])
+    for c in consumables:
+        if int(c.get("restore_energy", 0)) <= 0:
+            ERRORS.append(
+                f"{path.name}: {c.get('id', '?')} restore_energy 必须大于 0")
+
+    print(f"  · {path.name}: {len(items)} 件道具, "
+          f"{len(data.get('crop_buy_prices', []))} 条收购价")
+
+
+def validate_npcs(path: Path) -> None:
+    """数值表 v1:NPC。"""
+    data = load_json(path)
+    if data is None:
+        return
+
+    npcs = data.get("npcs", [])
+    if not npcs:
+        ERRORS.append(f"{path.name}: npcs 列表为空")
+
+    seen = set()
+    for npc in npcs:
+        nid = npc.get("id", "?")
+        for key in ("id", "name", "buys_crops", "buy_ratio", "scene", "dialogue"):
+            if key not in npc:
+                ERRORS.append(f"{path.name}: {nid} 缺少字段 {key}")
+        if nid in seen:
+            ERRORS.append(f"{path.name}: 重复的 NPC id {nid}")
+        seen.add(nid)
+
+        if npc.get("buys_crops"):
+            ratio = npc.get("buy_ratio")
+            if ratio is None or not (0.0 < float(ratio) <= 1.0):
+                ERRORS.append(
+                    f"{path.name}: {nid} buy_ratio 必须在 (0, 1] 区间 -> {ratio}")
+
+        dialogue = npc.get("dialogue", [])
+        if not dialogue:
+            ERRORS.append(f"{path.name}: {nid} dialogue 为空")
+        for line in dialogue:
+            if not line.get("text"):
+                ERRORS.append(f"{path.name}: {nid} 对白条目缺少 text")
+            if not line.get("condition"):
+                ERRORS.append(f"{path.name}: {nid} 对白条目缺少 condition")
+
+        positions = npc.get("daily_positions", [])
+        for pos in positions:
+            if not isinstance(pos, list) or len(pos) != 2:
+                ERRORS.append(f"{path.name}: {nid} daily_positions 坐标必须是 [x, y]")
+
+    print(f"  · {path.name}: {len(npcs)} 位 NPC")
+
+
 def main() -> int:
     root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("data")
     if not root.exists():
@@ -132,12 +273,26 @@ def main() -> int:
         return 1
 
     print("校验静态数据 ...")
-    for filename in REQUIRED_KEYS:
-        path = root / filename
-        if not path.exists():
-            ERRORS.append(f"缺少文件: {path}")
-            continue
-        validate_crops(path)
+
+    crops_path = root / "crops.json"
+    crops_data = None
+    if crops_path.exists():
+        crops_data = load_json(crops_path)
+        validate_crops(crops_path)
+    else:
+        ERRORS.append(f"缺少文件: {crops_path}")
+
+    items_path = root / "items.json"
+    if items_path.exists():
+        validate_items(items_path, crops_data)
+    else:
+        ERRORS.append(f"缺少文件: {items_path}")
+
+    npcs_path = root / "npcs.json"
+    if npcs_path.exists():
+        validate_npcs(npcs_path)
+    else:
+        ERRORS.append(f"缺少文件: {npcs_path}")
 
     if ERRORS:
         for err in ERRORS:

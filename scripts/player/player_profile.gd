@@ -11,11 +11,27 @@ var given_name: String = ""
 var age: int = 32
 var hometown: String = "哈尔滨"
 var from_city: String = "北京"
-var energy: int = 100
-var max_energy: int = 100
+## 体力(黑龙江农活是重体力活,见 StaminaSystem)
+var stamina: StaminaSystem = null
 var gold: int = 500
 var inventory: Dictionary = {}
 var skills: Dictionary = {"farming": 1, "handcraft": 1, "social": 1}
+
+func _init() -> void:
+	stamina = StaminaSystem.new()
+
+## 体力值(存档与 HUD 用)
+var energy: int:
+	get:
+		return stamina.energy if stamina != null else 0
+	set(value):
+		if stamina == null:
+			stamina = StaminaSystem.new()
+		stamina.energy = clampi(value, 0, StaminaSystem.OVERFLOW_MAX)
+
+var max_energy: int:
+	get:
+		return StaminaSystem.MAX_ENERGY
 
 ## 性别中文
 static func gender_cn(g: int) -> String:
@@ -41,13 +57,12 @@ func to_dict() -> Dictionary:
 
 static func from_dict(d: Dictionary) -> PlayerProfile:
 	var p := PlayerProfile.new()
+	p.stamina = StaminaSystem.new(int(d.get("energy", StaminaSystem.MAX_ENERGY)))
 	p.gender = int(d.get("gender", 0))
 	p.given_name = String(d.get("given_name", ""))
 	p.age = int(d.get("age", 32))
 	p.hometown = String(d.get("hometown", "哈尔滨"))
 	p.from_city = String(d.get("from_city", "北京"))
-	p.energy = int(d.get("energy", 100))
-	p.max_energy = int(d.get("max_energy", 100))
 	p.gold = int(d.get("gold", 500))
 	p.inventory = d.get("inventory", {})
 	p.skills = d.get("skills", p.skills)
