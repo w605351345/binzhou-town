@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://cbzgame0001"]
+
+[ext_resource type="Script" path="res://scripts/ui/game_hud.gd" id="1_gamehud"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_gamehud")
+
+[node name="Farm" type="Node2D" parent="."]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="HBox" type="HBoxContainer" parent="HUD"]
+offset_right = 1920.0
+offset_bottom = 40.0
+theme_override_constants/separation = 24
+
+[node name="HudLabel" type="Label" parent="HUD/HBox"]
+layout_mode = 2
+text = ""
+
+[node name="SeasonLabel" type="Label" parent="HUD/HBox"]
+layout_mode = 2
+text = ""
+
+[node name="MessageLabel" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 60.0
+offset_right = 1880.0
+offset_bottom = 110.0
+theme_override_font_sizes/font_size = 28
+text = ""
+horizontal_alignment = 1

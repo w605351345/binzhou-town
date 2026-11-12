@@ -1,0 +1,418 @@
+{
+  "_meta": {
+    "version": "v4.0",
+    "updated": "2026-11-12",
+    "setting": "黑龙江省哈尔滨市宾县（古称宾州厅）· 松嫩平原黑土地",
+    "seasons": {
+      "spring": "春（3-5月）解冻播种期",
+      "summer": "夏（6-8月）生长期，日照长",
+      "autumn": "秋（9-10月）收割囤积期",
+      "winter": "冬（11-2月）漫长休耕期，炕上时光"
+    },
+    "agriculture_note": "寒温带大陆性气候，一年一熟。春播秋收，冬季漫长休耕。所有作物均为『春播-秋收』型，无越冬作物。",
+    "crop_classification": {
+      "spring_sown": "春播作物：4月下旬-5月上旬播种，9-10月秋收（玉米、大豆、水稻、春小麦、马铃薯、谷子、甜菜、亚麻）",
+      "autumn_harvest": "秋收作物:晚收作物收获季紧贴秋霜窗口,过了窗口冻死在地里",
+      "spring_sow": "春播作物:4月下旬-5月上旬播种,7-10月陆续收获 —— 早收(马铃薯7月/春小麦8月/亚麻8月,腾茬早可复种秋菜) 与 晚收(玉米/大豆/水稻/甜菜,9-10月,抢在秋霜前收完)",
+      "winter_storage": "越冬储藏:秋菜/马铃薯窖藏腌渍(酸菜/咸菜),晚收作物晾晒入囷(玉米辫子挂房梁)",
+      "replant": "复种:早收作物腾茬后,7月可复种一茬「秋菜」—— 一年一熟大原则下的唯一例外,也是黑龙江真实的「抢茬秋菜」农法"
+    },
+    "frost_rule": "早霜/初霜在9月末-10月,作物收获窗口结束即冻死;晚霜在5月,错过播种窗当年无收",
+    "harvest_window_semantics": "harvest_window = [起始月, 结束月] 连续区间",
+    "window_semantics": "plant_window / harvest_window 均为连续区间 [起始月, 结束月],单月写作 [m, m]"
+  },
+  "crops": [
+    {
+      "id": "corn",
+      "name": "玉米",
+      "en_name": "Corn",
+      "category": "grain",
+      "sowing_season": "spring",
+      "harvest_season": "autumn",
+      "plant_days": [
+        "spring"
+      ],
+      "growth_days": [
+        150,
+        170
+      ],
+      "yield_min": 3,
+      "yield_max": 6,
+      "buy_price": 12,
+      "sell_price": 26,
+      "seed_price": 30,
+      "regrow": 0,
+      "water_per_day": 1,
+      "icon": "res://assets/sprites/crops/corn.png",
+      "origin": "松嫩平原主产玉米带，黑龙江是全国玉米产量第一大省",
+      "flavor": "秋收后在场院上堆成金黄的玉米楼子，是东北农村最熟悉的画面",
+      "mvp": true,
+      "plant_window": [
+        4,
+        5
+      ],
+      "harvest_window": [
+        9,
+        10
+      ],
+      "storage": "晾晒",
+      "storage_note": "收后在场院挂干，编成玉米辫子挂房梁",
+      "early_harvest": false,
+      "late_harvest": true
+    },
+    {
+      "id": "soybean",
+      "name": "大豆",
+      "en_name": "Soybean",
+      "category": "oilseed",
+      "sowing_season": "spring",
+      "harvest_season": "autumn",
+      "plant_days": [
+        "spring"
+      ],
+      "growth_days": [
+        140,
+        160
+      ],
+      "yield_min": 2,
+      "yield_max": 5,
+      "buy_price": 18,
+      "sell_price": 38,
+      "seed_price": 35,
+      "regrow": 0,
+      "water_per_day": 1,
+      "icon": "res://assets/sprites/crops/soybean.png",
+      "origin": "北安、拜泉、克东一带为大豆主产区，腐朽豆饼是黑龙江传统农耕文化符号",
+      "flavor": "生豆打浆出的『豆腐脑』，加上大葱，就是东北人的一天",
+      "mvp": true,
+      "plant_window": [
+        5,
+        5
+      ],
+      "harvest_window": [
+        9,
+        10
+      ],
+      "storage": "晾晒",
+      "storage_note": "割倒晾干后脱粒，豆子装麻袋囤起来",
+      "early_harvest": false,
+      "late_harvest": true
+    },
+    {
+      "id": "rice",
+      "name": "水稻",
+      "en_name": "Rice",
+      "category": "grain",
+      "sowing_season": "spring",
+      "harvest_season": "autumn",
+      "plant_days": [
+        "spring"
+      ],
+      "growth_days": [
+        140,
+        155
+      ],
+      "yield_min": 3,
+      "yield_max": 6,
+      "buy_price": 20,
+      "sell_price": 42,
+      "seed_price": 40,
+      "regrow": 0,
+      "water_per_day": 2,
+      "icon": "res://assets/sprites/crops/rice.png",
+      "origin": "五常、方正、庆安一带寒地稻作区，一年一季晚粳稻，昼夜温差大米香",
+      "flavor": "秋收后的新米，灶台大铁锅蒸出来的饭，甜丝丝",
+      "mvp": true,
+      "plant_window": [
+        4,
+        5
+      ],
+      "harvest_window": [
+        9,
+        10
+      ],
+      "storage": "窖藏",
+      "storage_note": "割完翻晒，入仓或打场囤粮",
+      "early_harvest": false,
+      "late_harvest": true
+    },
+    {
+      "id": "potato",
+      "name": "马铃薯",
+      "en_name": "Potato",
+      "category": "tuber",
+      "sowing_season": "spring",
+      "harvest_season": "autumn",
+      "plant_days": [
+        "spring"
+      ],
+      "growth_days": [
+        90,
+        110
+      ],
+      "yield_min": 4,
+      "yield_max": 8,
+      "buy_price": 8,
+      "sell_price": 18,
+      "seed_price": 20,
+      "regrow": 0,
+      "water_per_day": 1,
+      "icon": "res://assets/sprites/crops/potato.png",
+      "origin": "克山马铃薯全国闻名，『克山土豆』是黑龙江地理标志",
+      "flavor": "秋收后埋进地窖，一冬吃到春，冻土豆片煎着吃最香",
+      "mvp": true,
+      "plant_window": [
+        4,
+        4
+      ],
+      "harvest_window": [
+        7,
+        10
+      ],
+      "storage": "窖藏",
+      "storage_note": "早熟7月就能挖，挖完埋进地窖，一冬吃到春",
+      "early_harvest": true,
+      "late_harvest": true
+    },
+    {
+      "id": "millet",
+      "name": "谷子（糜子）",
+      "en_name": "Millet",
+      "category": "grain",
+      "sowing_season": "spring",
+      "harvest_season": "autumn",
+      "plant_days": [
+        "spring"
+      ],
+      "growth_days": [
+        120,
+        140
+      ],
+      "yield_min": 2,
+      "yield_max": 4,
+      "buy_price": 15,
+      "sell_price": 32,
+      "seed_price": 25,
+      "regrow": 0,
+      "water_per_day": 1,
+      "icon": "res://assets/sprites/crops/millet.png",
+      "origin": "龙江等中南部黑钙土区主产糜子，压成黏豆包是冬季农家口粮",
+      "flavor": "黄米面黏豆包，蒸在炕头上，冻起来随吃随蒸",
+      "mvp": true,
+      "plant_window": [
+        5,
+        5
+      ],
+      "harvest_window": [
+        9,
+        10
+      ],
+      "storage": "窖藏",
+      "storage_note": "磨成黄米面，蒸黏豆包，冻在院子里",
+      "early_harvest": false,
+      "late_harvest": true
+    },
+    {
+      "id": "sugar_beet",
+      "name": "甜菜",
+      "en_name": "Sugar Beet",
+      "category": "sugar",
+      "sowing_season": "spring",
+      "harvest_season": "autumn",
+      "plant_days": [
+        "spring"
+      ],
+      "growth_days": [
+        150,
+        170
+      ],
+      "yield_min": 2,
+      "yield_max": 4,
+      "buy_price": 16,
+      "sell_price": 30,
+      "seed_price": 28,
+      "regrow": 0,
+      "water_per_day": 2,
+      "icon": "res://assets/sprites/crops/sugar_beet.png",
+      "origin": "海伦、拜泉一带甜菜主产区，建国前国内甜菜糖主产，『南糖北菜』中的北菜",
+      "flavor": "秋收后进厂熬糖，红糖块是东北供销社的老记忆",
+      "mvp": true,
+      "plant_window": [
+        4,
+        5
+      ],
+      "harvest_window": [
+        9,
+        10
+      ],
+      "storage": "窖藏",
+      "storage_note": "起收后堆在窖头，熬糖或喂牲口",
+      "early_harvest": false,
+      "late_harvest": true
+    },
+    {
+      "id": "flax",
+      "name": "亚麻",
+      "en_name": "Flax",
+      "category": "fiber",
+      "sowing_season": "spring",
+      "harvest_season": "autumn",
+      "plant_days": [
+        "spring"
+      ],
+      "growth_days": [
+        110,
+        130
+      ],
+      "yield_min": 2,
+      "yield_max": 3,
+      "buy_price": 22,
+      "sell_price": 45,
+      "seed_price": 30,
+      "regrow": 0,
+      "water_per_day": 1,
+      "icon": "res://assets/sprites/crops/flax.png",
+      "origin": "北部克山、讷河一带曾为中国亚麻主产区，『亚麻之乡』",
+      "flavor": "秋天拔麻花，晒在场上，沤麻织布做东北蓝印花布的料子",
+      "mvp": false,
+      "plant_window": [
+        4,
+        5
+      ],
+      "harvest_window": [
+        8,
+        9
+      ],
+      "storage": "晾晒",
+      "storage_note": "拔麻花摊在场上晒，沤麻织布",
+      "early_harvest": true,
+      "late_harvest": false
+    },
+    {
+      "id": "spring_wheat",
+      "name": "春小麦",
+      "en_name": "Spring Wheat",
+      "category": "grain",
+      "sowing_season": "spring",
+      "harvest_season": "autumn",
+      "plant_days": [
+        "spring"
+      ],
+      "growth_days": [
+        100,
+        120
+      ],
+      "yield_min": 3,
+      "yield_max": 6,
+      "buy_price": 14,
+      "sell_price": 29,
+      "seed_price": 26,
+      "regrow": 0,
+      "water_per_day": 1,
+      "icon": "res://assets/sprites/crops/spring_wheat.png",
+      "origin": "北安、嫩江一带春小麦产区，适合一年一熟轮作",
+      "flavor": "秋收后磨成全麦粉，蒸成杠子头馒头",
+      "mvp": false,
+      "plant_window": [
+        4,
+        4
+      ],
+      "harvest_window": [
+        7,
+        9
+      ],
+      "storage": "晾晒",
+      "storage_note": "麦收大忙，抢在伏天前晒干入囷",
+      "early_harvest": true,
+      "late_harvest": false
+    },
+    {
+      "id": "autumn_vegetable",
+      "name": "秋菜(大白菜/萝卜/黄瓜)",
+      "en_name": "Autumn Vegetables",
+      "category": "vegetable",
+      "sowing_season": "summer",
+      "harvest_season": "autumn",
+      "plant_days": [
+        "summer"
+      ],
+      "plant_window": [
+        7,
+        7
+      ],
+      "harvest_window": [
+        9,
+        10
+      ],
+      "growth_days": [
+        60,
+        80
+      ],
+      "yield_min": 4,
+      "yield_max": 9,
+      "buy_price": 6,
+      "sell_price": 14,
+      "seed_price": 18,
+      "regrow": 0,
+      "water_per_day": 2,
+      "icon": "res://assets/sprites/crops/autumn_vegetable.png",
+      "origin": "黑龙江7月播秋菜、9-10月收，是北方冬储的当家菜(酸菜、咸菜、囤秋菜)",
+      "flavor": "秋菜下来就得腌，酸菜炖粉条，杀猪菜就靠它",
+      "storage": "窖藏",
+      "storage_note": "收完一棵棵码进地窖，白菜压缸做酸菜，萝卜埋土里能存到开春",
+      "early_harvest": false,
+      "late_harvest": true,
+      "mvp": true
+    }
+  ],
+  "winter_produce": [
+    {
+      "id": "frozen_pear",
+      "name": "冻梨",
+      "category": "processed",
+      "from": "梨",
+      "method": "自然冷冻",
+      "note": "梨冻成黑褐色，缓过来用凉水泡，拔凉拔凉还爆汁"
+    },
+    {
+      "id": "frozen_persimmon",
+      "name": "冻柿子",
+      "category": "processed",
+      "from": "柿子",
+      "method": "自然冷冻",
+      "note": "冻柿子像灯笼，挖开一个小口，用舌头舔"
+    },
+    {
+      "id": "sticky_bean_bun",
+      "name": "黏豆包",
+      "category": "processed",
+      "from": "糜子/黄米",
+      "method": "磨面-发酵-蒸制",
+      "note": "黏豆包是大黄米面做的，冻在院子里随吃随蒸，年货"
+    },
+    {
+      "id": "sour_cabbage",
+      "name": "酸菜",
+      "category": "processed",
+      "from": "大白菜",
+      "method": "腌渍",
+      "note": "杀猪菜的灵魂，酸菜炖粉条、五花肉"
+    },
+    {
+      "id": "pickled_cucumber",
+      "name": "咸菜",
+      "category": "processed",
+      "from": "黄瓜/萝卜",
+      "method": "腌渍",
+      "note": "秋储下来的咸菜疙瘩，一冬的配粥小菜"
+    },
+    {
+      "id": "dried_corn",
+      "name": "干玉米",
+      "category": "processed",
+      "from": "玉米",
+      "method": "晾晒/熏制",
+      "note": "玉米楼子挂房梁，熏过的干玉米是喂牲口也是老味道"
+    }
+  ]
+}
