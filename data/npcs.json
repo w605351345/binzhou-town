@@ -2,35 +2,35 @@
   "_meta": {
     "version": "v1.0",
     "updated": "2026-11-12",
-    "scope": "MVP 数值表 v1 —— 1 位 NPC(张婶)",
+    "scope": "MVP 数值表 v1 —— 1 位 NPC(张晓芳)",
     "note": "MVP 铁三角要求:种田 + 1 位 NPC(收购作物) + 1 张明信片。对话内容统一放在 dialogues.json,本表只管 NPC 数值与行为。"
   },
   "npcs": [
     {
-      "id": "zhang_shen",
-      "name": "张婶",
-      "title": "镇大街的婶子",
+      "id": "zhang_xiaofang",
+      "name": "张晓芳",
+      "title": "镇大街的收购大户",
       "gender": "female",
       "buys_crops": true,
       "buy_ratio": 0.9,
       "affection_max": 100,
       "scene": "town_street",
       "spawn_position": [
-        760,
-        520
+        380,
+        260
       ],
       "daily_positions": [
         [
-          760,
-          520
+          380,
+          260
         ],
         [
-          980,
-          560
+          490,
+          280
         ],
         [
-          640,
-          620
+          320,
+          310
         ]
       ],
       "flavor": "说话带着东北味儿,每句都跟农时挂钩 —— 她是玩家理解「一年一熟」的活教材。"

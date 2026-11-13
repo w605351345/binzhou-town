@@ -15,7 +15,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	print("=== 《宾州小镇》对话接线自测 (dialogue wiring test) ===")
-	print("设定:黑龙江的黑土地上,张婶的话是玩家学会种地的主要途径")
+	print("设定:黑龙江的黑土地上,张晓芳的话是玩家学会种地的主要途径")
 	print("--------------------------------------------------")
 	await _test_dialogue_opens()
 	await _test_option_navigation()
@@ -68,7 +68,7 @@ func _dialogue_box() -> Node:
 func _shop_panel() -> Node:
 	return _game.get_node_or_null("ShopPanel")
 
-## 把玩家挪到张婶正上方(默认朝下 = 面朝她)
+## 把玩家挪到张晓芳正上方(默认朝下 = 面朝她)
 func _stand_next_to_npc() -> void:
 	var town := _town()
 	var npc_node: Node2D = town.get_node("NpcContainer").get_child(0)
@@ -104,7 +104,7 @@ func _test_dialogue_opens() -> void:
 	await _talk()
 	var box := _dialogue_box()
 	check("按 E 后对话框打开", box.is_open())
-	check("说话人是张婶", box.speaker_name() == "张婶", "→ %s" % box.speaker_name())
+	check("说话人是张晓芳", box.speaker_name() == "张晓芳", "→ %s" % box.speaker_name())
 	check("有台词", box.body_text() != "", "→ " + box.body_text().substr(0, 18) + "…")
 	# 1 月是猫冬季,台词必须对得上农时
 	check("台词跟着农时走(1 月说猫冬)", box.body_text().contains("猫冬"),
@@ -203,10 +203,10 @@ func _test_affection_persists() -> void:
 	npc.affection = 7
 	await _press("没别的了,走了")
 	check("好感度写进了 npc_relationships",
-		_mgr().state.npc_affection("zhang_shen") == 7,
-		"→ %d" % _mgr().state.npc_affection("zhang_shen"))
+		_mgr().state.npc_affection("zhang_xiaofang") == 7,
+		"→ %d" % _mgr().state.npc_affection("zhang_xiaofang"))
 
-	# 重新进镇大街,张婶的好感度应该还在
+	# 重新进镇大街,张晓芳的好感度应该还在
 	_town()._go_to_farm()
 	await create_timer(0.3).timeout
 	_town()._go_to_town()
@@ -214,9 +214,9 @@ func _test_affection_persists() -> void:
 	var npc2: NpcBase = _town().get_node("NpcContainer").get_child(0).npc
 	check("换场景后好感度还在", npc2.affection == 7, "→ %d" % npc2.affection)
 
-# --- [7] 张婶每日换位 ---
+# --- [7] 张晓芳每日换位 ---
 func _test_npc_daily_position() -> void:
-	print("\n[7] 张婶每日换位(早市/晌午/傍晚)")
+	print("\n[7] 张晓芳每日换位(早市/晌午/傍晚)")
 	var cal: GameCalendar = _mgr().state.calendar
 	cal.day_of_year = 0
 	await _reenter_town()
@@ -224,7 +224,7 @@ func _test_npc_daily_position() -> void:
 	cal.day_of_year = 1
 	await _reenter_town()
 	var pos1 := _npc_position()
-	check("第二天张婶换了个位置", pos0 != pos1, "→ %s → %s" % [pos0, pos1])
+	check("第二天张晓芳换了个位置", pos0 != pos1, "→ %s → %s" % [pos0, pos1])
 	cal.day_of_year = 2
 	await _reenter_town()
 	var pos2 := _npc_position()

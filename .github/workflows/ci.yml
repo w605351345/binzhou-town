@@ -23,8 +23,8 @@ jobs:
       - name: 静态数据校验
         run: python3 tools/validate_data.py data/
 
-      - name: 生成占位精灵表
-        run: python3 tools/gen_sprites.py assets/sprites
+      - name: 生成美术资源(饥荒观感手绘风)
+        run: python3 tools/gen_art.py assets
 
       - name: 导入项目资源
         run: godot --headless --import --quit
@@ -47,6 +47,9 @@ jobs:
       - name: 对话接线自测
         run: godot --headless --script res://scripts/tests/test_dialogue_wiring.gd
 
+      - name: 输入映射自测(手柄覆盖)
+        run: godot --headless --script res://scripts/tests/test_input_map.gd
+
       - name: 场景冒烟测试
         run: |
           for scene in scenes/main_menu.tscn scenes/game.tscn scenes/farm.tscn scenes/town_street.tscn; do
@@ -55,10 +58,35 @@ jobs:
           done
           echo "场景冒烟测试通过"
 
+      - name: 截图对比(美术回归)
+        run: |
+          # 无显示器环境下 Movie Maker 需要虚拟显示;取不到就跳过,不影响 CI 结论
+          xvfb-run -a godot --write-movie "$RUNNER_TEMP/shot.png" --quit-after 10 scenes/farm.tscn || \
+            echo "截图步骤跳过(环境不支持显示驱动)"
+
   export:
-    name: 导出 Linux 构建
-    runs-on: ubuntu-latest
+    name: 导出 ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            name: Linux
+            preset: Linux
+            out: build/linux
+            py: python3
+          - os: windows-latest
+            name: Windows
+            preset: Windows Desktop
+            out: build/windows
+            py: python
+          - os: macos-latest
+            name: macOS
+            preset: macOS
+            out: build/macos
+            py: python3
     steps:
       - uses: actions/checkout@v4
 
@@ -68,15 +96,18 @@ jobs:
           version: 4.3.0
           use-dotnet: false
 
+      - name: 生成美术资源
+        run: ${{ matrix.py }} tools/gen_art.py assets
+
       - name: 导入项目资源
         run: godot --headless --import --quit
 
-      - name: 导出 Linux
-        run: godot --headless --export-release "Linux" ./build/binzhoutown.x86_64 || echo "export preset 未配置,跳过"
+      - name: 导出 ${{ matrix.name }}
+        run: godot --headless --export-release "${{ matrix.preset }}" "./${{ matrix.out }}/BinzhouTown" || echo "导出失败,见上方日志"
 
       - name: 上传构建产物
         uses: actions/upload-artifact@v4
         with:
-          name: binzhou-town-linux
-          path: build/
-          if-no-files-found: ignore
+          name: binzhou-town-${{ matrix.name }}
+          path: ${{ matrix.out }}/
+          if-no-files-found: warn

@@ -61,6 +61,11 @@ custom_minimum_size = Vector2(320, 52)
 layout_mode = 2
 text = "读档"
 
+[node name="VoiceButton" type="Button" parent="Root/Panel"]
+custom_minimum_size = Vector2(320, 52)
+layout_mode = 2
+text = "语音:开"
+
 [node name="MenuButton" type="Button" parent="Root/Panel"]
 custom_minimum_size = Vector2(320, 52)
 layout_mode = 2

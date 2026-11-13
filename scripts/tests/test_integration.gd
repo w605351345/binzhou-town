@@ -24,7 +24,7 @@ var _failed := 0
 func _init() -> void:
 	print("=== 《宾州小镇》端到端集成自测 (integration test) ===")
 	print("设定:黑龙江黑土地 · 一年一熟 · 春播秋收 · 冬季休耕")
-	print("链路:玩家按键(ToolBar) → FarmSystem → 背包 → 张婶收购")
+	print("链路:玩家按键(ToolBar) → FarmSystem → 背包 → 张晓芳收购")
 	print("--------------------------------------------------")
 
 	test_t01_full_growth_cycle()
@@ -129,12 +129,12 @@ func test_t01_full_growth_cycle() -> void:
 	check("玉米进背包", amount > 0, "→ %d 个" % amount)
 	check("收获后地块转为待翻耕", farm.get_plot(idx).state == FarmPlot.State.FALLOW)
 
-	# --- 卖出:镇大街找张婶 ---
-	var zhang := ZhangShen.new()
+	# --- 卖出:镇大街找张晓芳 ---
+	var zhang := ZhangXiaofang.new()
 	var sell := zhang.buy_crop(player_state, "corn", amount)
-	check("张婶收购成功", bool(sell.get("ok")), "→ " + String(sell.get("message", "")))
+	check("张晓芳收购成功", bool(sell.get("ok")), "→ " + String(sell.get("message", "")))
 	check("背包里的玉米已出手", int(player_state.inventory.get("corn", 0)) == 0)
-	# 张婶给熟人情分:0.9 倍价 → 26 × 0.9 ≈ 23 文
+	# 张晓芳给熟人情分:0.9 倍价 → 26 × 0.9 ≈ 23 文
 	var expect_gold := gold_before - 30 + 23 * amount
 	check("金币涨回来了", player_state.gold == expect_gold,
 		"→ %d 文钱(买种 %d + 卖粮 %d)" % [player_state.gold, 30, 23 * amount])

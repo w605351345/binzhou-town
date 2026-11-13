@@ -1,5 +1,5 @@
 extends Node2D
-## 宾州镇大街(L02):张婶的所在地,玩家卖粮的地方。
+## 宾州镇大街(L02):张晓芳的所在地,玩家卖粮的地方。
 ##
 ## 黑龙江小镇的镇大街:一条土路,两边是门市和院墙。
 
@@ -13,14 +13,14 @@ func _ready() -> void:
 	_spawn_npcs()
 
 func _spawn_npcs() -> void:
-	var zhang := ZhangShen.new()
+	var zhang := ZhangXiaofang.new()
 	# 好感度存在存档里 —— NPC 每次进场景都重建,得从 GameState 恢复
 	zhang.affection = GameStateManager.state.npc_affection(zhang.id)
-	# 张婶每天换摊位(早市/晌午/傍晚)—— 当前第几天从日历取,
+	# 张晓芳每天换摊位(早市/晌午/傍晚)—— 当前第几天从日历取,
 	# 这样不管场景怎么重建,她站的位置都对得上日子
 	zhang.current_day = GameStateManager.state.calendar.day_of_year
 	# 加载带 Label / Body 子节点的 NPC 场景,再填入数据
-	var packed: PackedScene = load("res://scenes/npc_zhangshen.tscn")
+	var packed: PackedScene = load("res://scenes/npc_zhangxiaofang.tscn")
 	if packed == null:
 		push_error("镇大街: NPC 场景加载失败")
 		return

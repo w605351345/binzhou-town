@@ -21,3 +21,6 @@ __pycache__/
 .idea/
 *.swp
 .DS_Store
+
+# 截图工具的临时帧序列
+docs/screenshots/*/_tmp_*/

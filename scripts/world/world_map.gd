@@ -3,12 +3,14 @@ class_name WorldMap
 
 ## 场景边界与可行走区域(纯逻辑,可 headless 单测)
 ##
+## 世界设计尺寸 960×540(相机 zoom 2.0,1920×1080 视口),单屏锁定整个院子。
+##
 ## MVP 用矩形边界即可;后续换 TileMap 时,把边界判定委托给地图数据源即可。
 ## 主角与 NPC 都通过本类裁剪位置,保证"不出地图"(Week 2 验收点)。
 
-var bounds: Rect2 = Rect2(0, 0, 1920, 1080)
+var bounds: Rect2 = Rect2(0, 0, 960, 540)
 
-func _init(p_bounds: Rect2 = Rect2(0, 0, 1920, 1080)) -> void:
+func _init(p_bounds: Rect2 = Rect2(0, 0, 960, 540)) -> void:
 	bounds = p_bounds
 
 ## 是否在可行走区域内

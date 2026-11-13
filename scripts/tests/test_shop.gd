@@ -3,15 +3,15 @@ extends SceneTree
 ##
 ## 运行: godot --headless --script res://scripts/tests/test_shop.gd
 ##
-## 这组测试守住一条底线:**张婶的收购账必须算得清**。
-## 黑龙江一年一熟,一季的收成全靠卖给张婶换成钱,钱算错了整个循环就断了。
+## 这组测试守住一条底线:**张晓芳的收购账必须算得清**。
+## 黑龙江一年一熟,一季的收成全靠卖给张晓芳换成钱,钱算错了整个循环就断了。
 
 var _passed := 0
 var _failed := 0
 
 func _init() -> void:
 	print("=== 《宾州小镇》商店自测 (shop test) ===")
-	print("设定:张婶是收购商,收购价 = 作物售价 × buy_ratio,好感度还能加成")
+	print("设定:张晓芳是收购商,收购价 = 作物售价 × buy_ratio,好感度还能加成")
 	print("--------------------------------------------------")
 
 	test_item_database()
@@ -94,11 +94,11 @@ func test_buy_item() -> void:
 
 # --- 卖 ---
 func test_sell_crop() -> void:
-	print("\n[3] 卖粮(张婶收购)")
+	print("\n[3] 卖粮(张晓芳收购)")
 	var player := PlayerProfile.new()
 	player.gold = 500
 	player.inventory["corn"] = 4
-	var npc := ZhangShen.new()
+	var npc := ZhangXiaofang.new()
 	var res := Shop.sell_crop(player, npc, "corn", 4)
 	check("卖 4 个玉米成功", bool(res.get("ok", false)), "→ " + String(res.get("message", "")))
 	check("背包清空", int(player.inventory.get("corn", 0)) == 0)
@@ -129,7 +129,7 @@ func test_price_consistency() -> void:
 	var player := PlayerProfile.new()
 	player.gold = 0
 	player.inventory["corn"] = 4
-	var npc := ZhangShen.new()
+	var npc := ZhangXiaofang.new()
 	# 好感度 0:ratio = 0.9 → 26 × 0.9 = 23.4 → 23
 	Shop.sell_crop(player, npc, "corn", 4)
 	check("零好感度按 0.9 收购", player.gold == 92, "→ %d 文" % player.gold)
@@ -158,7 +158,7 @@ func test_shop_summary() -> void:
 	player.gold = 100
 	player.inventory["corn"] = 4
 	player.inventory["potato"] = 2
-	var npc := ZhangShen.new()
+	var npc := ZhangXiaofang.new()
 
 	var sellable := Shop.sellable_crops(player)
 	check("背包里两种作物可卖", sellable.size() == 2, "→ %d 种" % sellable.size())

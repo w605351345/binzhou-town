@@ -3,8 +3,10 @@ extends Node2D
 ##
 ## 黑龙江设定:自家院的三块地,九块格子。春播秋收,冬季休耕。
 
-const PLOT_SIZE := 140.0
-const PLOT_GAP := 24.0
+## 地块布局:3×3,单屏锁在 960×540 的世界里(相机 zoom 2.0)
+const PLOT_SIZE := 88.0
+const PLOT_GAP := 0.0
+const FIELD_CENTER := Vector2(480, 340)
 
 @onready var plot_container: Node2D = $PlotContainer
 @onready var player: CharacterBody2D = $Player
@@ -27,9 +29,10 @@ func _build_plots(farm: FarmSystem) -> void:
 	_views.clear()
 	var cols := 3
 	var rows := 3
-	var total_w := float(cols) * PLOT_SIZE + float(cols - 1) * PLOT_GAP
-	var total_h := float(rows) * PLOT_SIZE + float(rows - 1) * PLOT_GAP
-	var origin := Vector2(-total_w * 0.5, -total_h * 0.5) + Vector2(0, 120)
+	# 以院子中心为基准排布 —— 之前以世界原点排布,导致 9 块地整体跑到屏幕左上角外
+	var origin := FIELD_CENTER - Vector2(
+		float(cols - 1) * (PLOT_SIZE + PLOT_GAP) * 0.5,
+		float(rows - 1) * (PLOT_SIZE + PLOT_GAP) * 0.5)
 	for i in farm.plots.size():
 		var col := i % cols
 		var row := i / cols

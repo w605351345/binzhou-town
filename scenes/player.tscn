@@ -13,7 +13,7 @@ motion_mode = 1
 modulate = Color(0, 0, 0, 0.28)
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
-offset = Vector2(0, -24)
+offset = Vector2(0, -30)
 
 [node name="Collision" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_player")

@@ -1,11 +1,24 @@
 extends Node2D
 class_name NpcNode
-## NPC 的场景节点:显示占位形象 + 头顶名字 + 交互提示。
+## NPC 的场景节点:精灵形象 + 头顶名字。
+##
+## 张晓芳用自己的精灵表(assets/sprites/npc_zhangxiaofang.png,帧 48×72),
+## 站立时用第 0 / 第 4 帧循环做呼吸感 —— 她不做巡逻 AI,只站在摊位上。
+
+const SHEET_PATH := "res://assets/sprites/npc_zhangxiaofang.png"
+const FRAME_SIZE := Vector2i(48, 72)
+## 呼吸动画用哪两帧(走路循环里身体起伏最大的那一对)
+const IDLE_FRAMES := [0, 4]
+const IDLE_FPS := 1.4
 
 @onready var label: Label = $Label
 @onready var body: Node2D = $Body
+@onready var sprite: AnimatedSprite2D = $Body/Sprite
 
 var npc: NpcBase = null
+
+func _ready() -> void:
+	_build_frames()
 
 func setup(p_npc: NpcBase) -> void:
 	npc = p_npc
@@ -21,12 +34,25 @@ func _refresh_position() -> void:
 func _process(_delta: float) -> void:
 	_refresh_position()
 
-func _draw() -> void:
-	# 占位形象:粗布衫 + 头,颜色按性别
-	var female := npc != null and npc.name == "张婶"
-	var coat := Color(0.42, 0.24, 0.26) if female else Color(0.28, 0.32, 0.40)
-	var skin := Color(0.94, 0.82, 0.70)
-	draw_circle(Vector2(0, -30), 11.0, skin)
-	draw_rect(Rect2(-13, -18, 26, 26), coat, true)
-	draw_rect(Rect2(-13, -18, 26, 26), Color(0, 0, 0, 0.35), false, 2.0)
-	draw_circle(Vector2(0, 44), 12.0, Color(0, 0, 0, 0.22))
+## 用精灵表的前两帧拼一个站立呼吸动画
+func _build_frames() -> void:
+	if sprite == null:
+		return
+	var tex: Texture2D = load(SHEET_PATH)
+	if tex == null:
+		push_warning("NpcNode: 找不到 NPC 精灵表 %s" % SHEET_PATH)
+		return
+	var frames := SpriteFrames.new()
+	frames.remove_animation("default")
+	frames.add_animation("idle")
+	frames.set_animation_speed("idle", IDLE_FPS)
+	frames.set_animation_loop("idle", true)
+	for idx in IDLE_FRAMES:
+		var atlas := AtlasTexture.new()
+		atlas.atlas = tex
+		atlas.region = Rect2(
+			Vector2(float(idx) * FRAME_SIZE.x, 0.0),
+			Vector2(FRAME_SIZE.x, FRAME_SIZE.y))
+		frames.add_frame("idle", atlas)
+	sprite.sprite_frames = frames
+	sprite.animation = "idle"

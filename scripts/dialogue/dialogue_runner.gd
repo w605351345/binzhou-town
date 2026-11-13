@@ -58,6 +58,20 @@ func current_text() -> String:
 			return String(variant.get("text", ""))
 	return String(line.get("text", ""))
 
+## 当前条目的 id(语音包按 <npc>__<line>__<variant> 命名,要靠它定位音频)
+func current_line_id() -> String:
+	return String(current_line().get("id", ""))
+
+## 当前台词是第几个文本变体(0 起)。语音包按变体分别录制,这里给出下标。
+func current_variant_index() -> int:
+	var line := current_line()
+	var texts: Array = line.get("texts", [])
+	for i in texts.size():
+		var variant: Variant = texts[i]
+		if variant is Dictionary and DialogueConditions.evaluate(variant.get("condition", {}), _ctx()):
+			return i
+	return 0
+
 ## 当前条目可见的选项(条件不满足的已过滤掉)
 func current_options() -> Array:
 	var out: Array = []

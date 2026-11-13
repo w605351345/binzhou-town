@@ -182,13 +182,13 @@ func _countdown_color() -> Color:
 		return Color(0.74, 0.79, 0.86)
 	return Color(0.92, 0.89, 0.72)
 
-## 按键提示随地点变化
+## 按键提示随地点变化(键鼠 + 手柄都写出来,手柄玩家不用背)
 func _key_hint_text() -> String:
-	var base := "WASD 移动 · E 对话 · T 睡觉 · TAB 背包 · ESC 暂停"
+	var base := "WASD/左摇杆 移动 · E/A 对话 · T/左摇杆 睡觉 · TAB/BACK 背包 · ESC/START 暂停"
 	if _location_id == "L02":
-		return base + " · F 回自家院"
+		return base + " · F/右摇杆 回自家院"
 	if _location_id == "L01":
-		return base + " · J 翻土 · K 浇水 · L 播种 · I 收获 · R 秋翻 · F 去镇大街"
+		return base + " · J/X 翻土 · K/Y 浇水 · L/LB 播种 · I/RB 收获 · R/BACK 秋翻 · F/右摇杆 去镇大街"
 	return base
 
 func _show_message(text: String) -> void:

@@ -7,14 +7,24 @@ class_name FarmPlotView
 ##
 ## 地块下方再挂一行农时角标:还几天熟 / 可收获 / 霜冻警告 / 秋翻 +15%。
 
-const SIZE := Vector2(96, 96)
-## 角标文字的尺寸(地块在农场里间隔 164px,超过就会串到邻块)
-const BADGE_WIDTH := 150.0
+const SIZE := Vector2(88, 88)
+
+## 土壤贴图:用 preload 常量静态加载 —— 运行时 load() 在首次 _draw 时可能尚未就绪,
+## 会把地块画成白色占位块(踩过的坑)。
+const TEX_UNTILLED := preload("res://assets/sprites/plots/plot_untilled.png")
+const TEX_TILLED := preload("res://assets/sprites/plots/plot_tilled.png")
+const TEX_PLANTED := preload("res://assets/sprites/plots/plot_planted.png")
+const TEX_READY := preload("res://assets/sprites/plots/plot_ready.png")
+const TEX_FALLOW := preload("res://assets/sprites/plots/plot_fallow.png")
+## 角标文字的尺寸(地块在农场里中心距 120px,超过就会串到邻块)
+const BADGE_WIDTH := 112.0
 const BADGE_FONT_SIZE := 13
 
 var plot: FarmPlot = null
 var calendar: GameCalendar = null
 var _highlight := false
+## 作物贴图缓存(避免每帧重复加载)
+var _crop_cache: Dictionary = {}
 
 func setup(p_plot: FarmPlot, p_calendar: GameCalendar = null) -> void:
 	plot = p_plot
@@ -31,39 +41,79 @@ func _draw() -> void:
 	if plot == null:
 		return
 	var rect := Rect2(-SIZE * 0.5, SIZE)
-	var base := _state_color()
-	draw_rect(rect, base, true)
-	draw_rect(rect, Color(0.16, 0.12, 0.09, 0.9), false, 3.0)
-
-	# 耕地纹理:横向犁沟
-	if plot.state == FarmPlot.State.TILLED or plot.state == FarmPlot.State.PLANTED \
-			or plot.state == FarmPlot.State.GROWING:
+	var tex := _plot_texture()
+	if tex != null:
+		draw_texture_rect(tex, rect, false)
+	else:
+		# 没有贴图时的兜底:纯色块(美术资源缺失也不至于开天窗)
+		draw_rect(rect, _state_color(), true)
+		draw_rect(rect, Color(0.16, 0.12, 0.09, 0.9), false, 3.0)
 		for i in 3:
 			var y := -SIZE.y * 0.5 + 22 + i * 26
 			draw_line(Vector2(-SIZE.x * 0.5 + 8, y), Vector2(SIZE.x * 0.5 - 8, y),
 				Color(0.22, 0.16, 0.12, 0.55), 2.0)
 
-	# 秋翻地标记:犁沟加深 + 深色角标
+	# 秋翻地标记:深色压暗 + 右上角金色角标
 	if plot.autumn_plowed:
-		draw_rect(Rect2(-SIZE * 0.5, SIZE), Color(0.10, 0.07, 0.05, 0.28), true)
+		draw_rect(rect, Color(0.10, 0.07, 0.05, 0.28), true)
 		draw_circle(Vector2(SIZE.x * 0.5 - 14, -SIZE.y * 0.5 + 14), 7,
 			Color(0.55, 0.42, 0.25, 0.95))
 
-	# 作物标记
-	match plot.state:
-		FarmPlot.State.PLANTED:
-			_draw_sprout(Color(0.45, 0.62, 0.30))
-		FarmPlot.State.GROWING:
-			_draw_sprout(Color(0.36, 0.56, 0.24))
-		FarmPlot.State.READY:
-			_draw_ready()
-		FarmPlot.State.DEAD:
-			_draw_dead()
+	# 作物
+	if plot.state == FarmPlot.State.DEAD:
+		_draw_dead()
+	else:
+		var crop_tex := _crop_texture()
+		if crop_tex != null:
+			draw_texture_rect(crop_tex, Rect2(-24, -6, 48, 48), false)
+		else:
+			match plot.state:
+				FarmPlot.State.PLANTED:
+					_draw_sprout(Color(0.45, 0.62, 0.30))
+				FarmPlot.State.GROWING:
+					_draw_sprout(Color(0.36, 0.56, 0.24))
+				FarmPlot.State.READY:
+					_draw_ready()
 
 	if _highlight:
 		draw_rect(rect.grow(3.0), Color(1.0, 0.95, 0.75, 0.9), false, 3.0)
 
 	_draw_badge()
+
+## 土壤贴图:按地块状态选一张
+func _plot_texture() -> Texture2D:
+	match plot.state:
+		FarmPlot.State.UNTILLED:
+			return TEX_UNTILLED
+		FarmPlot.State.TILLED, FarmPlot.State.DEAD:
+			return TEX_TILLED
+		FarmPlot.State.PLANTED, FarmPlot.State.GROWING:
+			return TEX_PLANTED
+		FarmPlot.State.READY:
+			return TEX_READY
+		FarmPlot.State.FALLOW:
+			return TEX_FALLOW
+	return TEX_TILLED
+
+## 作物贴图:出苗 / 成长 / 成熟 三档(按需加载并缓存)
+func _crop_texture() -> Texture2D:
+	if plot.crop_id == "":
+		return null
+	var stage := plot.get_growth_stage()
+	var suffix := "_s0"
+	if stage >= 3:
+		suffix = ""
+	elif stage >= 1:
+		suffix = "_s1"
+	var key := "%s%s" % [plot.crop_id, suffix]
+	if _crop_cache.has(key):
+		return _crop_cache[key]
+	var path := "res://assets/sprites/crops/%s.png" % key
+	if not ResourceLoader.exists(path):
+		return null
+	var tex: Texture2D = load(path)
+	_crop_cache[key] = tex
+	return tex
 
 ## 地块角标:还几天熟 / 可收获 / 霜冻警告 / 秋翻加成
 func _draw_badge() -> void:

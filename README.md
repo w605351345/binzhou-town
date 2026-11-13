@@ -64,12 +64,17 @@ AI 改变工作生活后,主角厌倦了大城市的喧嚣,回到黑龙江哈尔
 ```
 BinzhouTown/
 ├── project.godot              # Godot 4.3 项目配置
-├── assets/sprites/             # 占位精灵表(程序化生成,美术到位后替换)
+├── assets/sprites/             # 手绘风美术资源(程序化生成,美术到位后替换)
+│   ├── player_body.png         # 主角精灵表 3 行 × 8 列,帧 48×72
+│   ├── npc_zhangxiaofang.png    # 张晓芳精灵表
+│   ├── plots/                  # 5 种土壤贴图 88×88
+│   ├── crops/                  # 9 种作物 × 3 阶段
+│   └── items/                  # 12 件物品图标
 ├── data/
 │   ├── crops.json             # 9 种作物 + 6 项冬季产出 + 农时元数据
 │   ├── items.json             # 数值表 v1:12 件道具 + 3 条作物收购价
-│   ├── npcs.json              # 数值表 v1:张婶(收购价 + 每日位置)
-│   └── dialogues.json         # 对话数据 v1:张婶 7 个条目 + 季节变体 + 条件选项
+│   ├── npcs.json              # 数值表 v1:张晓芳(收购价 + 每日位置)
+│   └── dialogues.json         # 对话数据 v1:张晓芳 7 个条目 + 季节变体 + 条件选项
 ├── docs/                      # 企划书 5 份 + 数值表
 ├── scenes/
 │   ├── main_menu.tscn         # 主菜单(含性别选择)
@@ -77,7 +82,7 @@ BinzhouTown/
 │   ├── farm.tscn              # L01 自家院 · 3×3 黑土地
 │   ├── town_street.tscn       # L02 宾州镇 · 镇大街
 │   ├── player.tscn            # 主角(4 方向 8 帧)
-│   ├── npc_zhangshen.tscn     # 张婶
+│   ├── npc_zhangxiaofang.tscn # 张晓芳
 │   └── pause_menu.tscn        # 暂停菜单(存档/读档/回主菜单/退出)
 ├── scripts/
 │   ├── core/
@@ -103,7 +108,7 @@ BinzhouTown/
 │   ├── npc/
 │   │   ├── npc_base.gd        # NPC 基类(好感度/收购/每日位置)
 │   │   ├── npc_node.gd        # NPC 场景节点
-│   │   └── zhang_shen.gd      # 张婶(收购作物 + 好感度加成)
+│   │   └── zhang_xiaofang.gd  # 张晓芳(收购作物 + 好感度加成)
 │   ├── dialogue/
 │   │   ├── dialogue_data.gd   # 对话表加载(dialogues.json)
 │   │   ├── dialogue_conditions.gd # 对话条件求值(季节/月份/好感度/标记/背包)
@@ -132,7 +137,11 @@ BinzhouTown/
 │       └── test_dialogue_wiring.gd # 对话接线自测(E 键→对话→商店→写回,39 项)
 ├── tools/
 │   ├── validate_data.py       # 静态数据校验(CI 必跑)
-│   └── gen_sprites.py         # 占位精灵表生成器(无外部依赖)
+│   ├── pixelart.py            # 像素绘图基元库(描边/有机轮廓/分层)
+│   ├── gen_art.py             # 美术资源生成器(角色/地块/作物/物品/背景)
+│   ├── gen_voice.py           # 普通话语音包生成器(键名与 VoiceBank 对齐)
+│   ├── capture_scenes.py      # 场景截图工具(before/after 对比)
+│   └── gen_sprites.py         # 旧占位精灵表生成器(已废弃,被 gen_art.py 取代)
 └── .github/workflows/ci.yml   # CI:自测 + 场景冒烟 + 导出
 ```
 
@@ -186,14 +195,14 @@ BinzhouTown/
 
 ## 对话 · 商店 · 背包(Week 5)
 
-黑龙江的玩家是"被婶子教会的"—— 一年一熟不是规则提示能讲明白的,得有人唠。张婶的每一句话都挂在农时上。
+黑龙江的玩家是"被邻居教会的"—— 一年一熟不是规则提示能讲明白的,得有人唠。张晓芳的每一句话都挂在农时上。
 
 ### 对话系统
 
 | 能力 | 说明 |
 |---|---|
 | **季节变体** | 同一条台词按季节切换:4 月"地化冻了,抓紧翻地" / 10 月"霜要下来了,赶紧割" / 冬季"猫冬呢" |
-| **条件选项** | 选项可挂条件:好感度 ≥ 25 才出现熟络的招呼,答应过翻地后张婶会主动问起 |
+| **条件选项** | 选项可挂条件:好感度 ≥ 25 才出现熟络的招呼,答应过翻地后张晓芳会主动问起 |
 | **话题跳转** | 问一句答一句(种啥 / 秋霜 / 秋翻 / 猫冬 / 她家咋种地),答完回到开场白 |
 | **动作** | 选项可触发动作:卖粮 / 买种子(开商店)、记标记(`will_plough_autumn`)、加好感度 |
 | **写回存档** | 好感度写进 `npc_relationships`,标记写进 `flags`,换场景、存读档都不丢 |
@@ -240,14 +249,14 @@ godot --path . --editor
 
 ```
 本地:  250 通过 / 0 失败   ✅(核心逻辑)
-        16 通过 / 0 失败   ✅(场景集成)
-        90 通过 / 0 失败   ✅(生长循环集成)
-        57 通过 / 0 失败   ✅(对话系统)
-        43 通过 / 0 失败   ✅(商店)
-        22 通过 / 0 失败   ✅(背包)
-        39 通过 / 0 失败   ✅(对话接线)
-       ────────────────────────────
-       517 通过 / 0 失败   ✅
+		16 通过 / 0 失败   ✅(场景集成)
+		90 通过 / 0 失败   ✅(生长循环集成)
+		57 通过 / 0 失败   ✅(对话系统)
+		43 通过 / 0 失败   ✅(商店)
+		22 通过 / 0 失败   ✅(背包)
+		39 通过 / 0 失败   ✅(对话接线)
+	   ────────────────────────────
+	   517 通过 / 0 失败   ✅
 数据校验: 9 种作物 / 6 项冬季产出 / 12 件道具 / 1 位 NPC / 1 份对话 7 条目 ✅
 场景冒烟: main_menu / game / farm / town_street 全部无报错 ✅
 ```
@@ -271,3 +280,36 @@ godot --path . --editor
 ## License
 
 MIT
+
+---
+
+## 美术与平台(2026-11 升级)
+
+| 项 | 状态 | 说明 |
+|---|---|---|
+| 画面观感 | ✅ | 从纯色块换成《饥荒》式手绘剪影:粗描边、暖土色盘、纸片分层背景 |
+| 角色比例 | ✅ | 角色帧 48×72(实高约 60px),约为一块地(88px)的 2/3 —— 人站进地里,不再「人比地大」 |
+| 地块越界 bug | ✅ | 3×3 网格原本以世界原点居中,渲染到屏幕左上角外只露 2 块;已改为居中于院子 |
+| NPC 改名 | ✅ | 张婶 → 张晓芳(id / 文件名 / 对白 / 存档迁移全链路) |
+| 普通话语音 | ✅ | 18 条 NPC 台词配音 + 逐字字幕 + 暂停菜单可静音 |
+| 手柄 | ✅ | D-pad/左摇杆移动,肩键用工具,START 暂停;`test_input_map.gd` 43 项守住绑定 |
+| 双平台发布 | ✅ | export_presets 备好 Windows / macOS / Linux,CI 三平台出包 |
+
+### 常用命令
+
+```bash
+# 生成美术资源(角色/地块/作物/物品/背景)
+python3 tools/gen_art.py assets
+
+# 生成普通话语音包(macOS 用 say,Linux 用 espeak-ng)
+python3 tools/gen_voice.py
+
+# 截图(before/after 对比用)
+python3 tools/capture_scenes.py --out docs/screenshots/after
+
+# 全量自测
+for t in test_core test_scenes test_integration test_dialogue test_shop \
+		 test_dialogue_wiring test_inventory test_input_map; do
+  godot --headless --script res://scripts/tests/$t.gd
+done
+```

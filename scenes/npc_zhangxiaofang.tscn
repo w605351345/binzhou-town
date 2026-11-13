@@ -7,10 +7,16 @@ script = ExtResource("1_npcnode")
 
 [node name="Body" type="Node2D" parent="."]
 
+[node name="Sprite" type="AnimatedSprite2D" parent="Body"]
+offset = Vector2(0, -30)
+
 [node name="Label" type="Label" parent="."]
 offset_left = -40.0
-offset_top = -62.0
+offset_top = -84.0
 offset_right = 40.0
-offset_bottom = -40.0
+offset_bottom = -62.0
+theme_override_colors/font_color = Color(0.98, 0.95, 0.86, 1)
+theme_override_colors/font_outline_color = Color(0.14, 0.1, 0.07, 1)
+theme_override_constants/outline_size = 4
 text = ""
 horizontal_alignment = 1

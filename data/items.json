@@ -3,7 +3,7 @@
     "version": "v1.0",
     "updated": "2026-11-12",
     "scope": "MVP 数值表 v1 —— 3 作物 + 1 NPC + 种子/工具/商品",
-    "note": "作物本体数据在 crops.json,本表只管非作物道具、种子商品价与商品收购价。张婶的收购价 = crops.json 的 sell_price × buy_ratio。"
+    "note": "作物本体数据在 crops.json,本表只管非作物道具、种子商品价与商品收购价。张晓芳的收购价 = crops.json 的 sell_price × buy_ratio。"
   },
   "items": [
     {
@@ -14,7 +14,7 @@
       "buy_price": 30,
       "sell_price": 15,
       "icon": "res://assets/sprites/items/seed_corn.png",
-      "desc": "松嫩平原的当家种,晚收,得抢在秋霜前割完",
+      "desc": "黑土地的当家种,晚收,得抢在秋霜前割完",
       "mvp": true
     },
     {
@@ -25,7 +25,7 @@
       "buy_price": 20,
       "sell_price": 10,
       "icon": "res://assets/sprites/items/seed_potato.png",
-      "desc": "克山马铃薯,7 月就能收,腾茬早能再种一茬秋菜",
+      "desc": "早熟马铃薯,7 月就能收,腾茬早能再种一茬秋菜",
       "mvp": true
     },
     {

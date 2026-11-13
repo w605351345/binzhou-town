@@ -5,8 +5,8 @@ extends CharacterBody2D
 
 const SPRITE_MALE := "res://assets/sprites/player_body.png"
 const SPRITE_FEMALE := "res://assets/sprites/player_female.png"
-## 精灵表单帧尺寸
-const FRAME_SIZE := Vector2i(32, 48)
+## 精灵表单帧尺寸(饥荒观感重绘后为 48×72 —— 角色约 58px 高,约为一块地的 2/3)
+const FRAME_SIZE := Vector2i(48, 72)
 ## 精灵表行数(下/上/侧)
 const SHEET_ROWS := 3
 
@@ -56,7 +56,7 @@ func set_female(female: bool) -> void:
 	_apply_sprite(female)
 
 func _physics_process(delta: float) -> void:
-	# 界面占着输入时不挪窝 —— 边看台词边乱走会错过张婶的话
+	# 界面占着输入时不挪窝 —— 边看台词边乱走会错过张晓芳的话
 	if GameStateManager.input_locked:
 		velocity = Vector2.ZERO
 		return
@@ -93,4 +93,4 @@ func facing_vector() -> Vector2:
 	return Vector2.DOWN
 
 func get_parent_area_size() -> Vector2:
-	return Vector2(1920, 1080)
+	return Vector2(960, 540)

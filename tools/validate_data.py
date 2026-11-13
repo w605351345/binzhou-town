@@ -383,6 +383,64 @@ def _check_condition(path: Path, did: str, lid: str, condition) -> None:
                         f"{path.name}: {did}/{lid} 的月份条件 {month} 非法(1-12)")
 
 
+## --- 游戏内文本禁真实地名(D8 决策) ---
+##
+## 口径:禁真实行政区划与真实专名;允许通用地理词汇(东北 / 黑土地 / 北大荒 / 平原)。
+## 理由:游戏是架空小镇,世界观参考黑龙江,但玩家在游戏里看到真实县名会出戏。
+## 例外:crops.json 的 origin 是给制作人核实的设定资料,不进 UI,不参与检查。
+
+FORBIDDEN_PLACE_NAMES = [
+    "黑龙江省", "哈尔滨市", "宾县", "宾州厅", "松嫩平原", "松花江", "乌苏里江",
+    "镜泊湖", "大兴安岭", "兴安岭", "齐齐哈尔", "牡丹江", "佳木斯", "双鸭山",
+    "鸡西", "绥化", "伊春", "白城", "鹤岗", "双城", "阿城", "呼兰", "尚志",
+    "巴彦", "木兰", "延寿", "通河", "依兰", "方正", "五常", "庆安", "北安",
+    "拜泉", "克山", "克东", "讷河", "嫩江", "逊克", "孙吴", "泰来", "甘南",
+    "肇东", "肇州", "梨树", "肇州", "海伦", "富锦",
+]
+
+
+def _find_forbidden(text: str) -> list:
+    """找出文本里的真实地名。长词优先,命中后从文本里剔除,避免『黑龙江』被『龙江』二次命中。"""
+    hits = []
+    remaining = text
+    for word in sorted(FORBIDDEN_PLACE_NAMES, key=len, reverse=True):
+        if word in remaining:
+            hits.append(word)
+            remaining = remaining.replace(word, "")
+    return hits
+
+
+def validate_no_real_place_names(path: Path, data, skip_fields=None) -> None:
+    """检查游戏内可见文本里没有真实行政区划/专名。
+
+    skip_fields:这些字段不参与检查(如 crops.json 的 origin —— 那是给制作人
+    核实的设定资料,不会出现在游戏界面里)。
+    """
+    skip_fields = skip_fields or set()
+    hits = []
+
+    def walk(node, trail):
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key.startswith("_"):
+                    continue  # _meta 之类的内部字段
+                if key in skip_fields:
+                    continue
+                walk(value, trail + "/" + key)
+        elif isinstance(node, list):
+            for i, value in enumerate(node):
+                walk(value, trail + "/%d" % i)
+        elif isinstance(node, str):
+            for word in _find_forbidden(node):
+                hits.append((trail, word, node[:40]))
+
+    walk(data, "")
+    for trail, word, sample in hits:
+        ERRORS.append(
+            "%s: 游戏内文本出现真实地名『%s』(%s)—— 改成通用说法"
+            % (path.name, word, trail))
+
+
 def main() -> int:
     root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("data")
     if not root.exists():
@@ -405,17 +463,27 @@ def main() -> int:
     else:
         ERRORS.append(f"缺少文件: {items_path}")
 
+    # 游戏内文本禁真实地名(对白 / NPC / 物品描述全查;origin 是设定资料,跳过)
+    if crops_data is not None:
+        validate_no_real_place_names(crops_path, crops_data, skip_fields={"origin"})
+
+    items_path = root / "items.json"
+    if items_path.exists():
+        validate_no_real_place_names(items_path, load_json(items_path))
+
     npcs_path = root / "npcs.json"
     npcs_data = None
     if npcs_path.exists():
         npcs_data = load_json(npcs_path)
         validate_npcs(npcs_path)
+        validate_no_real_place_names(npcs_path, npcs_data)
     else:
         ERRORS.append(f"缺少文件: {npcs_path}")
 
     dialogues_path = root / "dialogues.json"
     if dialogues_path.exists():
         validate_dialogues(dialogues_path, npcs_data)
+        validate_no_real_place_names(dialogues_path, load_json(dialogues_path))
     else:
         ERRORS.append(f"缺少文件: {dialogues_path}")
 

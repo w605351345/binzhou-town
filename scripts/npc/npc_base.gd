@@ -3,7 +3,7 @@ class_name NpcBase
 
 ## NPC 基类(纯逻辑,可 headless 单测)
 ##
-## 宾州镇的人物。MVP 只有张婶一人,先把结构立住,
+## 宾州镇的人物。MVP 只有张晓芳一人,先把结构立住,
 ## 后续加人物时只继承本类。对话内容统一放在 data/dialogues.json。
 
 var id: String = ""

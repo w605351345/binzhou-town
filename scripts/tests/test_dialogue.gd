@@ -2,7 +2,7 @@ extends SceneTree
 ## headless 对话系统自测:条件求值 + 对话推进 + 选项与动作
 ##
 ## 对话走向全在 DialogueRunner(纯逻辑)里,所以这里能在 headless 下
-## 把张婶的每一句话、每一个分支都走一遍。
+## 把张晓芳的每一句话、每一个分支都走一遍。
 ##
 ## 运行: godot --headless --script res://scripts/tests/test_dialogue.gd
 
@@ -11,7 +11,7 @@ var _failed := 0
 
 func _init() -> void:
 	print("=== 《宾州小镇》对话系统自测 (dialogue test) ===")
-	print("设定:张婶是玩家理解『一年一熟』的活教材 —— 台词必须挂在农时上")
+	print("设定:张晓芳是玩家理解『一年一熟』的活教材 —— 台词必须挂在农时上")
 	print("--------------------------------------------------")
 
 	test_dialogue_data()
@@ -45,7 +45,7 @@ func _make_ctx(month: int = 4, affection: int = 0, flags: Dictionary = {}) -> Di
 	cal.advance_to_month(month, 1)
 	var player := PlayerProfile.new()
 	player.gold = 500
-	var npc := ZhangShen.new()
+	var npc := ZhangXiaofang.new()
 	npc.affection = affection
 	return {"calendar": cal, "player": player, "npc": npc, "flags": flags}
 
@@ -53,11 +53,11 @@ func _make_ctx(month: int = 4, affection: int = 0, flags: Dictionary = {}) -> Di
 func test_dialogue_data() -> void:
 	print("\n[1] 对话数据(dialogues.json)")
 	check("dialogues.json 可读", not DialogueData.load_all().is_empty())
-	check("张婶的对话存在", not DialogueData.get_dialogue("zhang_shen").is_empty())
+	check("张晓芳的对话存在", not DialogueData.get_dialogue("zhang_xiaofang").is_empty())
 	check("能按 NPC 找到对话",
-		String(DialogueData.dialogue_for_npc("zhang_shen").get("id", "")) == "zhang_shen")
-	var lines: Array = DialogueData.get_dialogue("zhang_shen").get("lines", [])
-	check("张婶对话条目 >= 7 条(Week 4 要求完整对话)", lines.size() >= 7,
+		String(DialogueData.dialogue_for_npc("zhang_xiaofang").get("id", "")) == "zhang_xiaofang")
+	var lines: Array = DialogueData.get_dialogue("zhang_xiaofang").get("lines", [])
+	check("张晓芳对话条目 >= 7 条(Week 4 要求完整对话)", lines.size() >= 7,
 		"→ %d 条" % lines.size())
 
 	# 每条对话都该有个像样的开场白
@@ -123,7 +123,7 @@ func test_conditions() -> void:
 
 # --- 开场白随季节变化 ---
 func test_seasonal_greeting() -> void:
-	print("\n[3] 开场白随季节变化(张婶的农时活教材)")
+	print("\n[3] 开场白随季节变化(张晓芳的农时活教材)")
 	var expected := {
 		4: "地化冻",
 		7: "庄稼正长",
@@ -134,7 +134,7 @@ func test_seasonal_greeting() -> void:
 		var cal := GameCalendar.new()
 		cal.advance_to_month(int(month), 1)
 		var runner := DialogueRunner.new()
-		runner.setup(_lines(), PlayerProfile.new(), cal, ZhangShen.new(), {})
+		runner.setup(_lines(), PlayerProfile.new(), cal, ZhangXiaofang.new(), {})
 		runner.start()
 		check("%d 月开场白对得上农时" % int(month),
 			runner.current_text().contains(String(expected[month])),
@@ -146,7 +146,7 @@ func test_option_filter() -> void:
 	var cal := GameCalendar.new()
 	cal.advance_to_month(4, 1)
 	var runner := DialogueRunner.new()
-	runner.setup(_lines(), PlayerProfile.new(), cal, ZhangShen.new(), {})
+	runner.setup(_lines(), PlayerProfile.new(), cal, ZhangXiaofang.new(), {})
 	runner.start()
 	var options := runner.current_options()
 	check("开场白有选项", options.size() > 0, "→ %d 个" % options.size())
@@ -160,12 +160,12 @@ func test_option_filter() -> void:
 
 	# 带条件的选项:好感度不够时不该出现
 	var runner2 := DialogueRunner.new()
-	runner2.setup(_familiar_lines(), PlayerProfile.new(), cal, ZhangShen.new(), {})
+	runner2.setup(_familiar_lines(), PlayerProfile.new(), cal, ZhangXiaofang.new(), {})
 	runner2.start()
 	check("低好感度看不到熟络台词",
 		not runner2.current_text().contains("记着"),
 		"→ " + runner2.current_text().substr(0, 16) + "…")
-	var npc_hi := ZhangShen.new()
+	var npc_hi := ZhangXiaofang.new()
 	npc_hi.affection = 30
 	var runner3 := DialogueRunner.new()
 	runner3.setup(_familiar_lines(), PlayerProfile.new(), cal, npc_hi, {})
@@ -180,7 +180,7 @@ func test_topic_navigation() -> void:
 	var cal := GameCalendar.new()
 	cal.advance_to_month(9, 15)
 	var runner := DialogueRunner.new()
-	runner.setup(_lines(), PlayerProfile.new(), cal, ZhangShen.new(), {})
+	runner.setup(_lines(), PlayerProfile.new(), cal, ZhangXiaofang.new(), {})
 	runner.start()
 	check("开场白是秋收那句", runner.current_text().contains("霜"), "→ " + runner.current_text().substr(0, 18) + "…")
 
@@ -212,7 +212,7 @@ func test_shop_actions() -> void:
 	var cal := GameCalendar.new()
 	cal.advance_to_month(9, 15)
 	var runner := DialogueRunner.new()
-	runner.setup(_lines(), PlayerProfile.new(), cal, ZhangShen.new(), {})
+	runner.setup(_lines(), PlayerProfile.new(), cal, ZhangXiaofang.new(), {})
 	runner.start()
 	var sell_idx := _find_option(runner, "卖粮")
 	var r1 := runner.choose(sell_idx)
@@ -235,7 +235,7 @@ func test_flag_and_affection_actions() -> void:
 	var flags := {}
 	var cal := GameCalendar.new()
 	cal.advance_to_month(4, 1)
-	var npc := ZhangShen.new()
+	var npc := ZhangXiaofang.new()
 	var runner := DialogueRunner.new()
 	runner.setup(_action_lines(), PlayerProfile.new(), cal, npc, flags)
 	runner.start()
@@ -249,16 +249,16 @@ func test_flag_and_affection_actions() -> void:
 
 # --- 与 NPC 串起来 ---
 func test_integration_with_npc() -> void:
-	print("\n[8] 与张婶本体串起来")
+	print("\n[8] 与张晓芳本体串起来")
 	var cal := GameCalendar.new()
 	cal.advance_to_month(4, 10)
-	var npc := ZhangShen.new()
+	var npc := ZhangXiaofang.new()
 	var player := PlayerProfile.new()
 	player.inventory["corn"] = 4
 	var runner := DialogueRunner.new()
 	runner.setup(_lines(), player, cal, npc, {})
 	runner.start()
-	check("能拿到张婶的台词", runner.current_text() != "", "→ " + runner.current_text().substr(0, 18) + "…")
+	check("能拿到张晓芳的台词", runner.current_text() != "", "→ " + runner.current_text().substr(0, 18) + "…")
 
 	# 卖粮后金币增加(走 NpcBase.buy_crop,和对话用同一套价格)
 	var gold_before := player.gold
@@ -271,7 +271,7 @@ func test_integration_with_npc() -> void:
 # --- 工具 ---
 
 func _lines() -> Array:
-	return DialogueData.get_dialogue("zhang_shen").get("lines", [])
+	return DialogueData.get_dialogue("zhang_xiaofang").get("lines", [])
 
 func _familiar_lines() -> Array:
 	for line in _lines():

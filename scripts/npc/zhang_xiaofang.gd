@@ -1,19 +1,19 @@
 extends NpcBase
-class_name ZhangShen
+class_name ZhangXiaofang
 
-## 张婶 —— 镇大街上的婶子,收购玩家的庄稼(Week 2/3)
+## 张晓芳 —— 镇大街上的收购大户,收购玩家的庄稼(Week 2/3)
 ##
 ## 说话带东北味儿,但每句都跟黑龙江的农时挂钩 —— 她是玩家理解"一年一熟"的活教材。
 ## 收购价略低于市价,给的是熟人情分;好感度高时会多给一点。
 
 func _init() -> void:
-	super("zhang_shen", "张婶")
+	super("zhang_xiaofang", "张晓芳")
 	buys_crops = true
 	buy_ratio = 0.9
 	daily_positions = [
-		Vector2(760, 520),   # 早市
-		Vector2(980, 560),   # 晌午
-		Vector2(640, 620),   # 傍晚
+		Vector2(380, 300),   # 早市
+		Vector2(490, 320),   # 晌午
+		Vector2(320, 340),   # 傍晚
 	]
 
 ## 收购加成:好感度越高,给的价越好

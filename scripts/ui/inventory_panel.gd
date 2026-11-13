@@ -112,7 +112,7 @@ func _refresh() -> void:
 	var crops := Inventory.entries_of_kind(player.inventory, Inventory.KIND_CROP)
 	var items := Inventory.entries_of_kind(player.inventory, Inventory.KIND_ITEM)
 
-	lines.append("【庄稼】(能卖给张婶)")
+	lines.append("【庄稼】(能卖给张晓芳)")
 	if crops.is_empty():
 		lines.append("  · 还没收着粮")
 	for entry in crops:

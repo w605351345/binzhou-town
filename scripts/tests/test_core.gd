@@ -29,7 +29,7 @@ func _init() -> void:
 	test_tool_bar()
 	test_tool_bar_winter_block()
 	test_interaction_system()
-	test_zhang_shen_npc()
+	test_zhang_xiaofang_npc()
 	test_items_data()
 	test_farm_flow_with_tools()
 	test_scene_router()
@@ -554,10 +554,10 @@ func test_interaction_system() -> void:
 	check("无目标返回 -1",
 		InteractionSystem.find_target(player_pos, Vector2.RIGHT, []) == -1)
 
-func test_zhang_shen_npc() -> void:
-	print("\n[17] 张婶(NPC 收购)")
-	var zhang := ZhangShen.new()
-	check("名字为张婶", zhang.name == "张婶")
+func test_zhang_xiaofang_npc() -> void:
+	print("\n[17] 张晓芳(NPC 收购)")
+	var zhang := ZhangXiaofang.new()
+	check("名字为张晓芳", zhang.name == "张晓芳")
 	check("收购作物", zhang.buys_crops)
 	check("好感度上限 100", zhang.affection_max if false else true)
 	check("有每日位置", zhang.daily_positions.size() >= 2)
@@ -585,7 +585,7 @@ func test_zhang_shen_npc() -> void:
 	zhang.buy_crop(player2, "corn", 1)
 	check("好感度提升收购价", player2.gold > int(round(26.0 * 0.9)),
 		"→ %d 文" % player2.gold)
-	check("好感度加成有上限", ZhangShen.new().effective_ratio() <= 1.0)
+	check("好感度加成有上限", ZhangXiaofang.new().effective_ratio() <= 1.0)
 
 func test_items_data() -> void:
 	print("\n[18] 数值表 v1(items.json / npcs.json)")
@@ -617,9 +617,9 @@ func test_items_data() -> void:
 	var npcs := _load_json("res://data/npcs.json")
 	var npc_list: Array = npcs.get("npcs", [])
 	check("npcs.json 可读", npc_list.size() >= 1)
-	check("张婶在 NPC 表里", npc_list[0].get("id", "") == "zhang_shen")
-	check("张婶的对话在 dialogues.json 里",
-		not DialogueData.dialogue_for_npc("zhang_shen").is_empty())
+	check("张晓芳在 NPC 表里", npc_list[0].get("id", "") == "zhang_xiaofang")
+	check("张晓芳的对话在 dialogues.json 里",
+		not DialogueData.dialogue_for_npc("zhang_xiaofang").is_empty())
 
 func test_farm_flow_with_tools() -> void:
 	print("\n[19] 工具栏驱动的完整农事闭环")

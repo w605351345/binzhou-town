@@ -2,14 +2,14 @@
   "_meta": {
     "version": "v1.0",
     "updated": "2026-11-13",
-    "scope": "NPC 对话数据 v1 —— 张婶(本周:张婶完整对话,AI 起草,待制作人定稿)",
-    "note": "张婶是玩家理解『一年一熟』的活教材 —— 她的每句话都挂在农时上。条目可用 texts 数组写多个文本变体(按季节/条件取第一条满足的)。"
+    "scope": "NPC 对话数据 v1 —— 张晓芳(本周:张晓芳完整对话,AI 起草,待制作人定稿)",
+    "note": "张晓芳是玩家理解『一年一熟』的活教材 —— 她的每句话都挂在农时上。条目可用 texts 数组写多个文本变体(按季节/条件取第一条满足的)。"
   },
   "dialogues": [
     {
-      "id": "zhang_shen",
-      "npc_id": "zhang_shen",
-      "npc_name": "张婶",
+      "id": "zhang_xiaofang",
+      "npc_id": "zhang_xiaofang",
+      "npc_name": "张晓芳",
       "lines": [
         {
           "id": "greet",
@@ -57,7 +57,7 @@
               "next": "topic_winter"
             },
             {
-              "text": "婶儿,您家咋种地的?",
+              "text": "晓芳姐,您家咋种地的?",
               "next": "topic_self"
             },
             {
