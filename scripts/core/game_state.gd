@@ -17,6 +17,17 @@ func _init() -> void:
 	calendar = GameCalendar.new()
 	farm = FarmSystem.new(calendar)
 
+## NPC 好感度(存档字段 npc_relationships:{npc_id: {affection: n}})
+## NPC 对象每次进场景都会重建,好感度必须存在 GameState 里才不丢。
+func npc_affection(npc_id: String) -> int:
+	var rel: Dictionary = npc_relationships.get(npc_id, {})
+	return int(rel.get("affection", 0))
+
+func set_npc_affection(npc_id: String, value: int) -> void:
+	var rel: Dictionary = npc_relationships.get(npc_id, {})
+	rel["affection"] = maxi(0, value)
+	npc_relationships[npc_id] = rel
+
 func to_dict() -> Dictionary:
 	return {
 		"player": player.to_dict(),

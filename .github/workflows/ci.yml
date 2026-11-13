@@ -35,6 +35,18 @@ jobs:
       - name: 场景集成自测
         run: godot --headless --script res://scripts/tests/test_scenes.gd
 
+      - name: 生长循环集成自测
+        run: godot --headless --script res://scripts/tests/test_integration.gd
+
+      - name: 对话系统自测
+        run: godot --headless --script res://scripts/tests/test_dialogue.gd
+
+      - name: 商店自测
+        run: godot --headless --script res://scripts/tests/test_shop.gd
+
+      - name: 对话接线自测
+        run: godot --headless --script res://scripts/tests/test_dialogue_wiring.gd
+
       - name: 场景冒烟测试
         run: |
           for scene in scenes/main_menu.tscn scenes/game.tscn scenes/farm.tscn scenes/town_street.tscn; do

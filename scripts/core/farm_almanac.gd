@@ -154,7 +154,7 @@ static func plot_tag(plot: FarmPlot, calendar: GameCalendar = null) -> String:
 			parts.append("%s · 可收获啦" % crop_name)
 		FarmPlot.State.DEAD:
 			var reason := plot.dead_reason if plot.dead_reason != "" else "不明"
-			parts.append("枯死 · %s" % reason)
+			parts.append("枯死 · %s · J 翻土清茬" % reason)
 		FarmPlot.State.FALLOW:
 			parts.append("休耕")
 		FarmPlot.State.TILLED:

@@ -68,7 +68,8 @@ BinzhouTown/
 ├── data/
 │   ├── crops.json             # 9 种作物 + 6 项冬季产出 + 农时元数据
 │   ├── items.json             # 数值表 v1:12 件道具 + 3 条作物收购价
-│   └── npcs.json              # 数值表 v1:张婶(4 季对白 + 每日位置)
+│   ├── npcs.json              # 数值表 v1:张婶(收购价 + 每日位置)
+│   └── dialogues.json         # 对话数据 v1:张婶 7 个条目 + 季节变体 + 条件选项
 ├── docs/                      # 企划书 5 份 + 数值表
 ├── scenes/
 │   ├── main_menu.tscn         # 主菜单(含性别选择)
@@ -84,7 +85,9 @@ BinzhouTown/
 │   │   ├── game_state.gd      # 全局状态(可序列化)
 │   │   ├── game_manager.gd    # autoload:日推进 + 存读档 + 场景切换信号
 │   │   ├── farm_almanac.gd    # 农时播报(播种窗/秋霜/地块倒计时)
-│   │   └── stamina_system.gd  # 体力系统(农活消耗 + 夜间回满)
+│   │   ├── stamina_system.gd  # 体力系统(农活消耗 + 夜间回满)
+│   │   ├── item_database.gd   # 道具库(种子/工具/吃食价格)
+│   │   └── inventory.gd       # 背包清单逻辑(庄稼栏 / 物件栏)
 │   ├── farming/
 │   │   ├── crop.gd            # 作物模型(月份窗口/早收晚收/储藏)
 │   │   ├── crop_database.gd   # 作物库 + 季节查询
@@ -100,7 +103,13 @@ BinzhouTown/
 │   ├── npc/
 │   │   ├── npc_base.gd        # NPC 基类(好感度/收购/每日位置)
 │   │   ├── npc_node.gd        # NPC 场景节点
-│   │   └── zhang_shen.gd      # 张婶(收购作物 + 4 季对白)
+│   │   └── zhang_shen.gd      # 张婶(收购作物 + 好感度加成)
+│   ├── dialogue/
+│   │   ├── dialogue_data.gd   # 对话表加载(dialogues.json)
+│   │   ├── dialogue_conditions.gd # 对话条件求值(季节/月份/好感度/标记/背包)
+│   │   └── dialogue_runner.gd # 对话运行时(推进/选项/动作)
+│   ├── shop/
+│   │   └── shop.gd            # 商店结算(买道具 / 卖作物)
 │   ├── world/
 │   │   ├── world_map.gd       # 地图边界(不出地图)
 │   │   ├── interaction_system.gd # NPC 距离与朝向判定
@@ -108,11 +117,19 @@ BinzhouTown/
 │   │   └── town_street.gd     # 镇大街场景
 │   ├── ui/
 │   │   ├── main_menu.gd
-│   │   ├── game_hud.gd        # 游戏外壳(常驻 HUD + 世界容器)
+│   │   ├── game_hud.gd        # 游戏外壳(常驻 HUD + 世界容器 + 对话/商店/背包)
+│   │   ├── dialogue_box.gd    # 对话框(台词 + 选项)
+│   │   ├── shop_panel.gd      # 商店面板(买种子 / 卖粮)
+│   │   ├── inventory_panel.gd # 背包面板(庄稼栏 / 物件栏)
 │   │   └── pause_menu.gd
 │   └── tests/
 │       ├── test_core.gd       # headless 核心逻辑自测(23 组 250 项)
-│       └── test_scenes.gd     # headless 场景集成自测(外壳常驻,16 项)
+│       ├── test_scenes.gd     # headless 场景集成自测(外壳常驻,16 项)
+│       ├── test_integration.gd # 生长循环集成自测(一年一熟/秋霜/秋翻,90 项)
+│       ├── test_dialogue.gd   # 对话系统自测(条件/跳转/动作,57 项)
+│       ├── test_shop.gd       # 商店自测(买卖结算/收购价,43 项)
+│       ├── test_inventory.gd  # 背包自测(清单/开合,22 项)
+│       └── test_dialogue_wiring.gd # 对话接线自测(E 键→对话→商店→写回,39 项)
 ├── tools/
 │   ├── validate_data.py       # 静态数据校验(CI 必跑)
 │   └── gen_sprites.py         # 占位精灵表生成器(无外部依赖)
@@ -130,6 +147,7 @@ BinzhouTown/
 | `I` | 收获 |
 | `R` | 秋翻地(深翻积肥) |
 | `E` | 对话 / 与 NPC 交互 |
+| `TAB` | 背包(庄稼栏 / 物件栏) |
 | `F` | 前往下一个地点(自家院 ↔ 镇大街,HUD 常驻不消失) |
 | `T` | 睡觉(推进一天,作物生长 + 体力回满) |
 | `ESC` | 暂停菜单(存档/读档/回主菜单/退出) |
@@ -166,6 +184,32 @@ BinzhouTown/
 
 ---
 
+## 对话 · 商店 · 背包(Week 5)
+
+黑龙江的玩家是"被婶子教会的"—— 一年一熟不是规则提示能讲明白的,得有人唠。张婶的每一句话都挂在农时上。
+
+### 对话系统
+
+| 能力 | 说明 |
+|---|---|
+| **季节变体** | 同一条台词按季节切换:4 月"地化冻了,抓紧翻地" / 10 月"霜要下来了,赶紧割" / 冬季"猫冬呢" |
+| **条件选项** | 选项可挂条件:好感度 ≥ 25 才出现熟络的招呼,答应过翻地后张婶会主动问起 |
+| **话题跳转** | 问一句答一句(种啥 / 秋霜 / 秋翻 / 猫冬 / 她家咋种地),答完回到开场白 |
+| **动作** | 选项可触发动作:卖粮 / 买种子(开商店)、记标记(`will_plough_autumn`)、加好感度 |
+| **写回存档** | 好感度写进 `npc_relationships`,标记写进 `flags`,换场景、存读档都不丢 |
+
+对话内容全部在 `data/dialogues.json`,运行时分成三层(数据 / 条件 / 推进),**全部是纯逻辑,所以能在 headless 下把每一句、每个分支都走一遍**。
+
+### 商店 · 背包
+
+- **收购价** = 作物售价 × 0.9(收购商压价)+ 好感度加成(最多 +0.1)—— 熟人情分能多给一成
+- **买种子**走 `items.json` 价格表;种子进价与 `crops.json` 的 `seed_price` 一致(校验器强制)
+- **背包**分「庄稼」(能卖钱)与「物件」(种子/工具/吃食)两栏,`TAB` 开合
+
+> 结算逻辑在 `scripts/shop/shop.gd`、清单逻辑在 `scripts/core/inventory.gd`,UI 只负责显示。
+
+---
+
 ## 本地开发
 
 ```bash
@@ -180,6 +224,11 @@ godot --headless --script res://scripts/tests/test_core.gd
 # 3.1 headless 跑场景集成自测(外壳常驻 / 换地点不掉 HUD)
 godot --headless --script res://scripts/tests/test_scenes.gd
 
+# 3.2 其余自测(生长循环 / 对话 / 商店 / 背包 / 对话接线)
+for t in test_integration test_dialogue test_shop test_inventory test_dialogue_wiring; do
+  godot --headless --script "res://scripts/tests/$t.gd"
+done
+
 # 4. 静态数据校验
 python3 tools/validate_data.py data/
 
@@ -191,8 +240,15 @@ godot --path . --editor
 
 ```
 本地:  250 通过 / 0 失败   ✅(核心逻辑)
-       16 通过 / 0 失败   ✅(场景集成)
-数据校验: 9 种作物 / 6 项冬季产出 / 12 件道具 / 1 位 NPC ✅
+        16 通过 / 0 失败   ✅(场景集成)
+        90 通过 / 0 失败   ✅(生长循环集成)
+        57 通过 / 0 失败   ✅(对话系统)
+        43 通过 / 0 失败   ✅(商店)
+        22 通过 / 0 失败   ✅(背包)
+        39 通过 / 0 失败   ✅(对话接线)
+       ────────────────────────────
+       517 通过 / 0 失败   ✅
+数据校验: 9 种作物 / 6 项冬季产出 / 12 件道具 / 1 位 NPC / 1 份对话 7 条目 ✅
 场景冒烟: main_menu / game / farm / town_street 全部无报错 ✅
 ```
 

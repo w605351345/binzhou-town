@@ -4,7 +4,7 @@ class_name NpcBase
 ## NPC 基类(纯逻辑,可 headless 单测)
 ##
 ## 宾州镇的人物。MVP 只有张婶一人,先把结构立住,
-## 后续加人物时只继承本类 + 覆写 dialogue()。
+## 后续加人物时只继承本类。对话内容统一放在 data/dialogues.json。
 
 var id: String = ""
 var name: String = ""
@@ -34,10 +34,6 @@ func today_position() -> Vector2:
 ## 跨天:换位
 func on_day_changed(day: int) -> void:
 	current_day = day
-
-## 基础对话(子类覆写)
-func dialogue() -> String:
-	return "%s:你好啊。" % name
 
 ## 收购作物。返回 {ok, message, total}
 func buy_crop(player: PlayerProfile, crop_id: String, amount: int) -> Dictionary:

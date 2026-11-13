@@ -561,7 +561,7 @@ func test_zhang_shen_npc() -> void:
 	check("收购作物", zhang.buys_crops)
 	check("好感度上限 100", zhang.affection_max if false else true)
 	check("有每日位置", zhang.daily_positions.size() >= 2)
-	check("首次对话非空", zhang.dialogue() != "")
+	check("有对话数据", not DialogueData.dialogue_for_npc(zhang.id).is_empty())
 
 	# 收购
 	var player := PlayerProfile.new()
@@ -618,8 +618,8 @@ func test_items_data() -> void:
 	var npc_list: Array = npcs.get("npcs", [])
 	check("npcs.json 可读", npc_list.size() >= 1)
 	check("张婶在 NPC 表里", npc_list[0].get("id", "") == "zhang_shen")
-	check("张婶有四季对白",
-		(npc_list[0].get("dialogue", []) as Array).size() >= 4)
+	check("张婶的对话在 dialogues.json 里",
+		not DialogueData.dialogue_for_npc("zhang_shen").is_empty())
 
 func test_farm_flow_with_tools() -> void:
 	print("\n[19] 工具栏驱动的完整农事闭环")

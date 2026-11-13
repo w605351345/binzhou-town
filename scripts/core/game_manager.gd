@@ -7,12 +7,23 @@ signal game_saved(slot: int)
 ## 场景切换请求:由各地点场景发出,由游戏外壳(Game)接收并替换世界容器。
 ## 刻意不直接 change_scene_to_file —— 否则会把常驻 HUD 一起销毁。
 signal travel_requested(location_id: String)
+## 对话请求:地点场景判定玩家能交互后发出,由游戏外壳接管(和 travel_requested 一个套路)。
+## 传的是 NPC 本体 —— 好感度、收购价都在 NPC 上,换场景重建后靠 GameState 恢复。
+signal dialogue_requested(npc: NpcBase)
 
 const SAVE_DIR := "user://saves"
 
 var state: GameState = null
 var _paused := false
 var _last_season := ""
+## 对话进行中:锁住主角移动,免得一边看台词一边乱走
+var dialogue_open: bool = false
+## 背包面板打开中:同样锁住移动
+var inventory_open: bool = false
+## 输入是否被界面占着(对话 / 背包 / 商店)
+var input_locked: bool:
+	get:
+		return dialogue_open or inventory_open
 
 func _ready() -> void:
 	state = GameState.new()
@@ -67,3 +78,11 @@ func has_save(slot: int = 0) -> bool:
 
 func set_paused(p: bool) -> void:
 	_paused = p
+
+## 对话开始/结束时占用或归还输入
+func set_dialogue_open(v: bool) -> void:
+	dialogue_open = v
+
+## 背包开合时占用或归还输入
+func set_inventory_open(v: bool) -> void:
+	inventory_open = v

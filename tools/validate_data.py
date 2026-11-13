@@ -17,7 +17,14 @@
 数值表 v1(Week 1 交付物)追加校验:
   9. items.json 道具字段齐全、种子必须指向真实作物、售价 >= 进价
  10. crop_buy_prices 的 base_sell_price 必须与 crops.json 的 sell_price 一致
- 11. npcs.json NPC 字段齐全、收购比例在 (0, 1] 区间、对话条目非空
+ 11. npcs.json NPC 字段齐全、收购比例在 (0, 1] 区间(对话内容统一在 dialogues.json)
+
+对话系统 v1(Week 5)追加校验:
+ 12. dialogues.json 每条对话有 id / npc_id / lines,npc_id 指向真实 NPC
+ 13. 每个条目有 id,且有 text 或 texts 之一
+ 14. texts 变体与 options 的 condition 键必须在白名单内,season/month 取值合法
+ 15. options 的 next 必须指向本对话里真实存在的条目 id(写错了对话会静默断掉)
+ 16. options 的 action 必须在动作白名单内
 """
 import json
 import sys
@@ -44,6 +51,17 @@ SEED_CATEGORY = "seed"
 VALID_SEASONS = {"spring", "summer", "autumn", "winter"}
 VALID_SOW_SEASONS = {"spring", "summer"}
 VALID_HARVEST_SEASONS = {"autumn", "summer"}
+
+## 对话条件键白名单(与 DialogueConditions.evaluate 支持的键一致)
+VALID_CONDITION_KEYS = {
+    "season", "month", "affection_min", "flag", "not_flag",
+    "has_item", "gold_min",
+}
+
+## 对话动作白名单(与 DialogueRunner 支持的动作一致)
+VALID_ACTIONS = {
+    "shop_sell", "shop_buy", "set_flag", "add_affection", "give_item",
+}
 
 ERRORS = []
 
@@ -236,7 +254,7 @@ def validate_npcs(path: Path) -> None:
     seen = set()
     for npc in npcs:
         nid = npc.get("id", "?")
-        for key in ("id", "name", "buys_crops", "buy_ratio", "scene", "dialogue"):
+        for key in ("id", "name", "buys_crops", "buy_ratio", "scene"):
             if key not in npc:
                 ERRORS.append(f"{path.name}: {nid} 缺少字段 {key}")
         if nid in seen:
@@ -249,21 +267,120 @@ def validate_npcs(path: Path) -> None:
                 ERRORS.append(
                     f"{path.name}: {nid} buy_ratio 必须在 (0, 1] 区间 -> {ratio}")
 
-        dialogue = npc.get("dialogue", [])
-        if not dialogue:
-            ERRORS.append(f"{path.name}: {nid} dialogue 为空")
-        for line in dialogue:
-            if not line.get("text"):
-                ERRORS.append(f"{path.name}: {nid} 对白条目缺少 text")
-            if not line.get("condition"):
-                ERRORS.append(f"{path.name}: {nid} 对白条目缺少 condition")
-
         positions = npc.get("daily_positions", [])
         for pos in positions:
             if not isinstance(pos, list) or len(pos) != 2:
                 ERRORS.append(f"{path.name}: {nid} daily_positions 坐标必须是 [x, y]")
 
     print(f"  · {path.name}: {len(npcs)} 位 NPC")
+
+
+def validate_dialogues(path: Path, npcs_data) -> None:
+    """对话系统 v1:对话数据。"""
+    data = load_json(path)
+    if data is None:
+        return
+
+    dialogues = data.get("dialogues", [])
+    if not dialogues:
+        ERRORS.append(f"{path.name}: dialogues 列表为空")
+
+    npc_ids = set()
+    if npcs_data:
+        npc_ids = {n.get("id") for n in npcs_data.get("npcs", [])}
+
+    seen = set()
+    for dialogue in dialogues:
+        did = dialogue.get("id", "?")
+        for key in ("id", "npc_id", "lines"):
+            if key not in dialogue:
+                ERRORS.append(f"{path.name}: {did} 缺少字段 {key}")
+        if did in seen:
+            ERRORS.append(f"{path.name}: 重复的对话 id {did}")
+        seen.add(did)
+
+        npc_id = dialogue.get("npc_id")
+        if npc_ids and npc_id not in npc_ids:
+            ERRORS.append(
+                f"{path.name}: {did} 的 npc_id '{npc_id}' 在 npcs.json 里不存在")
+
+        lines = dialogue.get("lines", [])
+        if not lines:
+            ERRORS.append(f"{path.name}: {did} lines 为空")
+
+        # 先收齐全部条目 id —— 跳转可以向前也可以向后,
+        # 查跳转目标前必须把整份对话的 id 收齐,否则会误报
+        line_ids = set()
+        for line in lines:
+            lid = line.get("id", "?")
+            if "id" not in line:
+                ERRORS.append(f"{path.name}: {did} 里的条目缺少 id")
+            if lid in line_ids:
+                ERRORS.append(f"{path.name}: {did} 里有重复的条目 id {lid}")
+            line_ids.add(lid)
+
+        for line in lines:
+            lid = line.get("id", "?")
+
+            # 台词:text 或 texts 至少有一个
+            if "text" not in line and "texts" not in line:
+                ERRORS.append(f"{path.name}: {did}/{lid} 既没有 text 也没有 texts")
+
+            variants = line.get("texts", [])
+            if variants:
+                for variant in variants:
+                    if not variant.get("text"):
+                        ERRORS.append(f"{path.name}: {did}/{lid} 的 texts 变体缺少 text")
+                    _check_condition(path, did, lid, variant.get("condition", {}))
+            elif not str(line.get("text", "")).strip():
+                ERRORS.append(f"{path.name}: {did}/{lid} 的 text 为空")
+
+            # 条目自身的条件
+            if "condition" in line:
+                _check_condition(path, did, lid, line.get("condition", {}))
+
+            for opt in line.get("options", []):
+                if not opt.get("text"):
+                    ERRORS.append(f"{path.name}: {did}/{lid} 的选项缺少 text")
+                if "condition" in opt:
+                    _check_condition(path, did, lid, opt.get("condition", {}))
+                action = opt.get("action")
+                if action and action not in VALID_ACTIONS:
+                    ERRORS.append(
+                        f"{path.name}: {did}/{lid} 的选项动作 '{action}' 不在白名单内"
+                        f"(允许 {sorted(VALID_ACTIONS)})")
+                nxt = opt.get("next")
+                if nxt and nxt not in line_ids:
+                    ERRORS.append(
+                        f"{path.name}: {did}/{lid} 的选项跳转到不存在的条目 '{nxt}'")
+
+    print(f"  · {path.name}: {len(dialogues)} 份对话, "
+          f"{sum(len(d.get('lines', [])) for d in dialogues)} 个条目")
+
+
+def _check_condition(path: Path, did: str, lid: str, condition) -> None:
+    """条件字典的键与取值必须合法。"""
+    if not isinstance(condition, dict):
+        ERRORS.append(f"{path.name}: {did}/{lid} 的 condition 不是字典")
+        return
+    for key, value in condition.items():
+        if key not in VALID_CONDITION_KEYS:
+            ERRORS.append(
+                f"{path.name}: {did}/{lid} 的条件键 '{key}' 不在白名单内"
+                f"(允许 {sorted(VALID_CONDITION_KEYS)})")
+            continue
+        if key == "season":
+            seasons = value if isinstance(value, list) else [value]
+            for season in seasons:
+                if season not in VALID_SEASONS:
+                    ERRORS.append(
+                        f"{path.name}: {did}/{lid} 的季节条件 '{season}' 非法")
+        elif key == "month":
+            months = value if isinstance(value, list) else [value]
+            for month in months:
+                if not isinstance(month, int) or not (1 <= month <= 12):
+                    ERRORS.append(
+                        f"{path.name}: {did}/{lid} 的月份条件 {month} 非法(1-12)")
 
 
 def main() -> int:
@@ -289,10 +406,18 @@ def main() -> int:
         ERRORS.append(f"缺少文件: {items_path}")
 
     npcs_path = root / "npcs.json"
+    npcs_data = None
     if npcs_path.exists():
+        npcs_data = load_json(npcs_path)
         validate_npcs(npcs_path)
     else:
         ERRORS.append(f"缺少文件: {npcs_path}")
+
+    dialogues_path = root / "dialogues.json"
+    if dialogues_path.exists():
+        validate_dialogues(dialogues_path, npcs_data)
+    else:
+        ERRORS.append(f"缺少文件: {dialogues_path}")
 
     if ERRORS:
         for err in ERRORS:

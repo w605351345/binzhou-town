@@ -86,6 +86,14 @@ static func apply_tool(tool: int, farm: FarmSystem, plot_index: int,
 	return _fail("没这个工具")
 
 static func _do_till(farm: FarmSystem, plot: FarmPlot, player: PlayerProfile, cost: int) -> Dictionary:
+	# 死株(秋霜冻死 / 缺水旱死)也得能清 —— 黑龙江秋收后翻地就是要把死茬翻进土里沤肥。
+	# 没有这条通路,玩家一旦错过收成,这块地就永久废了(9 块地少一块)。
+	if plot.state == FarmPlot.State.DEAD:
+		if not player.stamina.consume(cost):
+			return _fail("体力不够了")
+		if not plot.clear_dead():
+			return _fail("清地失败")
+		return _ok("把死茬翻进土里了,这地还能种", {"cleared_dead": true})
 	if plot.state != FarmPlot.State.UNTILLED and plot.state != FarmPlot.State.FALLOW:
 		return _fail("这块地已经翻过了")
 	if not player.stamina.consume(cost):
@@ -132,7 +140,7 @@ static func _do_seed(farm: FarmSystem, plot: FarmPlot, player: PlayerProfile, co
 
 static func _do_harvest(farm: FarmSystem, plot: FarmPlot, player: PlayerProfile, cost: int) -> Dictionary:
 	if plot.state == FarmPlot.State.DEAD:
-		return _fail("冻死的庄稼,清掉重翻吧")
+		return _fail("%s,翻进土里沤肥吧(J 翻土清地)" % _dead_reason_cn(plot))
 	if plot.state != FarmPlot.State.READY:
 		return _fail("还没熟呢")
 	if not player.stamina.consume(cost):
@@ -152,6 +160,14 @@ static func _add_to_inventory(player: PlayerProfile, item_id: String, amount: in
 		return
 	var cur := int(player.inventory.get(item_id, 0))
 	player.inventory[item_id] = cur + amount
+
+## 死因中文(冻死 / 旱死)
+static func _dead_reason_cn(plot: FarmPlot) -> String:
+	if plot == null:
+		return "死的庄稼"
+	if plot.dead_reason == "缺水":
+		return "旱死的庄稼"
+	return "冻死的庄稼"
 
 ## 秋翻地(收获后或冬季深翻积肥,黑土地保护核心农法)
 static func apply_autumn_plough(farm: FarmSystem, plot_index: int,

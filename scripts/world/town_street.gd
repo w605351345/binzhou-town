@@ -14,6 +14,11 @@ func _ready() -> void:
 
 func _spawn_npcs() -> void:
 	var zhang := ZhangShen.new()
+	# 好感度存在存档里 —— NPC 每次进场景都重建,得从 GameState 恢复
+	zhang.affection = GameStateManager.state.npc_affection(zhang.id)
+	# 张婶每天换摊位(早市/晌午/傍晚)—— 当前第几天从日历取,
+	# 这样不管场景怎么重建,她站的位置都对得上日子
+	zhang.current_day = GameStateManager.state.calendar.day_of_year
 	# 加载带 Label / Body 子节点的 NPC 场景,再填入数据
 	var packed: PackedScene = load("res://scenes/npc_zhangshen.tscn")
 	if packed == null:
@@ -39,6 +44,9 @@ func _go_to_farm() -> void:
 func _interact() -> void:
 	if _npc_node == null or _npc_node.npc == null:
 		return
+	# 对话/商店开着的时候不再重开对话 —— 商店里按 E 会把谈话重置掉
+	if GameStateManager.input_locked:
+		return
 	var npc := _npc_node.npc
 	var facing: Vector2 = Vector2.DOWN
 	if player.has_method("facing_vector"):
@@ -46,17 +54,8 @@ func _interact() -> void:
 	if not InteractionSystem.can_interact(player.global_position, facing, npc.today_position()):
 		_show_message("走近点再说话")
 		return
-	_show_message(npc.dialogue())
-	# 顺手把背包里的作物卖掉一部分(张婶是收购商)
-	var player_state: PlayerProfile = GameStateManager.state.player
-	for crop_id in player_state.inventory.keys():
-		var amount := int(player_state.inventory[crop_id])
-		if amount <= 0:
-			continue
-		var res := npc.buy_crop(player_state, crop_id, amount)
-		if bool(res.get("ok", false)):
-			_show_message(String(res.get("message", "")))
-			break
+	# 交给游戏外壳开对话框(对话系统住在外壳里,换地点也不会丢)
+	GameStateManager.dialogue_requested.emit(npc)
 
 func _show_message(text: String) -> void:
 	if message_label != null:

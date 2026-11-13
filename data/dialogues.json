@@ -1,0 +1,253 @@
+{
+  "_meta": {
+    "version": "v1.0",
+    "updated": "2026-11-13",
+    "scope": "NPC 对话数据 v1 —— 张婶(本周:张婶完整对话,AI 起草,待制作人定稿)",
+    "note": "张婶是玩家理解『一年一熟』的活教材 —— 她的每句话都挂在农时上。条目可用 texts 数组写多个文本变体(按季节/条件取第一条满足的)。"
+  },
+  "dialogues": [
+    {
+      "id": "zhang_shen",
+      "npc_id": "zhang_shen",
+      "npc_name": "张婶",
+      "lines": [
+        {
+          "id": "greet",
+          "texts": [
+            {
+              "text": "来啦?地化冻了,抓紧把地翻出来,晚霜一过就没时候啦。",
+              "condition": {
+                "season": "spring"
+              }
+            },
+            {
+              "text": "庄稼正长着呢,别忘了浇水,黑土地也怕旱。",
+              "condition": {
+                "season": "summer"
+              }
+            },
+            {
+              "text": "秋了,霜要下来了,赶紧割,晚收的冻在地里就白瞎了。",
+              "condition": {
+                "season": "autumn"
+              }
+            },
+            {
+              "text": "歇着吧?这节气儿啥也种不了,猫冬呢,炕上待着吧。",
+              "condition": {
+                "season": "winter"
+              }
+            }
+          ],
+          "options": [
+            {
+              "text": "今年种啥好?",
+              "next": "topic_sow"
+            },
+            {
+              "text": "秋霜啥时候来?",
+              "next": "topic_frost"
+            },
+            {
+              "text": "啥叫秋翻地?",
+              "next": "topic_plough"
+            },
+            {
+              "text": "这一年咋过?",
+              "next": "topic_winter"
+            },
+            {
+              "text": "婶儿,您家咋种地的?",
+              "next": "topic_self"
+            },
+            {
+              "text": "买种子",
+              "action": "shop_buy"
+            },
+            {
+              "text": "卖粮",
+              "action": "shop_sell"
+            },
+            {
+              "text": "您上次说秋翻地,我记着呢",
+              "condition": {
+                "flag": "will_plough_autumn"
+              },
+              "next": "topic_plough"
+            },
+            {
+              "text": "没别的了,走了",
+              "next": null
+            }
+          ]
+        },
+        {
+          "id": "topic_sow",
+          "texts": [
+            {
+              "text": "四月底五月初是唯一下种的窗口。玉米、水稻、甜菜、亚麻都能种,马铃薯和春小麦得赶在四月上,晚了就误了秋收。",
+              "condition": {
+                "month": [
+                  4
+                ]
+              }
+            },
+            {
+              "text": "五月上还能补种玉米、大豆、谷子,再晚可就误了秋收喽。",
+              "condition": {
+                "month": [
+                  5
+                ]
+              }
+            },
+            {
+              "text": "六月种不上啦,地歇着。你要是七月上头腾了茬,能抢一茬秋菜,大白菜萝卜黄瓜,九月就收。",
+              "condition": {
+                "month": [
+                  6,
+                  8
+                ]
+              }
+            },
+            {
+              "text": "这月能抢种秋菜,抓紧,九月霜降前得割完。",
+              "condition": {
+                "month": [
+                  7
+                ]
+              }
+            },
+            {
+              "text": "九月了,只能收了,种不上了。翻地攒肥,等明年春。",
+              "condition": {
+                "month": [
+                  9,
+                  10
+                ]
+              }
+            },
+            {
+              "text": "冬天啥也种不了,歇着吧。炕上待着,开春再说。",
+              "condition": {
+                "month": [
+                  11,
+                  12,
+                  1,
+                  2,
+                  3
+                ]
+              }
+            }
+          ],
+          "options": [
+            {
+              "text": "知道了",
+              "next": "greet"
+            }
+          ]
+        },
+        {
+          "id": "topic_frost",
+          "texts": [
+            {
+              "text": "霜降在十月初,头一场霜下来，晚收的就危险了。玉米、大豆、水稻都是晚收的,九月至十月是窗口,拖过十月底就得听天由命。",
+              "condition": {
+                "month": [
+                  9,
+                  10
+                ]
+              }
+            },
+            {
+              "text": "离霜降还早着呢,不过早收的作物八月上就能割,腾了茬正好抢种秋菜。",
+              "condition": {
+                "month": [
+                  6,
+                  7,
+                  8
+                ]
+              }
+            },
+            {
+              "text": "今年霜早,地里的苗冻死了不少,翻进土里沤肥吧,开春还能种。",
+              "condition": {
+                "month": [
+                  11,
+                  12
+                ]
+              }
+            }
+          ],
+          "options": [
+            {
+              "text": "知道了",
+              "next": "greet"
+            }
+          ]
+        },
+        {
+          "id": "topic_plough",
+          "text": "秋翻地就是秋收完,或者冬天地歇着的时候,把地深翻一遍,冻死虫卵、晒垡保墒,来年同一块地多打一成粮。这叫养地,不是白使唤地。",
+          "options": [
+            {
+              "text": "今年我也翻",
+              "next": "greet",
+              "action": "set_flag",
+              "data": {
+                "flag": "will_plough_autumn",
+                "value": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "topic_winter",
+          "text": "咱这儿冬天长,小半年呢 —— 十一月到三月,一百五十天,叫猫冬。地歇着,人不歇着:腌酸菜、熏肉、粘豆包、赶集备年货,灶王爷十八上天,正月十五才热闹起来。",
+          "options": [
+            {
+              "text": "受教了",
+              "next": "greet"
+            }
+          ]
+        },
+        {
+          "id": "topic_self",
+          "text": "我家三亩半,种玉米和大豆。男人在县里打工,我就一个人忙活。前年那场秋霜,晚收的玉米全冻在地里,一冬天没缓过来,第二年补种了黄豆。",
+          "options": [
+            {
+              "text": "不容易",
+              "next": "greet"
+            }
+          ]
+        },
+        {
+          "id": "familiar",
+          "texts": [
+            {
+              "text": "又来啦?你上回那事我记着呢,这人实诚,秤给得足。",
+              "condition": {
+                "affection_min": 25
+              }
+            },
+            {
+              "text": "来啦?不生分,坐会儿。",
+              "condition": {
+                "affection_min": 10
+              }
+            }
+          ],
+          "options": [
+            {
+              "text": "卖粮",
+              "action": "shop_sell"
+            },
+            {
+              "text": "走了",
+              "next": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

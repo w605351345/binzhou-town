@@ -134,7 +134,9 @@ func roll_yield(days_grown: float, autumn_plowed: bool = false) -> int:
 		ratio = clampf((days_grown - lo) / (hi - lo), 0.0, 1.0)
 	var base := yield_min + int(round((yield_max - yield_min) * ratio))
 	if autumn_plowed:
-		base = int(round(float(base) * (1.0 + AUTUMN_PLOUGH_BONUS)))
+		# 秋翻必须看得见收益:低产作物(如玉米最低产 3 个)按 15% 取整会被抹平成同一个数,
+		# 玩家翻了地却没多打粮,黑土地保护这条核心农法就白设计了。所以保底多打 1 个。
+		base = maxi(base + 1, int(round(float(base) * (1.0 + AUTUMN_PLOUGH_BONUS))))
 	return base
 
 ## 收获后的越冬储藏信息

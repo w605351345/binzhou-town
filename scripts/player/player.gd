@@ -56,6 +56,10 @@ func set_female(female: bool) -> void:
 	_apply_sprite(female)
 
 func _physics_process(delta: float) -> void:
+	# 界面占着输入时不挪窝 —— 边看台词边乱走会错过张婶的话
+	if GameStateManager.input_locked:
+		velocity = Vector2.ZERO
+		return
 	var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	controller.set_input(dir)
 	velocity = controller.velocity()
