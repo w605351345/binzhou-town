@@ -32,6 +32,9 @@ jobs:
       - name: 运行核心逻辑自测
         run: godot --headless --script res://scripts/tests/test_core.gd
 
+      - name: 场景集成自测
+        run: godot --headless --script res://scripts/tests/test_scenes.gd
+
       - name: 场景冒烟测试
         run: |
           for scene in scenes/main_menu.tscn scenes/game.tscn scenes/farm.tscn scenes/town_street.tscn; do

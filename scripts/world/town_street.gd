@@ -34,7 +34,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _go_to_farm() -> void:
 	if not SceneRouter.is_implemented("L01"):
 		return
-	get_tree().change_scene_to_file(SceneRouter.scene_path("L01"))
+	GameStateManager.travel_requested.emit("L01")
 
 func _interact() -> void:
 	if _npc_node == null or _npc_node.npc == null:

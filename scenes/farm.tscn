@@ -22,6 +22,16 @@ position = Vector2(960, 760)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
+[node name="PlotInfoLabel" type="Label" parent="HUD"]
+offset_left = 40.0
+offset_top = 112.0
+offset_right = 1880.0
+offset_bottom = 152.0
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.870588, 0.827451, 0.686275, 1)
+text = ""
+horizontal_alignment = 1
+
 [node name="MessageLabel" type="Label" parent="HUD"]
 offset_left = 40.0
 offset_top = 960.0

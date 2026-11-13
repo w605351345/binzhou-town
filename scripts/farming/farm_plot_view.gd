@@ -4,14 +4,21 @@ class_name FarmPlotView
 ##
 ## 颜色是"读表即懂"的:黑土深褐 → 已翻松的浅土 → 出苗绿 → 成熟黄 → 冻死灰。
 ## 这样即使没有美术资源,玩家也能一眼看出每块地的状态。
+##
+## 地块下方再挂一行农时角标:还几天熟 / 可收获 / 霜冻警告 / 秋翻 +15%。
 
 const SIZE := Vector2(96, 96)
+## 角标文字的尺寸(地块在农场里间隔 164px,超过就会串到邻块)
+const BADGE_WIDTH := 150.0
+const BADGE_FONT_SIZE := 13
 
 var plot: FarmPlot = null
+var calendar: GameCalendar = null
 var _highlight := false
 
-func setup(p_plot: FarmPlot) -> void:
+func setup(p_plot: FarmPlot, p_calendar: GameCalendar = null) -> void:
 	plot = p_plot
+	calendar = p_calendar
 	queue_redraw()
 
 func set_highlight(on: bool) -> void:
@@ -55,6 +62,31 @@ func _draw() -> void:
 
 	if _highlight:
 		draw_rect(rect.grow(3.0), Color(1.0, 0.95, 0.75, 0.9), false, 3.0)
+
+	_draw_badge()
+
+## 地块角标:还几天熟 / 可收获 / 霜冻警告 / 秋翻加成
+func _draw_badge() -> void:
+	var badge := FarmAlmanac.plot_badge(plot, calendar)
+	if badge == "":
+		return
+	var font := ThemeDB.fallback_font
+	if font == null:
+		return
+	var top := SIZE.y * 0.5 + 2.0
+	draw_rect(Rect2(Vector2(-BADGE_WIDTH * 0.5, top), Vector2(BADGE_WIDTH, 18.0)),
+		Color(0.11, 0.08, 0.06, 0.62), true)
+	draw_string(font, Vector2(-BADGE_WIDTH * 0.5, top + 14.0), badge,
+		HORIZONTAL_ALIGNMENT_CENTER, BADGE_WIDTH, BADGE_FONT_SIZE, _badge_color())
+
+## 角标配色:熟了用亮黄,枯死用暗红,其余米白
+func _badge_color() -> Color:
+	match plot.state:
+		FarmPlot.State.READY:
+			return Color(1.0, 0.88, 0.42)
+		FarmPlot.State.DEAD:
+			return Color(0.85, 0.45, 0.42)
+	return Color(0.93, 0.90, 0.78)
 
 ## 状态底色
 func _state_color() -> Color:

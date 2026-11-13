@@ -82,14 +82,15 @@ BinzhouTown/
 │   ├── core/
 │   │   ├── game_calendar.gd   # 四季农时(真实月份驱动)
 │   │   ├── game_state.gd      # 全局状态(可序列化)
-│   │   ├── game_manager.gd    # autoload:日推进 + 存读档
+│   │   ├── game_manager.gd    # autoload:日推进 + 存读档 + 场景切换信号
+│   │   ├── farm_almanac.gd    # 农时播报(播种窗/秋霜/地块倒计时)
 │   │   └── stamina_system.gd  # 体力系统(农活消耗 + 夜间回满)
 │   ├── farming/
 │   │   ├── crop.gd            # 作物模型(月份窗口/早收晚收/储藏)
 │   │   ├── crop_database.gd   # 作物库 + 季节查询
 │   │   ├── farm_plot.gd       # 地块状态机(8 态 + 秋翻地)
 │   │   ├── farm_system.gd     # 3x3 农场闭环
-│   │   ├── farm_plot_view.gd  # 地块可视化(按状态着色)
+│   │   ├── farm_plot_view.gd  # 地块可视化(按状态着色 + 农时角标)
 │   │   ├── farm_scene.gd      # 农场场景(工具操作 + 场景切换)
 │   │   └── tool_bar.gd        # 工具栏(J翻土/K浇水/L播种/I收获/R秋翻)
 │   ├── player/
@@ -107,10 +108,11 @@ BinzhouTown/
 │   │   └── town_street.gd     # 镇大街场景
 │   ├── ui/
 │   │   ├── main_menu.gd
-│   │   ├── game_hud.gd        # HUD + 农时提示
+│   │   ├── game_hud.gd        # 游戏外壳(常驻 HUD + 世界容器)
 │   │   └── pause_menu.gd
 │   └── tests/
-│       └── test_core.gd       # headless 核心逻辑自测(22 组 220 项)
+│       ├── test_core.gd       # headless 核心逻辑自测(23 组 250 项)
+│       └── test_scenes.gd     # headless 场景集成自测(外壳常驻,16 项)
 ├── tools/
 │   ├── validate_data.py       # 静态数据校验(CI 必跑)
 │   └── gen_sprites.py         # 占位精灵表生成器(无外部依赖)
@@ -128,7 +130,8 @@ BinzhouTown/
 | `I` | 收获 |
 | `R` | 秋翻地(深翻积肥) |
 | `E` | 对话 / 与 NPC 交互 |
-| `F` | 前往下一个地点(农场 ↔ 镇大街) |
+| `F` | 前往下一个地点(自家院 ↔ 镇大街,HUD 常驻不消失) |
+| `T` | 睡觉(推进一天,作物生长 + 体力回满) |
 | `ESC` | 暂停菜单(存档/读档/回主菜单/退出) |
 
 ---
@@ -142,7 +145,24 @@ BinzhouTown/
 | **秋霜冻死** | 晚收作物收获窗口紧贴 10 月秋霜,**过了霜降未割则冻死在地里,颗粒无收** |
 | **秋翻地 +15%** | 秋收后或冬季深翻积肥,次年同地块增产 —— **黑土地保护核心农法** |
 
-> 这四条由 `tools/validate_data.py`(静态校验)与 `scripts/tests/test_core.gd`(92 项运行时断言)**双重守护**。
+> 这四条由 `tools/validate_data.py`(静态校验)与 `scripts/tests/test_core.gd`(250 项运行时断言)**双重守护**。
+
+---
+
+## 农时提示 UI(Week 3 收尾)
+
+黑龙江玩家最怕的是"不知道现在该干嘛",所以三条农时硬线全部做成**常驻可见**的提示:
+
+| 提示 | 位置 | 说明 |
+|---|---|---|
+| **播种窗倒计时** | 状态栏 + 底部提示行 | `播种窗 50 天` —— 4-5 月唯一播种窗口还剩几天;7 月显示 `复种窗`(抢茬秋菜) |
+| **秋霜倒计时** | 状态栏 + 底部提示行 | `秋霜 30 天` —— 距 10 月 1 日霜降;进霜期后改为催收("还有 N 块晚收作物没割") |
+| **地块农时角标** | 每块地下方 | `还150天` / `可收获` / `⚠10天`(进收获截止倒计时) / `+15%`(秋翻地加成) |
+| **脚下地块状态** | 农场顶部 | `【3 号地】玉米 · 还 150 天 · ⚠ 10 天内必割 · 秋翻 +15%` |
+
+窗口快关时状态栏文字变**橙色**,霜期结束后转**淡蓝** —— 不读文字也能一眼看出紧迫程度。
+
+> 逻辑全部收敛在 `scripts/core/farm_almanac.gd`(纯逻辑,可 headless 自测),UI 层只负责显示。
 
 ---
 
@@ -157,6 +177,9 @@ godot --path . --import
 # 3. headless 跑核心逻辑自测
 godot --headless --script res://scripts/tests/test_core.gd
 
+# 3.1 headless 跑场景集成自测(外壳常驻 / 换地点不掉 HUD)
+godot --headless --script res://scripts/tests/test_scenes.gd
+
 # 4. 静态数据校验
 python3 tools/validate_data.py data/
 
@@ -167,7 +190,8 @@ godot --path . --editor
 ### 当前实测结果
 
 ```
-本地:  220 通过 / 0 失败   ✅
+本地:  250 通过 / 0 失败   ✅(核心逻辑)
+       16 通过 / 0 失败   ✅(场景集成)
 数据校验: 9 种作物 / 6 项冬季产出 / 12 件道具 / 1 位 NPC ✅
 场景冒烟: main_menu / game / farm / town_street 全部无报错 ✅
 ```

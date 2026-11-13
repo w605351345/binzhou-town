@@ -35,6 +35,7 @@ func _init() -> void:
 	test_scene_router()
 	test_pause_and_save_flow()
 	test_daily_advance_and_rest()
+	test_farm_almanac()
 
 	print("--------------------------------------------------")
 	print("结果: %d 通过 / %d 失败" % [_passed, _failed])
@@ -726,3 +727,138 @@ func test_daily_advance_and_rest() -> void:
 	check("秋翻消耗 6 点体力", state.player.energy == 94, "→ %d" % state.player.energy)
 	state.player.stamina.sleep()
 	check("睡醒回满 110", state.player.energy == 110, "→ %d" % state.player.energy)
+
+# --- 农时播报:播种窗高亮 / 秋霜倒计时 / 地块倒计时 ---
+func test_farm_almanac() -> void:
+	print("\n[23] 农时播报(播种窗高亮 + 秋霜倒计时)")
+	var cal := GameCalendar.new()
+
+	# 播种窗倒计时:4月1日 → 距 5月30日 还有 59 天
+	cal.advance_to_month(4, 1)
+	check("4月初播种窗剩 59 天", FarmAlmanac.days_until_sow_end(cal) == 59,
+		"→ %d" % FarmAlmanac.days_until_sow_end(cal))
+	cal.advance_to_month(5, 30)
+	check("5月30日播种窗剩 0 天", FarmAlmanac.days_until_sow_end(cal) == 0,
+		"→ %d" % FarmAlmanac.days_until_sow_end(cal))
+	cal.advance_to_month(6, 1)
+	check("6月播种窗已过 1 天(负数)", FarmAlmanac.days_until_sow_end(cal) == -1,
+		"→ %d" % FarmAlmanac.days_until_sow_end(cal))
+
+	# 秋霜倒计时:9月1日 → 距 10月1日 还有 30 天
+	cal.advance_to_month(9, 1)
+	check("9月初距秋霜 30 天", FarmAlmanac.days_until_frost(cal) == 30,
+		"→ %d" % FarmAlmanac.days_until_frost(cal))
+	cal.advance_to_month(10, 15)
+	check("10月15日秋霜已过(负数)", FarmAlmanac.days_until_frost(cal) == -14,
+		"→ %d" % FarmAlmanac.days_until_frost(cal))
+
+	# 播种提示文案
+	cal.advance_to_month(4, 10)
+	var farm := FarmSystem.new(cal)
+	var sow_tip := FarmAlmanac.sow_tip(cal, farm)
+	check("4月提示含【可播种】", sow_tip.contains("可播种"), sow_tip)
+	check("4月提示含剩余天数", sow_tip.contains("50 天"), sow_tip)
+	cal.advance_to_month(6, 10)
+	check("6月提示含【已过播种窗】",
+		FarmAlmanac.sow_tip(cal, farm).contains("已过播种窗"),
+		FarmAlmanac.sow_tip(cal, farm))
+	cal.advance_to_month(1, 10)
+	check("冬季提示含【冬歇】",
+		FarmAlmanac.sow_tip(cal, farm).contains("冬歇"),
+		FarmAlmanac.sow_tip(cal, farm))
+
+	# 地块倒计时:刚种下的玉米还差 150 天成熟
+	cal.advance_to_month(4, 10)
+	var plot := farm.get_plot(0)
+	plot.till()
+	plot.plant("corn", "spring", 4)
+	check("玉米刚下地还差 150 天", FarmAlmanac.days_until_ready(plot) == 150,
+		"→ %d" % FarmAlmanac.days_until_ready(plot))
+	check("地块标签含『还 150 天』",
+		FarmAlmanac.plot_tag(plot, cal).contains("还 150 天"),
+		FarmAlmanac.plot_tag(plot, cal))
+
+	# 成熟后倒计时归零
+	plot.days_grown = 150.0
+	plot.state = FarmPlot.State.READY
+	check("熟了倒计时为 0", FarmAlmanac.days_until_ready(plot) == 0)
+	check("熟地标签含『可收获』",
+		FarmAlmanac.plot_tag(plot, cal).contains("可收获"),
+		FarmAlmanac.plot_tag(plot, cal))
+
+	# 收获截止日:玉米收获窗 9-10 月 → 10月30日(doy 299)
+	var corn := CropDatabase.get_crop("corn")
+	check("玉米最晚收获日 = 10月30日",
+		FarmAlmanac.harvest_deadline_doy(corn) == 299,
+		"→ %d" % FarmAlmanac.harvest_deadline_doy(corn))
+	# 早收作物亚麻收获窗 8-9 月 → 9月30日(doy 269)
+	var flax := CropDatabase.get_crop("flax")
+	check("亚麻最晚收获日 = 9月30日",
+		FarmAlmanac.harvest_deadline_doy(flax) == 269,
+		"→ %d" % FarmAlmanac.harvest_deadline_doy(flax))
+
+	# 霜冻警告:进入收获截止前 15 天内要提醒抢收
+	cal.advance_to_month(10, 20)
+	var late_plot := farm.get_plot(1)
+	late_plot.till()
+	late_plot.plant("corn", "spring", 4)
+	var late_tag := FarmAlmanac.plot_tag(late_plot, cal)
+	check("10月下旬玉米挂霜冻警告", late_tag.contains("⚠"), late_tag)
+	check("警告含剩余天数", late_tag.contains("10 天"), late_tag)
+
+	# 秋翻地 +15% 在地块标签上可见
+	late_plot.autumn_plowed = true
+	check("秋翻地标签含 +15%",
+		FarmAlmanac.plot_tag(late_plot, cal).contains("+15%"),
+		FarmAlmanac.plot_tag(late_plot, cal))
+
+	# 顶部完整提示把播种与霜冻两条线都讲清楚
+	cal.advance_to_month(9, 1)
+	var full := FarmAlmanac.full_tip(cal, farm)
+	check("完整提示含秋霜倒计时", full.contains("30 天"), full)
+	check("完整提示含已过播种窗", full.contains("已过播种窗"), full)
+
+	# 播种窗口剩余天数:春播窗口 / 7 月抢茬复种 / 无可播种
+	cal.advance_to_month(4, 10)
+	check("4月播种窗口剩 50 天",
+		FarmAlmanac.sow_window_days_left(cal, farm) == 50,
+		"→ %d" % FarmAlmanac.sow_window_days_left(cal, farm))
+	cal.advance_to_month(7, 10)
+	check("7月抢茬复种窗剩 20 天",
+		FarmAlmanac.sow_window_days_left(cal, farm) == 20,
+		"→ %d" % FarmAlmanac.sow_window_days_left(cal, farm))
+	cal.advance_to_month(6, 10)
+	check("6月没有可播种作物",
+		FarmAlmanac.sow_window_days_left(cal, farm) == -1,
+		"→ %d" % FarmAlmanac.sow_window_days_left(cal, farm))
+	cal.advance_to_month(1, 10)
+	check("冬季没有播种窗口",
+		FarmAlmanac.sow_window_days_left(cal, farm) == -1)
+
+	# 地块角标(画在地块上的短标签)
+	cal.advance_to_month(4, 10)
+	plot.state = FarmPlot.State.GROWING
+	plot.days_grown = 0.0
+	var badge := FarmAlmanac.plot_badge(plot, cal)
+	check("角标含『还150天』", badge.contains("还150天"), badge)
+	plot.state = FarmPlot.State.READY
+	check("熟了角标是『可收获』",
+		FarmAlmanac.plot_badge(plot, cal).contains("可收获"),
+		FarmAlmanac.plot_badge(plot, cal))
+	cal.advance_to_month(10, 20)
+	var warn_badge := FarmAlmanac.plot_badge(late_plot, cal)
+	check("霜冻角标含 ⚠10天", warn_badge.contains("⚠10天"), warn_badge)
+	late_plot.autumn_plowed = true
+	check("角标含 +15%",
+		FarmAlmanac.plot_badge(late_plot, cal).contains("+15%"),
+		FarmAlmanac.plot_badge(late_plot, cal))
+
+	# 世界切换走信号,由游戏外壳替换世界容器 —— HUD 常驻,不随场景被销毁
+	# (headless --script 模式下 autoload 不是全局标识符,只能按路径实例化)
+	var mgr: Node = (load("res://scripts/core/game_manager.gd") as Script).new()
+	check("GameStateManager 有 travel_requested 信号",
+		mgr.has_signal("travel_requested"))
+	mgr.free()
+	check("世界场景文件都在",
+		FileAccess.file_exists(SceneRouter.scene_path("L01"))
+		and FileAccess.file_exists(SceneRouter.scene_path("L02")))

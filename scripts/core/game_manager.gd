@@ -4,6 +4,9 @@ extends Node
 signal day_started(day: int)
 signal season_changed(season: String)
 signal game_saved(slot: int)
+## 场景切换请求:由各地点场景发出,由游戏外壳(Game)接收并替换世界容器。
+## 刻意不直接 change_scene_to_file —— 否则会把常驻 HUD 一起销毁。
+signal travel_requested(location_id: String)
 
 const SAVE_DIR := "user://saves"
 

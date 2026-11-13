@@ -9,6 +9,7 @@ const PLOT_GAP := 24.0
 @onready var plot_container: Node2D = $PlotContainer
 @onready var player: CharacterBody2D = $Player
 @onready var message_label: Label = $HUD/MessageLabel
+@onready var plot_info_label: Label = $HUD/PlotInfoLabel
 
 var _views: Array = []
 var _selected_crop: String = ""
@@ -18,6 +19,9 @@ func _ready() -> void:
 	_build_plots(farm)
 	_refresh_views()
 	GameStateManager.day_started.connect(_on_day_started)
+
+func _process(_delta: float) -> void:
+	_refresh_plot_info()
 
 func _build_plots(farm: FarmSystem) -> void:
 	_views.clear()
@@ -33,7 +37,7 @@ func _build_plots(farm: FarmSystem) -> void:
 		view.position = origin + Vector2(
 			float(col) * (PLOT_SIZE + PLOT_GAP),
 			float(row) * (PLOT_SIZE + PLOT_GAP))
-		view.setup(farm.get_plot(i))
+		view.setup(farm.get_plot(i), farm.calendar)
 		plot_container.add_child(view)
 		_views.append(view)
 
@@ -114,7 +118,23 @@ func _sleep_one_day() -> void:
 func _go_to_town() -> void:
 	if not SceneRouter.is_implemented("L02"):
 		return
-	get_tree().change_scene_to_file(SceneRouter.scene_path("L02"))
+	GameStateManager.travel_requested.emit("L02")
+
+## 主角脚边这块地的农时状态(还几天熟、几天内必割、秋翻加成)
+func _refresh_plot_info() -> void:
+	if plot_info_label == null:
+		return
+	var farm: FarmSystem = GameStateManager.state.farm
+	var idx := _plot_near_player()
+	if idx < 0:
+		_set_plot_info("")
+		return
+	var tag := FarmAlmanac.plot_tag(farm.get_plot(idx), farm.calendar)
+	_set_plot_info("【%d 号地】%s" % [idx + 1, tag])
+
+func _set_plot_info(text: String) -> void:
+	if plot_info_label != null and plot_info_label.text != text:
+		plot_info_label.text = text
 
 func _on_day_started(_day: int) -> void:
 	_refresh_views()
