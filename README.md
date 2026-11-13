@@ -264,6 +264,7 @@ godot --path . --editor
 | `docs/BZC-ArtProposals-v4.md` | 美术方案(D8 已锁 B+A 混合) |
 | `docs/BZC-数值表-v1.md` | 数值表 v1(3 作物 + 1 NPC + 12 道具 + 体力表) |
 | `docs/BZC-进度追踪-v4.md` | 周更进度追踪 |
+| `docs/ai-imagegen.md` | AI 生图能力(工具、风格预设、prompt 模板库、限制) |
 
 ---
 

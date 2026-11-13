@@ -1,0 +1,7 @@
+# 阶段0 风格样板:主角 + 张晓芳 + 院子 + 一块地 + 对话框
+# 用法: python3 tools/ai_imagegen.py --prompt-file tools/prompts/style_board.txt --out-dir assets/art/style_board --style dinner_scene --aspect-ratio 16:9
+主角 农夫 站在自家院子中央,穿藏蓝棉袄,侧身,全身,深色纯净背景
+中年女性村民 穿玫红棉袄 围裙 在院子门口站立,侧身,全身,深色纯净背景
+农家小院 木栅栏 泥地 柴垛 水井,俯视斜角,无人物
+一块翻耕好的黑土地 垄沟整齐 刚播下麦种,俯视斜角,无人物
+对话框 UI 木质边框 羊皮纸底色 下方空文本区,平视,无人物
