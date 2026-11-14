@@ -27,8 +27,8 @@ func _process(_delta: float) -> void:
 
 func _build_plots(farm: FarmSystem) -> void:
 	_views.clear()
-	var cols := 3
-	var rows := 3
+	var cols := maxi(1, farm.width)
+	var rows := maxi(1, farm.height)
 	# 以院子中心为基准排布 —— 之前以世界原点排布,导致 9 块地整体跑到屏幕左上角外
 	var origin := FIELD_CENTER - Vector2(
 		float(cols - 1) * (PLOT_SIZE + PLOT_GAP) * 0.5,
@@ -63,6 +63,8 @@ func _plot_near_player() -> int:
 	return best
 
 func _unhandled_input(event: InputEvent) -> void:
+	if GameStateManager.input_locked or GameStateManager.is_paused():
+		return
 	if event.is_action_pressed("tool_till"):
 		_use_tool(ToolBar.Tool.TILL)
 	elif event.is_action_pressed("tool_water"):
@@ -85,7 +87,9 @@ func _use_tool(tool: int) -> void:
 		_show_message("走近一块地再动手")
 		return
 	var player_state: PlayerProfile = GameStateManager.state.player
-	var res := ToolBar.apply_tool(tool, farm, idx, player_state, _selected_crop)
+	var weather_mult := WeatherSystem.outdoor_stamina_multiplier(
+		GameStateManager.state.weather.today)
+	var res := ToolBar.apply_tool(tool, farm, idx, player_state, _selected_crop, weather_mult)
 	_show_message(String(res.get("message", "")))
 	_refresh_views()
 	_refresh_highlight(idx)
@@ -97,7 +101,9 @@ func _use_autumn_plough() -> void:
 		_show_message("走近一块地再动手")
 		return
 	var player_state: PlayerProfile = GameStateManager.state.player
-	var res := ToolBar.apply_autumn_plough(farm, idx, player_state)
+	var weather_mult := WeatherSystem.outdoor_stamina_multiplier(
+		GameStateManager.state.weather.today)
+	var res := ToolBar.apply_autumn_plough(farm, idx, player_state, weather_mult)
 	_show_message(String(res.get("message", "")))
 	_refresh_views()
 

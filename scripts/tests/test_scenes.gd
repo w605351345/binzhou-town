@@ -48,7 +48,8 @@ func _test_shell_hud_persists() -> void:
 		game.queue_free()
 		return
 
-	check("初始装载自家院", _world_name(world) == "FarmScene", "→ %s" % _world_name(world))
+	check("初始从农舍醒来", _world_name(world) == "Farmhouse",
+		"→ %s" % _world_name(world))
 	var hud: Label = game.get_node_or_null("HUD/HBox/HudLabel")
 	var almanac: Label = game.get_node_or_null("HUD/HBox/AlmanacLabel")
 	var tip: Label = game.get_node_or_null("TipLabel")
@@ -58,6 +59,10 @@ func _test_shell_hud_persists() -> void:
 	if hud != null:
 		check("状态栏含日期与金币", hud.text.contains("第1年") and hud.text.contains("金币"),
 			"→ %s" % hud.text)
+		var mgr: Node = root.get_node("GameStateManager")
+		var weather_cn := WeatherSystem.weather_cn(mgr.state.weather.today)
+		check("状态栏含时钟", hud.text.contains(":"), "→ %s" % hud.text)
+		check("状态栏含天气", hud.text.contains(weather_cn), "→ %s" % hud.text)
 	if almanac != null:
 		check("倒计时标签含秋霜", almanac.text.contains("秋霜"), "→ %s" % almanac.text)
 	if tip != null:
@@ -66,7 +71,7 @@ func _test_shell_hud_persists() -> void:
 	# 走到镇大街
 	world.get_child(0)._go_to_town()
 	await create_timer(0.3).timeout
-	check("已切到镇大街", _world_name(world) == "TownStreet", "→ %s" % _world_name(world))
+	check("已切到镇中心", _world_name(world) == "Town", "→ %s" % _world_name(world))
 	check("切换后状态栏仍在", game.get_node_or_null("HUD/HBox/HudLabel") != null)
 	if hud != null:
 		check("切换后状态栏仍有日期", hud.text.contains("第1年"), "→ %s" % hud.text)
@@ -79,7 +84,7 @@ func _test_shell_hud_persists() -> void:
 	# 走回自家院
 	world.get_child(0)._go_to_farm()
 	await create_timer(0.3).timeout
-	check("已切回自家院", _world_name(world) == "FarmScene", "→ %s" % _world_name(world))
+	check("已切回自家院", _world_name(world) == "Farm", "→ %s" % _world_name(world))
 	check("切回后状态栏仍在", game.get_node_or_null("HUD/HBox/HudLabel") != null)
 	if tip != null:
 		check("切回后农时提示仍在", tip.text.contains("冬歇"), "→ %s" % tip.text)

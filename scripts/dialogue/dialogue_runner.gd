@@ -13,6 +13,7 @@ const ACTION_SHOP_BUY := "shop_buy"
 const ACTION_SET_FLAG := "set_flag"
 const ACTION_ADD_AFFECTION := "add_affection"
 const ACTION_GIVE_ITEM := "give_item"
+const ACTION_OPEN_GIFT := "open_gift"
 
 var _lines: Array = []
 var _index: int = -1
@@ -20,16 +21,23 @@ var _player: PlayerProfile = null
 var _calendar: GameCalendar = null
 var _npc: NpcBase = null
 var _flags: Dictionary = {}
+var _events: Dictionary = {}
+var _clock: GameClock = null
+var _weather: Variant = null
 var _finished: bool = true
 var _visited: Array = []
 
 func setup(lines: Array, player: PlayerProfile, calendar: GameCalendar,
-		npc: NpcBase = null, flags: Dictionary = {}) -> void:
+		npc: NpcBase = null, flags: Dictionary = {},
+		events: Dictionary = {}, clock: GameClock = null, weather: Variant = null) -> void:
 	_lines = lines
 	_player = player
 	_calendar = calendar
 	_npc = npc
 	_flags = flags
+	_events = events
+	_clock = clock
+	_weather = weather
 	_index = -1
 	_finished = true
 	_visited.clear()
@@ -93,6 +101,9 @@ func _ctx() -> Dictionary:
 		"player": _player,
 		"npc": _npc,
 		"flags": _flags,
+		"events": _events,
+		"clock": _clock,
+		"weather": _weather,
 	}
 
 ## 推进到下一条满足条件的条目(无选项条目靠它往下走)

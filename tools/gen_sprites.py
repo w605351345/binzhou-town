@@ -21,6 +21,11 @@ import sys
 import zlib
 from pathlib import Path
 
+# 控制台编码未必是 UTF-8(Windows 默认 cp1252),打印中文会抛 UnicodeEncodeError
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 # --- 帧布局 ---
 FRAMES = 8              # 每方向帧数
 CELL = 32               # 单帧宽(px)

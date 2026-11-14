@@ -27,6 +27,8 @@ var _runner: DialogueRunner = null
 var _npc: NpcBase = null
 
 var _panel: PanelContainer
+var _portrait_frame: PanelContainer
+var _portrait: TextureRect
 var _speaker_label: Label
 var _text_label: Label
 var _option_box: VBoxContainer
@@ -63,8 +65,33 @@ func _build_ui() -> void:
 	_panel.add_child(margin)
 
 	var column := VBoxContainer.new()
+	column.name = "Content"
 	column.add_theme_constant_override("separation", 12)
-	margin.add_child(column)
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var content_row := HBoxContainer.new()
+	content_row.name = "ContentRow"
+	content_row.add_theme_constant_override("separation", 20)
+	margin.add_child(content_row)
+
+	_portrait_frame = PanelContainer.new()
+	_portrait_frame.name = "PortraitFrame"
+	_portrait_frame.custom_minimum_size = Vector2(168, 168)
+	_portrait_frame.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	_portrait_frame.add_theme_stylebox_override("panel", _make_portrait_style())
+	_portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content_row.add_child(_portrait_frame)
+
+	_portrait = TextureRect.new()
+	_portrait.name = "Portrait"
+	_portrait.custom_minimum_size = Vector2(156, 156)
+	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_portrait.visible = false
+	_portrait_frame.add_child(_portrait)
+
+	content_row.add_child(column)
 
 	_speaker_label = Label.new()
 	_speaker_label.name = "Speaker"
@@ -104,10 +131,29 @@ func _make_panel_style() -> StyleBoxFlat:
 	style.content_margin_right = 0
 	return style
 
+func _make_portrait_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.10, 0.08, 0.06, 0.92)
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.border_color = Color(0.60, 0.46, 0.27, 0.86)
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	style.content_margin_left = 5
+	style.content_margin_right = 5
+	style.content_margin_top = 5
+	style.content_margin_bottom = 5
+	return style
+
 ## 接入一位 NPC 与一份对话运行时
 func setup(npc: NpcBase, runner: DialogueRunner) -> void:
 	_npc = npc
 	_runner = runner
+	_apply_portrait(npc)
 	_refresh()
 
 func open() -> void:
@@ -136,6 +182,14 @@ func body_text() -> String:
 ## 当前显示到屏幕上的台词(逐字动画进行中会比 body_text 短)
 func displayed_text() -> String:
 	return _text_label.text if _text_label != null else ""
+
+## 当前 NPC 立绘图；缺图或未开始对话时为 null。
+func portrait_texture() -> Texture2D:
+	return _portrait.texture if _portrait != null else null
+
+## 立绘框是否可见(供接线测试与 UI 验收)。
+func portrait_visible() -> bool:
+	return _portrait_frame != null and _portrait_frame.visible and portrait_texture() != null
 
 ## 立即显示完整台词(玩家按键/点击时跳过打字机)
 func reveal_all() -> void:
@@ -219,6 +273,21 @@ func _refresh() -> void:
 		_speaker_label.text = _npc.name
 	_show_line(_runner.current_text())
 	_rebuild_options()
+
+func _apply_portrait(npc: NpcBase) -> void:
+	if _portrait == null or _portrait_frame == null:
+		return
+	_portrait.texture = null
+	_portrait_frame.visible = false
+	if npc == null or npc.portrait_path == "":
+		return
+	if not ResourceLoader.exists(npc.portrait_path):
+		return
+	var texture := load(npc.portrait_path) as Texture2D
+	if texture == null:
+		return
+	_portrait.texture = texture
+	_portrait_frame.visible = true
 
 func _rebuild_options() -> void:
 	if _option_box == null:

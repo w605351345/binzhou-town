@@ -5,10 +5,11 @@
 ;
 ; 键位约定:
 ;   左摇杆 / 十字键 —— 移动
-;   A(0) —— 交互 / 确认      B(1) —— 关闭面板
+;   A(0) —— 交互 / 确认      B(1) —— 关闭面板 / 调试前往邮局
 ;   X(2) —— 翻土            Y(3) —— 浇水
 ;   LB(9) —— 播种           RB(10) —— 收获
-;   BACK(4) —— 秋翻地       摇杆按下 —— 睡觉 / 去镇大街
+;   BACK(4) —— 背包         GUIDE(5) —— 调试换图
+;   左摇杆按下(7) —— 睡觉    右摇杆按下(8) —— 秋翻地
 ;   START(6) —— 暂停
 ;
 ; 改了键位记得同步改 project.godot 的 [input] 段,
@@ -62,7 +63,7 @@ tool_harvest={
 }
 tool_plough={
 "deadzone": 0.5,
-"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":4,"pressure":0.0,"pressed":false,"script":null)]
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":8,"pressure":0.0,"pressed":false,"script":null)]
 }
 sleep={
 "deadzone": 0.5,
@@ -70,9 +71,17 @@ sleep={
 }
 travel={
 "deadzone": 0.5,
-"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":8,"pressure":0.0,"pressed":false,"script":null)]
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":5,"pressure":0.0,"pressed":false,"script":null)]
+}
+travel_post={
+"deadzone": 0.5,
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":1,"pressure":0.0,"pressed":false,"script":null)]
 }
 ui_pause={
 "deadzone": 0.5,
 "events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":6,"pressure":0.0,"pressed":false,"script":null)]
+}
+ui_inventory={
+"deadzone": 0.5,
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":4,"pressure":0.0,"pressed":false,"script":null)]
 }

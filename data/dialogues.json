@@ -60,9 +60,16 @@
               "text": "晓芳姐,您家咋种地的?",
               "next": "topic_self"
             },
+            {"text": "最近镇上咋样?", "next": "season_town"},
+            {"text": "家里有啥惦记的?", "next": "season_home"},
+            {"text": "这天儿干活咋样?", "next": "season_work"},
             {
               "text": "买种子",
               "action": "shop_buy"
+            },
+            {
+              "text": "送点东西",
+              "action": "open_gift"
             },
             {
               "text": "卖粮",
@@ -221,6 +228,36 @@
           ]
         },
         {
+          "id": "season_work",
+          "texts": [
+            {"text": "开春账最乱。种子赊给谁、秋后还多少,我都得记清。你种地要是短了手,先说话,别去碰那些利滚利的借条。", "condition": {"season": "spring"}},
+            {"text": "晌午秤台晒得烫手,粮袋一压上去,汗就顺着秤杆往下滴。越热越不能急,少一两,人家一年的辛苦就说不清了。", "condition": {"season": "summer"}},
+            {"text": "收粮那几天我连水都顾不上喝。车一辆接一辆,谁都想赶在霜前。我多复核一遍,后头就少一家人回来吵。", "condition": {"season": "autumn"}},
+            {"text": "冬天账少,人却不闲。修秤、糊窗、把旧账一本本编号。手停下来,脑子里那些没算清的事就全上来了。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "你也别太熬。", "next": "greet"}]
+        },
+        {
+          "id": "season_town",
+          "texts": [
+            {"text": "集市一开,赵长河先把摊架加固了一遍。孙玉梅嫌他钉得太结实,搬不动;他说结实才好,风大。", "condition": {"season": "spring"}},
+            {"text": "这几天井水凉,饭馆把桌子支到门口。林小满从卫生所出来,孙玉梅硬塞给她一碗面,她嘴上说不饿,坐下就吃完了。", "condition": {"season": "summer"}},
+            {"text": "秋收节快到了,周德顺天天在戏台上试嗓子。韩守义说信送慢点没事,人得去看一眼,票都替街坊留好了。", "condition": {"season": "autumn"}},
+            {"text": "上元灯节前,镇上的人都要来粮站门口挂灯。韩守义负责写谜面,字太小,去年把半条街的人都看成了斗鸡眼。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "这才像个镇子。", "next": "greet"}]
+        },
+        {
+          "id": "season_home",
+          "texts": [
+            {"text": "我爹以前也赶在开犁前把秤擦一遍。他擦得很慢,像怕把什么擦掉。后来人不在了,秤还在这儿。", "condition": {"season": "spring"}},
+            {"text": "有时候夜里听见粮仓响,我以为是老鼠。起来看了几回,什么都没有。大概是风,也大概不是。", "condition": {"season": "summer"}},
+            {"text": "账本上有些名字划了又写。欠得多的,我反倒不催。人要是连年都过不去,你催他一张纸,能催出什么来。", "condition": {"season": "autumn"}},
+            {"text": "雪把粮站门口埋住那年,我一个人扫到天亮。扫完反倒睡踏实了。有些事你不动手,它就一直在心里堆着。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "你守得够久了。", "next": "greet"}]
+        },
+        {
           "id": "familiar",
           "texts": [
             {
@@ -242,10 +279,339 @@
               "action": "shop_sell"
             },
             {
+              "text": "送点东西",
+              "action": "open_gift"
+            },
+            {
               "text": "走了",
               "next": null
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "han_shouyi",
+      "npc_id": "han_shouyi",
+      "npc_name": "韩守义",
+      "lines": [
+        {
+          "id": "greet",
+          "texts": [
+            {"text": "我现在不跑远路了，就在柜台后头坐一个钟头，帮新来的认门。邮局这地方，门牌比人记性长。", "condition": {"event_done": "han_e3"}},
+            {"text": "哟，来啦。按说不急，可你这脚印一响，我就知道是你。寄信还是取信？", "condition": {"season": ["spring", "summer"]}},
+            {"text": "天凉了，信也走得慢。来，先把手烤烤，别急着说事。", "condition": {"season": ["autumn", "winter"]}}
+          ],
+          "options": [
+            {"text": "邮局最近忙吗？", "next": "topic_mail"},
+            {"text": "您弟弟有信吗？", "next": "topic_brother", "condition": {"event_done": "han_e1"}},
+            {"text": "最近跑哪条线？", "next": "season_route"},
+            {"text": "镇上谁最近来过？", "next": "season_people"},
+            {"text": "退休的事想好了吗？", "next": "season_heart"},
+            {"text": "送点东西", "action": "open_gift"},
+            {"text": "不打扰了。", "next": null}
+          ]
+        },
+        {
+          "id": "topic_mail",
+          "text": "镇里的信不多，退回来的倒不少。有人搬了家不吭声，有人地址写到一半就停了。信到不了，人心也跟着悬着。",
+          "options": [{"text": "地址能查吗？", "next": "topic_address"}, {"text": "我明白了。", "next": "greet"}]
+        },
+        {
+          "id": "topic_address",
+          "text": "能查，得跑腿。按说多问一句，不丢人。你要是哪天进城，帮我留意旧地址簿。",
+          "options": [{"text": "我记下了。", "next": "greet"}]
+        },
+        {
+          "id": "topic_brother",
+          "text": "来过一封。字还是那么丑。人没回来，地址倒是新了。这样也行，按说，这样也行。",
+          "options": [{"text": "再写一封吧。", "next": "greet"}]
+        },
+        {
+          "id": "season_route",
+          "texts": [
+            {"text": "开春路翻浆,车走不动,信得靠腿。泥没到脚脖子,回来一脱鞋,袜子都能立住。可开春的信最要紧,家家都在等外头的人报个平安。", "condition": {"season": "spring"}},
+            {"text": "夏天雨来得急,邮包得裹两层油布。有一年我给粮站送信,雨停了一看,信是干的,人跟从河里捞出来一样。", "condition": {"season": "summer"}},
+            {"text": "秋天的信带着新粮味儿。谁家孩子考上外头、谁家老人要回来,都在那几张纸里。路再远,我也愿意多跑一趟。", "condition": {"season": "autumn"}},
+            {"text": "冬天下雪,我先把最远那条线走完。人老了,脚慢,不能让人家在门口站一天。真要摔了,爬起来把邮包先护住。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "路上慢点。", "next": "greet"}]
+        },
+        {
+          "id": "season_people",
+          "texts": [
+            {"text": "张晓芳开春又瘦了一圈。孙玉梅天天给她留饭,她说不饿,回头碗比谁都干净。这两个人,一个不肯欠,一个不肯让人饿着。", "condition": {"season": "spring"}},
+            {"text": "赵长河最近给卫生所修窗,林小满嫌他敲得太响。他说响点好,说明结实。两个人谁也不让谁,最后还是把窗装上了。", "condition": {"season": "summer"}},
+            {"text": "周德顺的戏台又紧了一遍台板。我去送信,他非让我坐第一排听一段。台下就我一个,他唱得倒像满座。", "condition": {"season": "autumn"}},
+            {"text": "下雪这几天,孙玉梅把热汤送到邮局门口,说省得我跑。我给她留了一张明信片,没写字,她也没问。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "大家都还惦记着您。", "next": "greet"}]
+        },
+        {
+          "id": "season_heart",
+          "texts": [
+            {"text": "开春想这事,总觉得还有一年。人一忙,一年就过去了。柜子里那身旧制服,我舍不得扔,也舍不得再穿。", "condition": {"season": "spring"}},
+            {"text": "下雨天腿疼,我就想,是不是该歇了。可一听见门口有人喊“老韩”,又觉得这柜台还能再站一会儿。", "condition": {"season": "summer"}},
+            {"text": "秋天信多,退信也多。有的地址没了,有的人不在了。信送不到,我就多记一笔。至少让后来的人知道,这里曾经有人等过。", "condition": {"season": "autumn"}},
+            {"text": "我弟弟要是回来,我想请他去饭馆坐坐。不写信了,就坐一桌,把当年没说完的话慢慢说。路远,不急,人总得先想好怎么开口。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "总会有那一天。", "next": "greet"}]
+        }
+      ]
+    },
+    {
+      "id": "sun_yumei",
+      "npc_id": "sun_yumei",
+      "npc_name": "孙玉梅",
+      "lines": [
+        {
+          "id": "greet",
+          "texts": [
+            {"text": "靠窗那桌我改了。现在来的人想坐就坐，不再空着了。你吃没？没吃就坐下。", "condition": {"event_done": "sun_e3"}},
+            {"text": "吃没？先别答，我看你那样儿就知道没吃。坐下，给你留了热的。", "condition": {"season": ["spring", "summer", "autumn"]}},
+            {"text": "快进屋，外头冻得跟刀似的。锅里炖着酸菜，先盛一碗暖暖。", "condition": {"season": ["winter"]}}
+          ],
+          "options": [
+            {"text": "今天有啥好吃的？", "next": "topic_menu"},
+            {"text": "手腕还疼吗？", "next": "topic_wrist"},
+            {"text": "后厨最近忙不忙？", "next": "season_work"},
+            {"text": "最近谁常来吃饭？", "next": "season_people"},
+            {"text": "刘川有信吗？", "next": "season_heart"},
+            {"text": "送点东西", "action": "open_gift"},
+            {"text": "走了，改天来。", "next": null}
+          ]
+        },
+        {
+          "id": "topic_menu",
+          "text": "酸菜炖粉条、贴饼子、熘肉段。菜单我改了一半，留了一半。老客吃惯了的不动，新菜慢慢来。",
+          "options": [{"text": "听着就香。", "next": "greet"}]
+        },
+        {
+          "id": "topic_wrist",
+          "text": "还那样。林小满给我换了膏药，非让我少剁骨头。行吧，我少剁两刀，多骂她两句。",
+          "options": [{"text": "骂归骂，药得贴。", "next": "greet"}]
+        },
+        {
+          "id": "season_work",
+          "texts": [
+            {"text": "开春野菜嫩,荠菜、婆婆丁、柳蒿芽,包饺子最好。镇上人一冬天没见绿,端上桌,眼睛都亮。", "condition": {"season": "spring"}},
+            {"text": "夏天灶边像蒸笼,我一站就是一天。可外头日头毒,人总得吃口热的。凉菜我多做两样,面汤也给他们晾着。", "condition": {"season": "summer"}},
+            {"text": "秋天得腌菜。白菜、萝卜、辣椒,一缸一缸码好。手一沾盐就裂口子,可到了冬天,掀开缸盖那一下,值。", "condition": {"season": "autumn"}},
+            {"text": "冬天锅里不能空。酸菜炖粉条、猪肉炖豆角,客人一进门先给盛汤。人身上暖了,话才愿意往下说。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "闻着就踏实。", "next": "greet"}]
+        },
+        {
+          "id": "season_people",
+          "texts": [
+            {"text": "张晓芳开春又来赊账,我说不用写,她偏写。写完还把上次那张一起结了。这丫头,活得太紧,吃饭都像在还债。", "condition": {"season": "spring"}},
+            {"text": "老韩夏天腿疼,来得少了。我让赵长河把邮局门口的台阶磨平一点。他嘴上说不用,第二天还是来吃了两碗面。", "condition": {"season": "summer"}},
+            {"text": "秋收的时候,周德顺来打包子,说台上唱完再吃。我说凉了不好,他说凉了也得唱完。这人一辈子就认一个理。", "condition": {"season": "autumn"}},
+            {"text": "冬天林小满来得最晚。她坐角落里写东西,我给她留灯。她不说话,我也不问。吃完了,碗底总是干净的。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "这条街离不开您。", "next": "greet"}]
+        },
+        {
+          "id": "season_heart",
+          "texts": [
+            {"text": "刘川开春说要回来,又说厂里忙。我把靠窗那桌擦了又擦,擦到桌面都发亮。你说我是不是闲的。", "condition": {"season": "spring"}},
+            {"text": "夏天他来电话,说南方热得睡不着。我说那就回来,家里凉快。他笑,说妈你又说这个。我也笑,笑完锅里还炖着。", "condition": {"season": "summer"}},
+            {"text": "秋天新菜单上了三道,老菜也留着。我想明白了,饭馆不是我等他一个人的地方。谁进来饿,我都能给口热的。", "condition": {"season": "autumn"}},
+            {"text": "冬天手疼得厉害,我有时候想,要不就别干了。可第二天一推门,闻见灶味,又觉得还能再站一年。人得有个地方让人回来。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "您也得给自己留一桌。", "next": "greet"}]
+        }
+      ]
+    },
+    {
+      "id": "zhao_changhe",
+      "npc_id": "zhao_changhe",
+      "npc_name": "赵长河",
+      "lines": [
+        {
+          "id": "greet",
+          "texts": [
+            {"text": "打谷机第二版还在试。你要有空，过来听听响。响不对，我拆了重来。", "condition": {"event_done": "zhao_e3"}},
+            {"text": "门轴又松了？放这儿吧。能修的东西，别急着扔。", "condition": {"season": ["spring", "summer"]}},
+            {"text": "进屋烤烤。手上的伤别沾凉水，林小满看见又要念叨。", "condition": {"season": ["autumn", "winter"]}}
+          ],
+          "options": [
+            {"text": "最近在做什么活？", "next": "topic_work"},
+            {"text": "那台打谷机还盖着吗？", "next": "topic_machine"},
+            {"text": "这几天忙哪样手艺？", "next": "season_work"},
+            {"text": "镇上谁找您修东西？", "next": "season_people"},
+            {"text": "那台新机器，您怕吗？", "next": "season_heart"},
+            {"text": "送点东西", "action": "open_gift"},
+            {"text": "我先走了。", "next": null}
+          ]
+        },
+        {
+          "id": "topic_work",
+          "text": "修戏台、修粮站门、给你农场加固。活不难，难的是人家把话说明白。尺寸差一寸，东西就不听话。",
+          "options": [{"text": "你这手艺实在。", "next": "greet"}]
+        },
+        {
+          "id": "topic_machine",
+          "text": "没盖了。响归响，先让它见见太阳。人要连一块铁都怕，还做什么木匠。",
+          "options": [{"text": "我等着看它转。", "next": "greet"}]
+        },
+        {
+          "id": "season_work",
+          "texts": [
+            {"text": "开春门轴响的多,一冬天冻胀了。我挨家挨户给上油。门能顺顺当当开开,人心里也就不堵。", "condition": {"season": "spring"}},
+            {"text": "夏天修屋顶最遭罪,瓦片晒得能烙饼。可雨说来就来,不趁晴天补,夜里就得拿盆接。", "condition": {"season": "summer"}},
+            {"text": "秋天戏台要换台板。周德顺嫌旧板子响,我说响是因为空。新板子加了横撑,他踩上去,先不唱,听脚底下。", "condition": {"season": "autumn"}},
+            {"text": "冬天在屋里做榫卯。木头得先烤,急了就裂。人也是,冻透了不能直接近火,得慢慢缓。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "您这活急不得。", "next": "greet"}]
+        },
+        {
+          "id": "season_people",
+          "texts": [
+            {"text": "张晓芳又让我给秤台垫木楔。她不说软话,就站旁边看。我垫完,她拿秤一校,点了点头。这比说十句谢都管用。", "condition": {"season": "spring"}},
+            {"text": "孙玉梅的桌椅又嫌重。我说重才稳,端热锅不晃。她骂我死脑筋,转头还是让我给后厨再钉一张。", "condition": {"season": "summer"}},
+            {"text": "韩守义门口的台阶,我磨低了两寸。他非给我钱,我没要。他腿不好,少抬一寸,就少喘一口气。", "condition": {"season": "autumn"}},
+            {"text": "林小满给我送了一副护腕,说别老逞强。我戴着干活不方便,可还是戴了。她看见,没说话,把药又换了一遍。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "镇上离不开您这双手。", "next": "greet"}]
+        },
+        {
+          "id": "season_heart",
+          "texts": [
+            {"text": "开春我想把新犁的图再改一遍。改了三回,还是觉得不稳。人笑话我,说木匠就该打桌子,别去碰铁。我听见了,没回。", "condition": {"season": "spring"}},
+            {"text": "夏天机器响起来,我站在旁边看了半天。它转得不算顺,可我第一次觉得,自己还能做点没做过的东西。", "condition": {"season": "summer"}},
+            {"text": "秋收时新结构派上了用场,没人再提当年那台坏犁。我却老想起它。成了的事容易忘,没成的,才一直在手上。", "condition": {"season": "autumn"}},
+            {"text": "冬天手僵,细活做不了,我就磨旧刨子。磨着磨着想起我师父。他要是还在,大概也会说,别怕做坏,怕的是你不敢再动手。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "做坏了也不丢人。", "next": "greet"}]
+        }
+      ]
+    },
+    {
+      "id": "lin_xiaoman",
+      "npc_id": "lin_xiaoman",
+      "npc_name": "林小满",
+      "lines": [
+        {
+          "id": "greet",
+          "texts": [
+            {"text": "通知我延期了。一年。不是为谁牺牲，是这里的事还没做完。你别学我熬夜，先把手伸出来。", "condition": {"event_done": "lin_e3"}},
+            {"text": "又受伤了？坐。先说好，破皮别拿泥糊，偏方也别往伤口上抹。", "condition": {"season": ["spring", "summer", "autumn"]}},
+            {"text": "外面冷，进来暖一会儿。手别直接贴火墙，冻过的手得慢慢缓。", "condition": {"season": ["winter"]}}
+          ],
+          "options": [
+            {"text": "你最近睡够了吗？", "next": "topic_sleep"},
+            {"text": "省城那边还催吗？", "next": "topic_city", "condition": {"event_done": "lin_e2"}},
+            {"text": "最近卫生所忙什么？", "next": "season_work"},
+            {"text": "镇里谁身体不舒服？", "next": "season_people"},
+            {"text": "你自己想留下吗？", "next": "season_heart"},
+            {"text": "送点东西", "action": "open_gift"},
+            {"text": "你忙吧，我走了。", "next": null}
+          ]
+        },
+        {
+          "id": "topic_sleep",
+          "text": "四个小时，够用。别拿这种眼神看我。你白天翻地，晚上还来送东西，比我更需要睡觉。",
+          "options": [{"text": "那今晚都早点睡。", "next": "greet"}]
+        },
+        {
+          "id": "topic_city",
+          "text": "催。我说延期，他们没立刻回。可能觉得我疯了。也可能在排新的班次。先不管，周叔的听力还得复查。",
+          "options": [{"text": "你心里有数就好。", "next": "greet"}]
+        },
+        {
+          "id": "season_work",
+          "texts": [
+            {"text": "开春冻伤和风湿最多。有人嫌疼不肯来,拖到手指发黑才进门。我说话不好听,可这种时候,好听没用。", "condition": {"season": "spring"}},
+            {"text": "夏天中暑、肠胃炎、割草划伤,一天能来七八个。我让他们多喝水,他们答应着,转头又去地里。", "condition": {"season": "summer"}},
+            {"text": "秋收最容易伤手。镰刀口子看着小,沾了土就麻烦。我一边缝一边骂,他们一边笑一边说明年注意。每年都说明年。", "condition": {"season": "autumn"}},
+            {"text": "冬天咳嗽的、烫伤的、雪地里摔的。卫生所炉子不旺,我把自己的热水袋给病人,手就揣在袖子里写病历。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "你也得给自己留点热水。", "next": "greet"}]
+        },
+        {
+          "id": "season_people",
+          "texts": [
+            {"text": "张晓芳开春就胃疼,还不肯按时吃饭。我说她,她说我管得宽。下次来,我还是照说。", "condition": {"season": "spring"}},
+            {"text": "孙玉梅手腕肿得厉害,还抡大勺。我给她换了膏药,让她歇三天。她歇了半天,晚上又去给人留饭。", "condition": {"season": "summer"}},
+            {"text": "赵长河手上的旧伤一变天就疼。我给他做了护腕,他嫌碍事。我说碍事也得戴,不然明年连刨子都握不住。", "condition": {"season": "autumn"}},
+            {"text": "周叔的耳朵比去年差。我让他少去风口,他不听,非说台上那点风不算什么。我给他留了复查的日子。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "你把他们的事都记着。", "next": "greet"}]
+        },
+        {
+          "id": "season_heart",
+          "texts": [
+            {"text": "开春省城又来问。我看着窗外的泥路,想了半天。这里的人一生病就硬扛,我走了,他们可能连药名都说不清。", "condition": {"season": "spring"}},
+            {"text": "夏天夜里出诊,回来一身汗。我坐在门口,忽然觉得这里也不是非我不可。可第二天小孩发烧,还是先来敲我的门。", "condition": {"season": "summer"}},
+            {"text": "秋天我收到新排班表,看了一眼就收进抽屉。留下不是认输,离开也不是逃。我只是还没想明白,哪个更像我自己。", "condition": {"season": "autumn"}},
+            {"text": "冬天炉火小,我看书看到半夜。城里医院有更好的设备,这里没有。可这里有认得我脚步声的人,有半夜能敲开的门。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "你选了哪条路，都不欠谁。", "next": "greet"}]
+        }
+      ]
+    },
+    {
+      "id": "zhou_deshun",
+      "npc_id": "zhou_deshun",
+      "npc_name": "周德顺",
+      "lines": [
+        {
+          "id": "greet",
+          "texts": [
+            {"text": "下次排练你还来不？学唱段的孩子缺个打拍的。你别笑，我这耳朵现在靠看。", "condition": {"event_done": "zhou_e3"}},
+            {"text": "来得正好。台上没人，台下也没人，就咱俩听个响。", "condition": {"season": ["spring", "summer", "autumn"]}},
+            {"text": "后台火墙热，进来坐。唱本在椅子上，别压着，那本纸脆。", "condition": {"season": ["winter"]}}
+          ],
+          "options": [
+            {"text": "今天唱哪段？", "next": "topic_song"},
+            {"text": "耳朵最近怎么样？", "next": "topic_ears", "condition": {"event_done": "zhou_e2"}},
+            {"text": "最近台上排什么？", "next": "season_stage"},
+            {"text": "谁常来帮您？", "next": "season_people"},
+            {"text": "您还想登几次台？", "next": "season_heart"},
+            {"text": "送点东西", "action": "open_gift"},
+            {"text": "我先去忙了。", "next": null}
+          ]
+        },
+        {
+          "id": "topic_song",
+          "text": "《大西厢》慢板。快板听着热闹，慢板才见人。台上人一慢，台下心就静了。",
+          "options": [{"text": "下次我来听。", "next": "greet"}]
+        },
+        {
+          "id": "topic_ears",
+          "text": "林小满说我得少逞强。助听器那玩意儿我还没戴，先学着看口型、打拍子。慢一点，也能合上。",
+          "options": [{"text": "慢一点好。", "next": "greet"}]
+        },
+        {
+          "id": "season_stage",
+          "texts": [
+            {"text": "开春先扫台。一冬天的灰,扫到第三级台阶就呛得慌。可台不扫,人上来脚底打滑,唱得再好也白搭。", "condition": {"season": "spring"}},
+            {"text": "夏天潮,弦容易松。我一天调三回,调完自己哼一遍。台下没人,我就当满座都在听。", "condition": {"season": "summer"}},
+            {"text": "秋收节要唱满台。台板新换的,脚踩上去不响。我试了两遍,还是让赵长河再紧一道。唱戏这事,不能将就。", "condition": {"season": "autumn"}},
+            {"text": "冬天后台冷,我先把火墙烧热,再让学唱的孩子进来。嗓子不能冻,一冻就开不了口。人得先暖,戏才暖。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "戏台让您守着，踏实。", "next": "greet"}]
+        },
+        {
+          "id": "season_people",
+          "texts": [
+            {"text": "赵长河开春来紧台板,嘴里骂我事多,手上一点没含糊。修完了也不走,站台下听我哼了两句。", "condition": {"season": "spring"}},
+            {"text": "韩守义夏天来送信,顺便替街坊留票。他眼睛不好,我把票上的字写大。他说我唱戏费嗓子,我说他送信费腿。", "condition": {"season": "summer"}},
+            {"text": "孙玉梅秋收节往后台送包子,说不吃饱唱不动。我嘴上说麻烦,其实每次都要多拿两个,给学唱的孩子留着。", "condition": {"season": "autumn"}},
+            {"text": "林小满冬天来给我查耳朵,查完不走,坐台下听我打拍子。她说听不清也别硬撑。我说听不清,心里还有板眼。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "您身边还是有人。", "next": "greet"}]
+        },
+        {
+          "id": "season_heart",
+          "texts": [
+            {"text": "开春嗓子还亮,我就想再唱几年。可耳朵这事不由人。真到了听不见那天,我至少得把唱本留下来。", "condition": {"season": "spring"}},
+            {"text": "夏天有个孩子来学打拍,总慢半拍。我没骂他。我年轻时也慢,是三遍四遍磨出来的。慢不怕,怕的是不肯再来。", "condition": {"season": "summer"}},
+            {"text": "秋收节这满台,唱完我歇了很久。不是累,是想着下一次还能不能这么齐。人老了,唱一场少一场,得把每一场当最后一场。", "condition": {"season": "autumn"}},
+            {"text": "冬天我坐在后台,摸着唱本上的字。耳朵听不清了,字还在。只要还有人愿意学,我这台就不算散。", "condition": {"season": "winter"}}
+          ],
+          "options": [{"text": "您把台上的东西交出去了。", "next": "greet"}]
         }
       ]
     }

@@ -41,8 +41,16 @@ func check(label: String, cond: bool, detail: String = "") -> void:
 func test_item_database() -> void:
 	print("\n[1] 道具库(items.json)")
 	check("items.json 可读", not ItemDatabase.load_all().is_empty())
-	check("12 件道具", ItemDatabase.all_items().size() == 12,
-		"→ %d 件" % ItemDatabase.all_items().size())
+	var item_count := ItemDatabase.all_items().size()
+	check("道具数量覆盖设计下限", item_count >= 12, "→ %d 件" % item_count)
+	var item_ids := {}
+	var duplicate := ""
+	for item in ItemDatabase.all_items():
+		var item_id := String(item.get("id", ""))
+		if item_ids.has(item_id):
+			duplicate = item_id
+		item_ids[item_id] = true
+	check("道具 id 不重复", duplicate == "", "→ %s" % duplicate)
 	var seeds := ItemDatabase.seed_items()
 	check("3 件种子", seeds.size() == 3, "→ %d 件" % seeds.size())
 	var corn_seed := ItemDatabase.get_item("seed_corn")

@@ -16,6 +16,7 @@ const IDLE_FPS := 1.4
 @onready var sprite: AnimatedSprite2D = $Body/Sprite
 
 var npc: NpcBase = null
+var _sprite_path := SHEET_PATH
 
 func _ready() -> void:
 	_build_frames()
@@ -25,6 +26,7 @@ func setup(p_npc: NpcBase) -> void:
 	if label != null:
 		label.text = p_npc.name
 	_refresh_position()
+	_build_frames()
 
 func _refresh_position() -> void:
 	if npc == null:
@@ -38,9 +40,25 @@ func _process(_delta: float) -> void:
 func _build_frames() -> void:
 	if sprite == null:
 		return
-	var tex: Texture2D = load(SHEET_PATH)
+	var requested := SHEET_PATH
+	if npc != null:
+		var season := "spring"
+		var manager := _state_manager()
+		if manager != null and manager.state != null and manager.state.calendar != null:
+			season = manager.state.calendar.get_season()
+		var selected := npc.sprite_path_for(season)
+		if selected != "":
+			requested = selected
+	var path := requested
+	if not FileAccess.file_exists(path):
+		path = SHEET_PATH
+	if not FileAccess.file_exists(path):
+		push_warning("NpcNode: 找不到 NPC 精灵表 %s" % requested)
+		return
+	_sprite_path = path
+	var tex: Texture2D = load(path)
 	if tex == null:
-		push_warning("NpcNode: 找不到 NPC 精灵表 %s" % SHEET_PATH)
+		push_warning("NpcNode: 找不到 NPC 精灵表 %s" % path)
 		return
 	var frames := SpriteFrames.new()
 	frames.remove_animation("default")
@@ -56,3 +74,15 @@ func _build_frames() -> void:
 		frames.add_frame("idle", atlas)
 	sprite.sprite_frames = frames
 	sprite.animation = "idle"
+
+## 实际加载成功的贴图路径。数据路径缺失时会回退到通用占位图。
+func resolved_sprite_path() -> String:
+	return _sprite_path
+
+## 不在编译期引用 autoload 全局名: headless --script 会在 autoload 注册前
+## 预编译主脚本的依赖,直接写 GameStateManager 会留下假性 Compile Error。
+func _state_manager() -> Node:
+	var loop := Engine.get_main_loop() as SceneTree
+	if loop == null:
+		return null
+	return loop.root.get_node_or_null("GameStateManager")

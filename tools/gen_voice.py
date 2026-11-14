@@ -25,6 +25,11 @@ import sys
 import tempfile
 from pathlib import Path
 
+# 控制台编码未必是 UTF-8(Windows 默认 cp1252),打印中文会抛 UnicodeEncodeError
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = Path(__file__).resolve().parent.parent
 DIALOGUES = ROOT / "data" / "dialogues.json"
 OUT_DIR = ROOT / "assets" / "audio" / "dialogue"

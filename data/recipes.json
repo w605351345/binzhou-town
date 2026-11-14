@@ -1,0 +1,41 @@
+{
+  "_meta": {"version": "v1.0", "updated": "2026-11-13", "scope": "东北家常菜谱"},
+  "recipes": [
+    {"id": "mushroom_stew", "name": "小鸡炖蘑菇", "result": "food_mushroom_stew", "energy": 40, "ingredients": [
+      {"id": "forage_mushroom", "count": 2}, {"id": "food_sour_cabbage", "count": 1}
+    ], "desc": "榛蘑和酸菜一起下锅，炖到汤色发亮。"},
+    {"id": "fish_stew", "name": "铁锅炖鱼", "result": "food_fish_stew", "energy": 36, "ingredients": [
+      {"id": "fish_carp", "count": 1}, {"id": "material_salt", "count": 1}
+    ], "desc": "鱼要煎透，再添水慢炖，锅边贴饼子。"},
+    {"id": "fern_salad", "name": "凉拌刺老芽", "result": "food_fern_salad", "energy": 24, "ingredients": [
+      {"id": "forage_fern", "count": 2}, {"id": "material_salt", "count": 1}
+    ], "desc": "春天的一口鲜，焯水后拌蒜末。"},
+    {"id": "millet_porridge", "name": "小米粥", "result": "food_millet_porridge", "energy": 28, "ingredients": [
+      {"id": "millet", "count": 2}
+    ], "desc": "小火慢熬，熬出米油才暖胃。"},
+    {"id": "catfish_tofu", "name": "鲶鱼炖豆腐", "result": "food_catfish_tofu", "energy": 44, "ingredients": [
+      {"id": "fish_catfish", "count": 1}, {"id": "material_tofu", "count": 1}, {"id": "material_salt", "count": 1}
+    ], "desc": "鲶鱼肥，豆腐嫩，咕嘟一锅能下两碗饭。"},
+    {"id": "sauerkraut_noodles", "name": "酸菜炖粉条", "result": "food_sauerkraut_noodles", "energy": 38, "ingredients": [
+      {"id": "food_sour_cabbage", "count": 1}, {"id": "material_vermicelli", "count": 1}
+    ], "desc": "酸菜切细丝，粉条吸汤，越炖越香。"},
+    {"id": "corn_porridge", "name": "大碴粥", "result": "food_corn_porridge", "energy": 32, "ingredients": [
+      {"id": "food_dried_corn", "count": 1}, {"id": "millet", "count": 1}
+    ], "desc": "大碴子熬到开花，配咸菜疙瘩最实在。"},
+    {"id": "crucian_tofu_soup", "name": "鲫鱼豆腐汤", "result": "food_crucian_tofu_soup", "energy": 30, "ingredients": [
+      {"id": "fish_crucian", "count": 1}, {"id": "material_tofu", "count": 1}
+    ], "desc": "汤熬成奶白色，撒一把葱花。"},
+    {"id": "hazelnut_porridge", "name": "榛子小米粥", "result": "food_hazelnut_porridge", "energy": 34, "ingredients": [
+      {"id": "forage_hazelnut", "count": 1}, {"id": "millet", "count": 2}
+    ], "desc": "榛子炒香碾碎，和小米一起熬。"},
+    {"id": "grape_jam", "name": "山葡萄果酱", "result": "food_grape_jam", "energy": 16, "ingredients": [
+      {"id": "forage_berry", "count": 3}, {"id": "material_sugar", "count": 1}
+    ], "desc": "酸果子熬成酱，抹在黏豆包上正合适。"},
+    {"id": "pear_soup", "name": "冻梨甜汤", "result": "food_pear_soup", "energy": 20, "ingredients": [
+      {"id": "food_frozen_pear", "count": 1}, {"id": "material_sugar", "count": 1}
+    ], "desc": "冻梨缓透，切块煮汤，凉丝丝的甜。"},
+    {"id": "seabuckthorn_juice", "name": "沙棘汁", "result": "food_seabuckthorn_juice", "energy": 22, "ingredients": [
+      {"id": "forage_sea_buckthorn", "count": 2}, {"id": "material_sugar", "count": 1}
+    ], "desc": "酸得扎嘴，却最解冬天的腻。"}
+  ]
+}

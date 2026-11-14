@@ -247,6 +247,41 @@ class Canvas:
                     c = self.get(x, y)
                     self.set(x, y, (c[0], c[1], c[2], max(0, min(255, c[3] - 18))))
 
+    def paper_grain(self, rng, chance=0.18, strength=18):
+        """只在已有笔触内部撒纸纹，不改变轮廓与透明度。"""
+        for y in range(self.h):
+            for x in range(self.w):
+                c = self.get(x, y)
+                if c[3] <= 8 or not rng.chance(chance):
+                    continue
+                d = int(rng.uniform(-strength, strength))
+                self.px[y][x] = (
+                    max(0, min(255, c[0] + d)),
+                    max(0, min(255, c[1] + d)),
+                    max(0, min(255, c[2] + d)),
+                    c[3],
+                )
+
+    def dry_brush(self, rng, count, color, x0=0, y0=0, x1=None, y1=None,
+                  min_len=8, max_len=28, width=1, only_opaque=True):
+        """干笔擦痕：让大块平涂出现手绘方向性。
+
+        only_opaque=True 时只落在已有笔触内部，透明贴图不会出现漂浮擦痕。
+        """
+        x1 = self.w if x1 is None else x1
+        y1 = self.h if y1 is None else y1
+        for _ in range(count):
+            x = rng.uniform(x0, x1)
+            y = rng.uniform(y0, y1)
+            length = rng.uniform(min_len, max_len)
+            dy = rng.uniform(-2.5, 2.5)
+            steps = max(1, int(length * 2))
+            for i in range(steps + 1):
+                t = i / steps
+                px, py = x + length * t, y + dy * t
+                if not only_opaque or self.alpha_at(px, py) > 8:
+                    self.set(px, py, color)
+
     def blit(self, other, ox, oy):
         """把另一张画布贴到 (ox, oy),用于逐帧合成精灵表。"""
         for y in range(other.h):

@@ -1,0 +1,183 @@
+{
+  "_meta": {
+    "version": "v1.0",
+    "updated": "2026-11-13",
+    "scope": "镇中心公告板与六名 NPC 的人物委托"
+  },
+  "quests": [
+    {
+      "id": "q_zhang_grain",
+      "title": "粮站的干玉米",
+      "giver": "zhang_xiaofang",
+      "summary": "张晓芳要把新收的干玉米装袋过秤，手上腾不开。",
+      "category": "daily",
+      "requirements": [{"type": "deliver", "item_id": "food_dried_corn", "count": 3}],
+      "rewards": {"gold": 90, "affection": 4, "items": {"food_sticky_bean_bun": 1}},
+      "repeatable": true
+    },
+    {
+      "id": "q_zhang_scale",
+      "title": "校秤前的木楔",
+      "giver": "zhang_xiaofang",
+      "summary": "老秤台有一条腿总晃，得垫两块硬木。",
+      "category": "story",
+      "requirements": [{"type": "deliver", "item_id": "forage_wood", "count": 2}],
+      "rewards": {"gold": 70, "affection": 5, "items": {"material_salt": 2}}
+    },
+    {
+      "id": "q_zhang_harvest",
+      "title": "霜前抢收",
+      "giver": "zhang_xiaofang",
+      "summary": "她嘴上说粮站不收人情，还是想看看你能不能赶在霜前收完。",
+      "category": "story",
+      "requirements": [{"type": "action", "target": "harvest", "count": 8, "label": "收获作物"}],
+      "rewards": {"gold": 160, "affection": 8, "items": {"seed_corn": 2}}
+    },
+    {
+      "id": "q_han_route",
+      "title": "替老韩跑一趟",
+      "giver": "han_shouyi",
+      "summary": "韩守义腿脚慢，想请你替他给三个人带句话。",
+      "category": "story",
+      "requirements": [{"type": "action", "target": "talk", "count": 3, "label": "和镇里人交谈"}],
+      "rewards": {"gold": 80, "affection": 4, "items": {"food_millet_porridge": 1}}
+    },
+    {
+      "id": "q_han_stove",
+      "title": "邮局火炉的柴",
+      "giver": "han_shouyi",
+      "summary": "老邮局的火炉不能断火，信件怕潮。",
+      "category": "daily",
+      "requirements": [{"type": "deliver", "item_id": "forage_wood", "count": 4}],
+      "rewards": {"gold": 75, "affection": 4, "items": {"material_salt": 2}},
+      "repeatable": true
+    },
+    {
+      "id": "q_han_letters",
+      "title": "没送出去的那封信",
+      "giver": "han_shouyi",
+      "summary": "等韩守义愿意开口，再替他跑完那件拖了半辈子的事。",
+      "category": "story",
+      "requirements": [{"type": "event", "event_id": "han_e2", "label": "完成韩守义第二段故事"}],
+      "rewards": {"gold": 140, "affection": 8, "items": {"food_grape_jam": 1}},
+      "min_affection": 50
+    },
+    {
+      "id": "q_sun_mushroom",
+      "title": "后厨要一筐榛蘑",
+      "giver": "sun_yumei",
+      "summary": "孙玉梅炖小鸡缺榛蘑，点名要山上新采的。",
+      "category": "daily",
+      "requirements": [{"type": "deliver", "item_id": "forage_mushroom", "count": 3}],
+      "rewards": {"gold": 120, "affection": 5, "items": {"food_mushroom_stew": 1}},
+      "repeatable": true
+    },
+    {
+      "id": "q_sun_catfish",
+      "title": "一条肥鲶鱼",
+      "giver": "sun_yumei",
+      "summary": "饭馆晚上要做鲶鱼炖豆腐，鱼得新鲜。",
+      "category": "story",
+      "requirements": [{"type": "deliver", "item_id": "fish_catfish", "count": 1}],
+      "rewards": {"gold": 110, "affection": 6, "items": {"food_catfish_tofu": 1}},
+      "seasons": ["summer", "autumn"]
+    },
+    {
+      "id": "q_sun_kitchen",
+      "title": "灶台边搭把手",
+      "giver": "sun_yumei",
+      "summary": "不白帮工，做完两锅菜，她留你吃口热的。",
+      "category": "daily",
+      "requirements": [{"type": "action", "target": "cook", "count": 2, "label": "在家做饭"}],
+      "rewards": {"gold": 80, "affection": 4, "items": {"material_sugar": 2}},
+      "repeatable": true
+    },
+    {
+      "id": "q_zhao_lumber",
+      "title": "木工房缺木料",
+      "giver": "zhao_changhe",
+      "summary": "赵长河要做一副新门框，让你先凑些干透的木头。",
+      "category": "daily",
+      "requirements": [{"type": "deliver", "item_id": "forage_wood", "count": 4}],
+      "rewards": {"gold": 100, "affection": 5, "items": {"material_salt": 2}},
+      "repeatable": true
+    },
+    {
+      "id": "q_zhao_supplies",
+      "title": "替木工房捎种子",
+      "giver": "zhao_changhe",
+      "summary": "他答应给邻家带两袋马铃薯种，自己走不开。",
+      "category": "story",
+      "requirements": [{"type": "deliver", "item_id": "seed_potato", "count": 2}],
+      "rewards": {"gold": 70, "affection": 4, "items": {"material_fertilizer": 1}}
+    },
+    {
+      "id": "q_zhao_stage",
+      "title": "戏台的新结构",
+      "giver": "zhao_changhe",
+      "summary": "等赵长河真正下决心修戏台，再帮他看完那套新榫卯。",
+      "category": "story",
+      "requirements": [{"type": "event", "event_id": "zhao_e3", "label": "完成赵长河第三段故事"}],
+      "rewards": {"gold": 200, "affection": 10, "items": {"food_fish_stew": 1}},
+      "min_affection": 80
+    },
+    {
+      "id": "q_lin_herbs",
+      "title": "卫生所缺药草",
+      "giver": "lin_xiaoman",
+      "summary": "林小满要把晒干的婆婆丁收进药柜。",
+      "category": "daily",
+      "requirements": [{"type": "deliver", "item_id": "forage_dandelion", "count": 3}],
+      "rewards": {"gold": 85, "affection": 5, "items": {"food_fern_salad": 1}},
+      "repeatable": true,
+      "seasons": ["spring", "summer"]
+    },
+    {
+      "id": "q_lin_soup",
+      "title": "给病人熬碗鱼汤",
+      "giver": "lin_xiaoman",
+      "summary": "卫生所里躺着个发热的孩子，她想熬碗鲫鱼汤。",
+      "category": "story",
+      "requirements": [{"type": "deliver", "item_id": "fish_crucian", "count": 1}],
+      "rewards": {"gold": 90, "affection": 5, "items": {"food_crucian_tofu_soup": 1}}
+    },
+    {
+      "id": "q_lin_night",
+      "title": "巡诊的夜路",
+      "giver": "lin_xiaoman",
+      "summary": "等她做出留下的决定，再陪她走完那条夜路。",
+      "category": "story",
+      "requirements": [{"type": "event", "event_id": "lin_e2", "label": "完成林小满第二段故事"}],
+      "rewards": {"gold": 150, "affection": 9, "items": {"food_hazelnut_porridge": 1}},
+      "min_affection": 50
+    },
+    {
+      "id": "q_zhou_stage",
+      "title": "戏台要修台板",
+      "giver": "zhou_deshun",
+      "summary": "周德顺说台板翘了，唱到高腔时脚下发虚。",
+      "category": "story",
+      "requirements": [{"type": "deliver", "item_id": "forage_wood", "count": 5}],
+      "rewards": {"gold": 130, "affection": 6, "items": {"material_salt": 2}}
+    },
+    {
+      "id": "q_zhou_audience",
+      "title": "给戏台请几位听众",
+      "giver": "zhou_deshun",
+      "summary": "台子再旧，也得有人坐在台下，唱起来才算数。",
+      "category": "story",
+      "requirements": [{"type": "action", "target": "talk", "count": 4, "label": "邀请镇里人交谈"}],
+      "rewards": {"gold": 100, "affection": 5, "items": {"food_sticky_bean_bun": 2}}
+    },
+    {
+      "id": "q_zhou_script",
+      "title": "把最后一段唱完",
+      "giver": "zhou_deshun",
+      "summary": "等周德顺肯把本事交出去，再帮他把最后一个满台办成。",
+      "category": "story",
+      "requirements": [{"type": "event", "event_id": "zhou_e3", "label": "完成周德顺第三段故事"}],
+      "rewards": {"gold": 220, "affection": 12, "items": {"food_fish_stew": 1}},
+      "min_affection": 80
+    }
+  ]
+}

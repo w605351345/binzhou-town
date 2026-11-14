@@ -7,12 +7,22 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# 工具脚本要打印中文;Windows 下管道的默认编码是 cp1252,不设 UTF-8 会抛 UnicodeEncodeError
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: "1"
+
 jobs:
   test:
     name: 核心逻辑自测 (Godot headless)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
       - name: 安装 Godot 4.3
         uses: chickensoft-games/setup-godot@v1
@@ -21,53 +31,72 @@ jobs:
           use-dotnet: false
 
       - name: 静态数据校验
-        run: python3 tools/validate_data.py data/
+        run: python tools/validate_data.py data/
+
+      - name: 手柄映射与 Steam 模板校验
+        run: python tools/validate_controls.py
 
       - name: 生成美术资源(饥荒观感手绘风)
-        run: python3 tools/gen_art.py assets
+        run: python tools/gen_art.py assets
 
       - name: 导入项目资源
         run: godot --headless --import --quit
 
-      - name: 运行核心逻辑自测
-        run: godot --headless --script res://scripts/tests/test_core.gd
-
-      - name: 场景集成自测
-        run: godot --headless --script res://scripts/tests/test_scenes.gd
-
-      - name: 生长循环集成自测
-        run: godot --headless --script res://scripts/tests/test_integration.gd
-
-      - name: 对话系统自测
-        run: godot --headless --script res://scripts/tests/test_dialogue.gd
-
-      - name: 商店自测
-        run: godot --headless --script res://scripts/tests/test_shop.gd
-
-      - name: 对话接线自测
-        run: godot --headless --script res://scripts/tests/test_dialogue_wiring.gd
-
-      - name: 输入映射自测(手柄覆盖)
-        run: godot --headless --script res://scripts/tests/test_input_map.gd
+      - name: 全量逻辑、世界与人物自测
+        run: |
+          set -e
+          tests=(
+            test_acceptance test_art test_activities test_npc_social test_world
+            test_clock_weather test_save_v2 test_core test_scenes test_integration
+            test_dialogue test_shop test_inventory test_dialogue_wiring
+            test_input_map test_postcard
+          )
+          for test in "${tests[@]}"; do
+            echo "::group::$test"
+            godot --headless --script "res://scripts/tests/${test}.gd"
+            echo "::endgroup::"
+          done
 
       - name: 场景冒烟测试
         run: |
-          for scene in scenes/main_menu.tscn scenes/game.tscn scenes/farm.tscn scenes/town_street.tscn; do
+          set -e
+          scenes=(
+            scenes/main_menu.tscn scenes/game.tscn scenes/farm.tscn
+            scenes/town_street.tscn scenes/post_office.tscn
+          )
+          for i in $(seq -w 1 11); do
+            scenes+=("scenes/locations/L${i}.tscn")
+          done
+          for scene in "${scenes[@]}"; do
             echo "--- $scene ---"
-            godot --headless --quit-after 90 "$scene" 2>&1 | grep -iE "SCRIPT ERROR|Parse Error" && exit 1 || true
+            output=$(godot --headless --quit-after 90 "$scene" 2>&1)
+            echo "$output"
+            if echo "$output" | grep -qiE "SCRIPT ERROR|Parse Error"; then
+              echo "::error title=场景冒烟失败::$scene"
+              exit 1
+            fi
           done
           echo "场景冒烟测试通过"
 
       - name: 截图对比(美术回归)
         run: |
-          # 无显示器环境下 Movie Maker 需要虚拟显示;取不到就跳过,不影响 CI 结论
-          xvfb-run -a godot --write-movie "$RUNNER_TEMP/shot.png" --quit-after 10 scenes/farm.tscn || \
-            echo "截图步骤跳过(环境不支持显示驱动)"
+          # Movie Maker 需要虚拟显示；渲染器改动必须留下四季与主菜单截图。
+          mkdir -p "$RUNNER_TEMP/binzhou-shots"
+          xvfb-run -a python tools/capture_scenes.py \
+            --out "$RUNNER_TEMP/binzhou-shots" \
+            --scenes game menu \
+            --seasons spring summer autumn winter \
+            --frames 8 --time 12:00 --weather sunny
+          ls -lh "$RUNNER_TEMP/binzhou-shots"
 
   export:
     name: 导出 ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     needs: test
+    defaults:
+      run:
+        # 三平台统一用 bash,才能稳定拿到 PIPESTATUS 退出码并写诊断
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
@@ -75,39 +104,73 @@ jobs:
           - os: ubuntu-latest
             name: Linux
             preset: Linux
-            out: build/linux
-            py: python3
           - os: windows-latest
             name: Windows
             preset: Windows Desktop
-            out: build/windows
-            py: python
           - os: macos-latest
             name: macOS
             preset: macOS
-            out: build/macos
-            py: python3
     steps:
       - uses: actions/checkout@v4
 
-      - name: 安装 Godot 4.3
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装 Godot 4.3(含导出模板)
         uses: chickensoft-games/setup-godot@v1
         with:
           version: 4.3.0
           use-dotnet: false
+          # 不装导出模板,导出必然失败(No export template found),而旧的 `|| echo` 会把它吞掉
+          include-templates: true
+
+      - name: 环境信息
+        run: |
+          echo "os=${{ matrix.os }}"
+          echo "python=$(python --version 2>&1)"
+          echo "godot=$(godot --version 2>&1)"
+          uname -a
 
       - name: 生成美术资源
-        run: ${{ matrix.py }} tools/gen_art.py assets
+        run: python tools/gen_art.py assets
 
       - name: 导入项目资源
-        run: godot --headless --import --quit
+        run: |
+          set -o pipefail
+          godot --headless --import --quit 2>&1 | tee import.log
+          rc=${PIPESTATUS[0]}
+          if [ "$rc" -ne 0 ]; then
+            echo "::error title=Godot 导入失败::${{ matrix.name }} 退出码 ${rc}"
+            {
+              echo "### Godot 导入失败(${{ matrix.name }})"
+              echo '```'
+              tail -n 40 import.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit "$rc"
+          fi
 
       - name: 导出 ${{ matrix.name }}
-        run: godot --headless --export-release "${{ matrix.preset }}" "./${{ matrix.out }}/BinzhouTown" || echo "导出失败,见上方日志"
+        run: |
+          set -o pipefail
+          godot --headless --export-release "${{ matrix.preset }}" 2>&1 | tee export.log
+          rc=${PIPESTATUS[0]}
+          if [ "$rc" -ne 0 ]; then
+            echo "::error title=Godot 导出失败::${{ matrix.name }} 退出码 ${rc}"
+            {
+              echo "### Godot 导出失败(${{ matrix.name }})"
+              echo '```'
+              tail -n 40 export.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit "$rc"
+          fi
 
       - name: 上传构建产物
         uses: actions/upload-artifact@v4
         with:
           name: binzhou-town-${{ matrix.name }}
-          path: ${{ matrix.out }}/
-          if-no-files-found: warn
+          path: build/
+          if-no-files-found: error

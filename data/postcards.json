@@ -1,0 +1,82 @@
+{
+  "_meta": {
+    "version": "v1.0",
+    "updated": "2026-11-13",
+    "scope": "Week 6 通讯基础 —— 3 位远方联系人 + 6 张回信明信片",
+    "note": "玩家在邮局寄出一封信,次日收到一张回信。reply_cards 按顺序解锁,同一路故事听完后不再重复。"
+  },
+  "delivery_days": 1,
+  "recipients": [
+    {
+      "id": "aunt_inland",
+      "name": "关内表姑",
+      "relation": "总把家里的旧事写成长信",
+      "reply_cards": [
+        "pc_wheat_field",
+        "pc_paper_kite"
+      ]
+    },
+    {
+      "id": "uncle_hills",
+      "name": "山那边表舅",
+      "relation": "话不多,信封里常夹着晒干的枣",
+      "reply_cards": [
+        "pc_coal_stove",
+        "pc_date_courtyard"
+      ]
+    },
+    {
+      "id": "penpal_south",
+      "name": "南方笔友",
+      "relation": "在旧书页里认识的远方朋友",
+      "reply_cards": [
+        "pc_rain_lane",
+        "pc_osmanthus"
+      ]
+    }
+  ],
+  "postcards": [
+    {
+      "id": "pc_wheat_field",
+      "title": "麦子返青了",
+      "recipient_id": "aunt_inland",
+      "stamp_color": "#9DAF7A",
+      "body": "家里那片麦子返青了,风一过,绿得发亮。你那边黑土地也该化冻了吧?别光顾着种地,记得添衣,信封里给你夹了一小包炒花生。"
+    },
+    {
+      "id": "pc_paper_kite",
+      "title": "风筝还挂在屋檐下",
+      "recipient_id": "aunt_inland",
+      "stamp_color": "#C8A165",
+      "body": "收拾老屋时翻出你小时候那只纸风筝,骨架还结实。等你哪天得空回来,咱们去河滩上放一回。回信慢些也不打紧,我知道农忙。"
+    },
+    {
+      "id": "pc_coal_stove",
+      "title": "炉子生上了",
+      "recipient_id": "uncle_hills",
+      "stamp_color": "#B87555",
+      "body": "这边风硬,屋里炉子已经生上了。你一个人在那边,柴火备足没有?屋后那垛苞米秆子别急着烧,留到最冷的时候。"
+    },
+    {
+      "id": "pc_date_courtyard",
+      "title": "枣树底下晒日头",
+      "recipient_id": "uncle_hills",
+      "stamp_color": "#8E6A4A",
+      "body": "午后坐在枣树底下晒日头,忽然想起你小时候追着鸡满院跑。给你捎了把新晒的枣,泡水喝也行,蒸黏豆包也行。"
+    },
+    {
+      "id": "pc_rain_lane",
+      "title": "雨落在青石板上",
+      "recipient_id": "penpal_south",
+      "stamp_color": "#6F8FA6",
+      "body": "这几天总下雨,青石板被洗得发亮。你说北边的黑土也是湿的,只是更沉、更厚。等天晴了,我想画一张雨后的巷子寄给你。"
+    },
+    {
+      "id": "pc_osmanthus",
+      "title": "桂花开了",
+      "recipient_id": "penpal_south",
+      "stamp_color": "#D5A94F",
+      "body": "院里的桂花开了,香气能飘过整条巷子。随信寄了一小包干花,你收在书里吧。等来年开春,再听你讲黑土地上的第一场雨。"
+    }
+  ]
+}

@@ -21,7 +21,10 @@ var _female := false
 
 func _ready() -> void:
 	controller = PlayerController.new()
-	_apply_sprite(false)
+	var female := false
+	if GameStateManager.state != null and GameStateManager.state.player != null:
+		female = GameStateManager.state.player.gender == PlayerProfile.Gender.FEMALE
+	_apply_sprite(female)
 	if world == null:
 		world = WorldMap.new(Rect2(Vector2.ZERO, get_parent_area_size()))
 

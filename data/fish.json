@@ -1,0 +1,13 @@
+{
+  "_meta": {"version": "v1.0", "updated": "2026-11-13", "scope": "黑龙江河湾四季鱼种"},
+  "fish": [
+    {"id": "fish_crucian", "name": "鲫鱼", "seasons": ["spring", "summer", "autumn", "winter"], "weight": 45, "difficulty": 1},
+    {"id": "fish_pike", "name": "狗鱼", "seasons": ["spring", "autumn", "winter"], "weight": 25, "difficulty": 3},
+    {"id": "fish_carp", "name": "鲤鱼", "seasons": ["summer", "autumn"], "weight": 22, "difficulty": 2},
+    {"id": "fish_mandarin", "name": "鳌花", "seasons": ["summer"], "weight": 8, "difficulty": 4},
+    {"id": "fish_catfish", "name": "鲶鱼", "seasons": ["summer", "autumn"], "weight": 18, "difficulty": 2},
+    {"id": "fish_perch", "name": "五道黑", "seasons": ["spring", "summer", "autumn", "winter"], "weight": 16, "difficulty": 3},
+    {"id": "fish_smelt", "name": "黄瓜香", "seasons": ["spring", "winter"], "weight": 12, "difficulty": 1},
+    {"id": "fish_sturgeon", "name": "鲟鱼", "seasons": ["summer", "autumn"], "weight": 4, "difficulty": 5}
+  ]
+}

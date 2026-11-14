@@ -38,6 +38,22 @@ const REAL_SECONDS_PER_GAME_DAY := 60.0 * 12.0
 var year: int = 1
 var day_of_year: int = 0   # 0-359
 
+## 绝对日:从第 1 年 1 月 1 日算起,永不回绕。
+## 浇水、事件冷却、采集刷新等时间差必须用它,不能再用 day_of_year。
+var absolute_day: int:
+	get:
+		return (year - 1) * DAYS_PER_YEAR + day_of_year
+	set(value):
+		from_absolute_day(value)
+
+func abs_day() -> int:
+	return absolute_day
+
+func from_absolute_day(value: int) -> void:
+	var safe := maxi(0, value)
+	year = int(float(safe) / float(DAYS_PER_YEAR)) + 1
+	day_of_year = safe % DAYS_PER_YEAR
+
 func get_season() -> String:
 	return MONTH_SEASON[get_month_index()]
 
@@ -106,10 +122,7 @@ static func season_desc(season: String) -> String:
 
 ## 推进一天
 func advance_day() -> void:
-	day_of_year += 1
-	if day_of_year >= DAYS_PER_YEAR:
-		day_of_year = 0
-		year += 1
+	from_absolute_day(abs_day() + 1)
 
 ## 调试用:跳到指定季节的第 N 天
 func advance_to_season(season: String, day_in_season: int = 1) -> void:
@@ -127,10 +140,13 @@ func date_string() -> String:
 	return "第%d年 %d月%d日(%s)" % [year, get_real_month(), get_day_of_month(), season_cn(get_season())]
 
 func to_dict() -> Dictionary:
-	return {"year": year, "day_of_year": day_of_year}
+	return {"year": year, "day_of_year": day_of_year, "absolute_day": abs_day()}
 
 static func from_dict(d: Dictionary) -> GameCalendar:
 	var c := GameCalendar.new()
-	c.year = int(d.get("year", 1))
-	c.day_of_year = int(d.get("day_of_year", 0))
+	if d.has("absolute_day"):
+		c.from_absolute_day(int(d.get("absolute_day", 0)))
+	else:
+		c.year = int(d.get("year", 1))
+		c.day_of_year = int(d.get("day_of_year", 0))
 	return c

@@ -30,8 +30,12 @@ func _spawn_npcs() -> void:
 	_npc_node = node
 
 func _unhandled_input(event: InputEvent) -> void:
+	if GameStateManager.input_locked:
+		return
 	if event.is_action_pressed("interact"):
 		_interact()
+	elif event.is_action_pressed("travel_post"):
+		_go_to_post_office()
 	elif event.is_action_pressed("travel"):
 		_go_to_farm()
 
@@ -40,6 +44,12 @@ func _go_to_farm() -> void:
 	if not SceneRouter.is_implemented("L01"):
 		return
 	GameStateManager.travel_requested.emit("L01")
+
+## 去老邮局(L03)
+func _go_to_post_office() -> void:
+	if not SceneRouter.is_implemented("L03"):
+		return
+	GameStateManager.travel_requested.emit("L03")
 
 func _interact() -> void:
 	if _npc_node == null or _npc_node.npc == null:

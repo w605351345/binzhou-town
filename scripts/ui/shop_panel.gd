@@ -97,11 +97,15 @@ func open_shop(npc: NpcBase, mode: int = Mode.SELL) -> void:
 	_mode = mode
 	visible = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	GameStateManager.set_shop_open(true)
 	_refresh()
 
 func close_shop() -> void:
+	if not visible:
+		return
 	visible = false
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	GameStateManager.set_shop_open(false)
 	closed.emit()
 
 func is_open() -> bool:

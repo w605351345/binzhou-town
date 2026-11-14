@@ -37,6 +37,14 @@ func set_highlight(on: bool) -> void:
 	_highlight = on
 	queue_redraw()
 
+## 地块季节罩色：冬季必须真正盖雪，不能只在绿色苗床上叠一层冷色。
+static func season_overlay_for(p_season: String) -> Color:
+	match p_season:
+		"winter": return Color(0.80, 0.87, 0.90, 0.82)
+		"autumn": return Color(0.68, 0.42, 0.18, 0.10)
+		"summer": return Color(0.92, 0.86, 0.48, 0.05)
+		_: return Color(0.22, 0.30, 0.18, 0.08)
+
 func _draw() -> void:
 	if plot == null:
 		return
@@ -44,6 +52,12 @@ func _draw() -> void:
 	var tex := _plot_texture()
 	if tex != null:
 		draw_texture_rect(tex, rect, false)
+		var season := calendar.get_season() if calendar != null else "spring"
+		var overlay := season_overlay_for(season)
+		if overlay.a > 0.0:
+			draw_rect(rect, overlay, true)
+		if season == "winter":
+			_draw_winter_snow(rect)
 	else:
 		# 没有贴图时的兜底:纯色块(美术资源缺失也不至于开天窗)
 		draw_rect(rect, _state_color(), true)
@@ -94,6 +108,15 @@ func _plot_texture() -> Texture2D:
 		FarmPlot.State.FALLOW:
 			return TEX_FALLOW
 	return TEX_TILLED
+
+func _draw_winter_snow(rect: Rect2) -> void:
+	for i in 9:
+		var x := rect.position.x + 9.0 + float((i * 29) % 70)
+		var y := rect.position.y + 10.0 + float((i * 17) % 66)
+		var radius := 4.0 + float((i * 7) % 7)
+		draw_circle(Vector2(x, y), radius, Color(0.94, 0.97, 0.97, 0.32))
+	draw_line(rect.position + Vector2(6, rect.size.y - 6),
+		rect.end - Vector2(6, 5), Color(0.68, 0.79, 0.84, 0.44), 2.0)
 
 ## 作物贴图:出苗 / 成长 / 成熟 三档(按需加载并缓存)
 func _crop_texture() -> Texture2D:

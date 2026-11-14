@@ -63,14 +63,16 @@ static func default_seed_crop(farm: FarmSystem) -> String:
 ##
 ## plot_index 为目标地块;seed_crop_id 仅在播种时有效。
 static func apply_tool(tool: int, farm: FarmSystem, plot_index: int,
-		player: PlayerProfile, seed_crop_id: String = "") -> Dictionary:
+		player: PlayerProfile, seed_crop_id: String = "",
+		stamina_multiplier: float = 1.0) -> Dictionary:
 	var plot := farm.get_plot(plot_index)
 	if plot == null:
 		return _fail("这块地不在农场里")
 	if player == null or player.stamina == null:
 		return _fail("主角状态异常")
 
-	var cost: int = TOOL_COST.get(tool, 0)
+	var base_cost: int = TOOL_COST.get(tool, 0)
+	var cost := int(ceil(float(base_cost) * maxf(1.0, stamina_multiplier)))
 	if not player.stamina.has(cost):
 		return _fail("体力不够了(%s),歇一晚再说" % player.stamina.status_cn())
 
@@ -106,7 +108,7 @@ static func _do_till(farm: FarmSystem, plot: FarmPlot, player: PlayerProfile, co
 static func _do_water(farm: FarmSystem, plot: FarmPlot, player: PlayerProfile, cost: int) -> Dictionary:
 	if plot.state == FarmPlot.State.UNTILLED:
 		return _fail("还没翻土呢,水浇不进荒地")
-	if plot.last_watered_day == farm.calendar.day_of_year:
+	if plot.last_watered_abs_day == farm.calendar.abs_day():
 		return _fail("今天浇过了")
 	if not player.stamina.consume(cost):
 		return _fail("体力不够了")
@@ -129,14 +131,32 @@ static func _do_seed(farm: FarmSystem, plot: FarmPlot, player: PlayerProfile, co
 	if not crop.can_sow_in_month(farm.calendar.get_real_month()):
 		return _fail("%s不能种在%d月" % [crop.name, farm.calendar.get_real_month()])
 	var seed_cost := crop.seed_price
-	if player.gold < seed_cost:
+	var seed_item_id := ItemDatabase.seed_for_crop(crop_id)
+	var has_seed_item := seed_item_id != "" \
+		and int(player.inventory.get(seed_item_id, 0)) > 0
+	if not has_seed_item and player.gold < seed_cost:
 		return _fail("买%s的种子要%d文钱,钱不够" % [crop.name, seed_cost])
 	if not player.stamina.consume(cost):
 		return _fail("体力不够了")
 	if not farm.plant_crop(plot.index, crop_id):
 		return _fail("播种失败")
+	if has_seed_item:
+		var left := int(player.inventory.get(seed_item_id, 0)) - 1
+		if left <= 0:
+			player.inventory.erase(seed_item_id)
+		else:
+			player.inventory[seed_item_id] = left
+		return _ok("种下了%s" % crop.name, {
+			"crop_id": crop_id,
+			"cost": 0,
+			"seed_item_id": seed_item_id,
+		})
 	player.gold -= seed_cost
-	return _ok("种下了%s" % crop.name, {"crop_id": crop_id, "cost": seed_cost})
+	return _ok("种下了%s" % crop.name, {
+		"crop_id": crop_id,
+		"cost": seed_cost,
+		"seed_item_id": "",
+	})
 
 static func _do_harvest(farm: FarmSystem, plot: FarmPlot, player: PlayerProfile, cost: int) -> Dictionary:
 	if plot.state == FarmPlot.State.DEAD:
@@ -171,7 +191,7 @@ static func _dead_reason_cn(plot: FarmPlot) -> String:
 
 ## 秋翻地(收获后或冬季深翻积肥,黑土地保护核心农法)
 static func apply_autumn_plough(farm: FarmSystem, plot_index: int,
-		player: PlayerProfile) -> Dictionary:
+		player: PlayerProfile, stamina_multiplier: float = 1.0) -> Dictionary:
 	var plot := farm.get_plot(plot_index)
 	if plot == null:
 		return _fail("这块地不在农场里")
@@ -179,9 +199,10 @@ static func apply_autumn_plough(farm: FarmSystem, plot_index: int,
 		return _fail("主角状态异常")
 	if plot.crop_id != "":
 		return _fail("地里还有庄稼,收了再翻")
-	if not player.stamina.has(StaminaSystem.COST_AUTUMN_PLOUGH):
+	var cost := int(ceil(float(StaminaSystem.COST_AUTUMN_PLOUGH) * maxf(1.0, stamina_multiplier)))
+	if not player.stamina.has(cost):
 		return _fail("体力不够了,深翻最累")
-	if not player.stamina.consume(StaminaSystem.COST_AUTUMN_PLOUGH):
+	if not player.stamina.consume(cost):
 		return _fail("体力不够了")
 	if not farm.autumn_plough_plot(plot_index):
 		return _fail("翻地失败")

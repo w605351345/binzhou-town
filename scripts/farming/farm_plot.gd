@@ -24,6 +24,8 @@ var crop_id: String = ""
 var days_grown: float = 0.0
 var days_watered: int = 0
 var last_watered_day: int = -1
+## 绝对日版本,用于跨年时间差;last_watered_day 保留给旧存档/兼容显示。
+var last_watered_abs_day: int = -1
 var dead_reason: String = ""
 ## 播种时的真实月份(用于农时校验)
 var sown_month: int = 0
@@ -55,8 +57,9 @@ func autumn_plough() -> bool:
 func water(current_day: int) -> bool:
 	if state == State.UNTILLED:
 		return false
-	if last_watered_day == current_day:
+	if last_watered_abs_day == current_day:
 		return false
+	last_watered_abs_day = current_day
 	last_watered_day = current_day
 	days_watered += 1
 	return true
@@ -89,7 +92,7 @@ func advance_day(current_day: int, month: int = 0) -> void:
 	if crop == null:
 		return
 	# 缺水判定:连续 2 天没浇水 → 枯死
-	if last_watered_day >= 0 and current_day - last_watered_day > 2:
+	if last_watered_abs_day >= 0 and current_day - last_watered_abs_day > 2:
 		state = State.DEAD
 		dead_reason = "缺水"
 		return
@@ -127,6 +130,10 @@ func harvest() -> Dictionary:
 	state = State.FALLOW
 	crop_id = ""
 	days_grown = 0.0
+	days_watered = 0
+	last_watered_day = -1
+	last_watered_abs_day = -1
+	sown_month = 0
 	return result
 
 ## 清除死株
@@ -136,6 +143,10 @@ func clear_dead() -> bool:
 	state = State.TILLED
 	crop_id = ""
 	days_grown = 0.0
+	days_watered = 0
+	last_watered_day = -1
+	last_watered_abs_day = -1
+	sown_month = 0
 	dead_reason = ""
 	return true
 
@@ -154,7 +165,9 @@ func to_dict() -> Dictionary:
 	return {
 		"index": index, "state": state, "crop_id": crop_id,
 		"days_grown": days_grown, "days_watered": days_watered,
-		"last_watered_day": last_watered_day, "dead_reason": dead_reason,
+		"last_watered_day": last_watered_day,
+		"last_watered_abs_day": last_watered_abs_day,
+		"dead_reason": dead_reason,
 		"sown_month": sown_month, "autumn_plowed": autumn_plowed,
 	}
 
@@ -165,6 +178,7 @@ static func from_dict(d: Dictionary) -> FarmPlot:
 	p.days_grown = float(d.get("days_grown", 0.0))
 	p.days_watered = int(d.get("days_watered", 0))
 	p.last_watered_day = int(d.get("last_watered_day", -1))
+	p.last_watered_abs_day = int(d.get("last_watered_abs_day", p.last_watered_day))
 	p.dead_reason = String(d.get("dead_reason", ""))
 	p.sown_month = int(d.get("sown_month", 0))
 	p.autumn_plowed = bool(d.get("autumn_plowed", false))

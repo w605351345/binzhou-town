@@ -30,6 +30,11 @@ import re
 import subprocess
 import sys
 import time
+
+# 控制台编码未必是 UTF-8(Windows 默认 cp1252),打印中文会抛 UnicodeEncodeError
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
 import urllib.error
 import urllib.request
 from pathlib import Path

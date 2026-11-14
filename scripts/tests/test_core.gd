@@ -665,17 +665,21 @@ func _load_json(path: String) -> Dictionary:
 	return parsed
 
 func test_scene_router() -> void:
-	print("\n[20] 场景路由(4 地点)")
+	print("\n[20] 场景路由(v5 11 地点)")
 	check("L01 农场路径正确",
-		SceneRouter.scene_path("L01") == "res://scenes/farm.tscn")
-	check("L02 镇大街路径正确",
-		SceneRouter.scene_path("L02") == "res://scenes/town_street.tscn")
-	check("L03 邮局已登记", SceneRouter.scene_path("L03") != "")
-	check("L04 古戏台已登记", SceneRouter.scene_path("L04") != "")
+		SceneRouter.scene_path("L01") == "res://scenes/locations/L01.tscn")
+	check("L02 农舍路径正确",
+		SceneRouter.scene_path("L02") == "res://scenes/locations/L02.tscn")
+	check("L03 镇中心路径正确",
+		SceneRouter.scene_path("L03") == "res://scenes/locations/L03.tscn")
+	check("L05 邮局路径正确",
+		SceneRouter.scene_path("L05") == "res://scenes/locations/L05.tscn")
+	check("L11 古戏台已登记", SceneRouter.scene_path("L11") != "")
 	check("未登记地点返回空串", SceneRouter.scene_path("L99") == "")
 	check("地点中文名可取", SceneRouter.location_cn("L01").contains("黑土地"))
-	check("已实装 L01 与 L02", SceneRouter.implemented_locations().size() == 2)
-	check("L03 尚未实装", not SceneRouter.is_implemented("L03"))
+	check("11 个地点全部实装", SceneRouter.implemented_locations().size() == 11)
+	check("L05 邮局已实装", SceneRouter.is_implemented("L05"))
+	check("L11 古戏台已实装", SceneRouter.is_implemented("L11"))
 	# 场景文件必须真实存在
 	for loc in SceneRouter.implemented_locations():
 		var path := SceneRouter.scene_path(loc)
@@ -860,5 +864,10 @@ func test_farm_almanac() -> void:
 		mgr.has_signal("travel_requested"))
 	mgr.free()
 	check("世界场景文件都在",
-		FileAccess.file_exists(SceneRouter.scene_path("L01"))
-		and FileAccess.file_exists(SceneRouter.scene_path("L02")))
+		_all_scene_files_exist())
+
+func _all_scene_files_exist() -> bool:
+	for loc in SceneRouter.implemented_locations():
+		if not FileAccess.file_exists(SceneRouter.scene_path(loc)):
+			return false
+	return true

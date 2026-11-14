@@ -1,0 +1,71 @@
+{
+  "_meta": {"version": "v1.0", "updated": "2026-11-13", "scope": "四季采集点"},
+  "points": [
+    {"key": "L09_reeds_spring", "map_id": "L09", "interactable_id": "river_reeds", "seasons": ["spring", "summer"], "respawn_days": 2, "items": [
+      {"id": "forage_fern", "min": 1, "max": 3, "weight": 70},
+      {"id": "forage_bracken", "min": 1, "max": 2, "weight": 30}
+    ]},
+    {"key": "L09_reeds_autumn", "map_id": "L09", "interactable_id": "river_reeds", "seasons": ["autumn"], "respawn_days": 3, "items": [
+      {"id": "forage_berry", "min": 2, "max": 4, "weight": 100}
+    ]},
+    {"key": "L09_reeds_winter", "map_id": "L09", "interactable_id": "river_reeds", "seasons": ["winter"], "respawn_days": 3, "items": [
+      {"id": "forage_sea_buckthorn", "min": 1, "max": 3, "weight": 100}
+    ]},
+    {"key": "L09_bank_spring", "map_id": "L09", "interactable_id": "river_bank_herbs", "seasons": ["spring"], "respawn_days": 2, "items": [
+      {"id": "forage_dandelion", "min": 1, "max": 3, "weight": 65},
+      {"id": "forage_wild_garlic", "min": 1, "max": 2, "weight": 35}
+    ]},
+    {"key": "L09_bank_summer", "map_id": "L09", "interactable_id": "river_bank_herbs", "seasons": ["summer"], "respawn_days": 2, "items": [
+      {"id": "forage_wild_garlic", "min": 2, "max": 3, "weight": 70},
+      {"id": "forage_burdock", "min": 1, "max": 2, "weight": 30}
+    ]},
+    {"key": "L09_bank_autumn", "map_id": "L09", "interactable_id": "river_bank_herbs", "seasons": ["autumn"], "respawn_days": 3, "items": [
+      {"id": "forage_burdock", "min": 2, "max": 4, "weight": 70},
+      {"id": "forage_sea_buckthorn", "min": 1, "max": 3, "weight": 30}
+    ]},
+    {"key": "L09_bank_winter", "map_id": "L09", "interactable_id": "river_bank_herbs", "seasons": ["winter"], "respawn_days": 3, "items": [
+      {"id": "forage_sea_buckthorn", "min": 2, "max": 4, "weight": 100}
+    ]},
+    {"key": "L09_willow_spring", "map_id": "L09", "interactable_id": "river_willow_flat", "seasons": ["spring"], "respawn_days": 2, "items": [
+      {"id": "forage_fern", "min": 2, "max": 4, "weight": 100}
+    ]},
+    {"key": "L09_willow_summer", "map_id": "L09", "interactable_id": "river_willow_flat", "seasons": ["summer"], "respawn_days": 2, "items": [
+      {"id": "forage_chanterelle", "min": 1, "max": 3, "weight": 100}
+    ]},
+    {"key": "L09_willow_autumn", "map_id": "L09", "interactable_id": "river_willow_flat", "seasons": ["autumn"], "respawn_days": 3, "items": [
+      {"id": "forage_hazelnut", "min": 2, "max": 4, "weight": 100}
+    ]},
+    {"key": "L09_willow_winter", "map_id": "L09", "interactable_id": "river_willow_flat", "seasons": ["winter"], "respawn_days": 2, "items": [
+      {"id": "forage_wood", "min": 1, "max": 3, "weight": 100}
+    ]},
+    {"key": "L10_mushroom", "map_id": "L10", "interactable_id": "forest_mushroom", "seasons": ["summer", "autumn"], "respawn_days": 3, "items": [
+      {"id": "forage_mushroom", "min": 1, "max": 3, "weight": 70},
+      {"id": "forage_chanterelle", "min": 1, "max": 2, "weight": 30}
+    ]},
+    {"key": "L10_wood", "map_id": "L10", "interactable_id": "forest_wood", "seasons": ["spring", "summer", "autumn", "winter"], "respawn_days": 2, "items": [
+      {"id": "forage_wood", "min": 1, "max": 2, "weight": 100}
+    ]},
+    {"key": "L10_nut_autumn", "map_id": "L10", "interactable_id": "forest_nut_grove", "seasons": ["autumn"], "respawn_days": 3, "items": [
+      {"id": "forage_hazelnut", "min": 2, "max": 4, "weight": 55},
+      {"id": "forage_walnut", "min": 1, "max": 3, "weight": 45}
+    ]},
+    {"key": "L10_nut_winter", "map_id": "L10", "interactable_id": "forest_nut_grove", "seasons": ["winter"], "respawn_days": 3, "items": [
+      {"id": "forage_walnut", "min": 1, "max": 3, "weight": 100}
+    ]},
+    {"key": "L10_clearing_spring", "map_id": "L10", "interactable_id": "forest_clearing", "seasons": ["spring"], "respawn_days": 2, "items": [
+      {"id": "forage_fern", "min": 1, "max": 3, "weight": 50},
+      {"id": "forage_dandelion", "min": 1, "max": 3, "weight": 50}
+    ]},
+    {"key": "L10_clearing_summer", "map_id": "L10", "interactable_id": "forest_clearing", "seasons": ["summer"], "respawn_days": 2, "items": [
+      {"id": "forage_bracken", "min": 2, "max": 4, "weight": 60},
+      {"id": "forage_chanterelle", "min": 1, "max": 2, "weight": 40}
+    ]},
+    {"key": "L10_clearing_autumn", "map_id": "L10", "interactable_id": "forest_clearing", "seasons": ["autumn"], "respawn_days": 3, "items": [
+      {"id": "forage_burdock", "min": 1, "max": 3, "weight": 50},
+      {"id": "forage_hazelnut", "min": 1, "max": 3, "weight": 50}
+    ]},
+    {"key": "L10_clearing_winter", "map_id": "L10", "interactable_id": "forest_clearing", "seasons": ["winter"], "respawn_days": 2, "items": [
+      {"id": "forage_wood", "min": 2, "max": 4, "weight": 100}
+    ]}
+  ]
+}

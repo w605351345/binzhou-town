@@ -128,6 +128,567 @@
       "icon": "res://assets/sprites/items/material_salt.png",
       "desc": "腌菜用,一缸酸菜少不了它",
       "mvp": false
+    },
+    {
+      "id": "forage_mushroom",
+      "name": "榛蘑",
+      "category": "food",
+      "buy_price": 18,
+      "sell_price": 9,
+      "desc": "桦树林腐木上的一窝小伞，晒干了炖小鸡最香",
+      "mvp": false
+    },
+    {
+      "id": "forage_berry",
+      "name": "山葡萄",
+      "category": "food",
+      "buy_price": 14,
+      "sell_price": 7,
+      "desc": "河岸边的野果，酸得人眯眼，酿酒正合适",
+      "mvp": false
+    },
+    {
+      "id": "forage_fern",
+      "name": "刺老芽",
+      "category": "food",
+      "buy_price": 16,
+      "sell_price": 8,
+      "desc": "春天冒头的嫩芽，焯水蘸酱，是山里人的一口鲜",
+      "mvp": false
+    },
+    {
+      "id": "forage_wood",
+      "name": "干柴",
+      "category": "material",
+      "buy_price": 8,
+      "sell_price": 4,
+      "desc": "桦树林里拾的倒木，塞进火炕能烧半宿",
+      "mvp": false
+    },
+    {
+      "id": "fish_crucian",
+      "name": "鲫鱼",
+      "category": "food",
+      "buy_price": 24,
+      "sell_price": 12,
+      "desc": "河湾里最常见的小鱼，炖豆腐最鲜",
+      "mvp": false
+    },
+    {
+      "id": "fish_carp",
+      "name": "鲤鱼",
+      "category": "food",
+      "buy_price": 38,
+      "sell_price": 19,
+      "desc": "秋膘肥厚，铁锅炖鱼贴饼子少不了它",
+      "mvp": false
+    },
+    {
+      "id": "fish_pike",
+      "name": "狗鱼",
+      "category": "food",
+      "buy_price": 46,
+      "sell_price": 23,
+      "desc": "河水冷，鱼肉紧，老渔民说这鱼有脾气",
+      "mvp": false
+    },
+    {
+      "id": "fish_mandarin",
+      "name": "鳌花",
+      "category": "food",
+      "buy_price": 70,
+      "sell_price": 35,
+      "desc": "河里的稀罕物，清蒸才不糟践",
+      "mvp": false
+    },
+    {
+      "id": "food_mushroom_stew",
+      "name": "小鸡炖蘑菇",
+      "category": "food",
+      "buy_price": 55,
+      "sell_price": 26,
+      "energy": 40,
+      "desc": "榛蘑吸饱了汤，掀锅盖时满屋都是山里的味儿",
+      "mvp": false
+    },
+    {
+      "id": "food_fish_stew",
+      "name": "铁锅炖鱼",
+      "category": "food",
+      "buy_price": 60,
+      "sell_price": 30,
+      "energy": 36,
+      "desc": "鱼汤咕嘟着，锅边贴一圈苞米面饼子",
+      "mvp": false
+    },
+    {
+      "id": "food_fern_salad",
+      "name": "凉拌刺老芽",
+      "category": "food",
+      "buy_price": 32,
+      "sell_price": 15,
+      "energy": 24,
+      "desc": "焯过水的山野菜，拌上蒜末，是一口春天",
+      "mvp": false
+    },
+    {
+      "id": "food_millet_porridge",
+      "name": "小米粥",
+      "category": "food",
+      "buy_price": 22,
+      "sell_price": 10,
+      "energy": 28,
+      "desc": "熬出米油的热粥，胃里暖了，人也踏实",
+      "mvp": false
+    },
+    {
+      "id": "forage_bracken",
+      "name": "蕨菜",
+      "category": "food",
+      "buy_price": 15,
+      "sell_price": 7,
+      "desc": "春末夏初的山蕨菜，焯水晒干能吃到冬天",
+      "mvp": false
+    },
+    {
+      "id": "forage_dandelion",
+      "name": "婆婆丁",
+      "category": "food",
+      "buy_price": 10,
+      "sell_price": 5,
+      "desc": "开春第一口苦味，蘸酱吃最下火",
+      "mvp": false
+    },
+    {
+      "id": "forage_wild_garlic",
+      "name": "山韭菜",
+      "category": "food",
+      "buy_price": 12,
+      "sell_price": 6,
+      "desc": "河滩边一丛丛的野韭菜，包饺子有冲劲儿",
+      "mvp": false
+    },
+    {
+      "id": "forage_burdock",
+      "name": "牛蒡根",
+      "category": "food",
+      "buy_price": 14,
+      "sell_price": 7,
+      "desc": "埋在土里的长根，切片炖汤带一点回甘",
+      "mvp": false
+    },
+    {
+      "id": "forage_chanterelle",
+      "name": "黄蘑",
+      "category": "food",
+      "buy_price": 22,
+      "sell_price": 11,
+      "desc": "雨后林子里亮黄的一小簇，鲜得不用放味精",
+      "mvp": false
+    },
+    {
+      "id": "forage_hazelnut",
+      "name": "榛子",
+      "category": "food",
+      "buy_price": 20,
+      "sell_price": 10,
+      "desc": "榛柴棵子下捡的秋果，炒熟了一咬满口香",
+      "mvp": false
+    },
+    {
+      "id": "forage_walnut",
+      "name": "山核桃",
+      "category": "food",
+      "buy_price": 24,
+      "sell_price": 12,
+      "desc": "壳厚仁香，砸开时得垫块石头",
+      "mvp": false
+    },
+    {
+      "id": "forage_sea_buckthorn",
+      "name": "沙棘",
+      "category": "food",
+      "buy_price": 18,
+      "sell_price": 9,
+      "desc": "雪后枝头一挂金红，酸得人直眯眼",
+      "mvp": false
+    },
+    {
+      "id": "fish_catfish",
+      "name": "鲶鱼",
+      "category": "food",
+      "buy_price": 42,
+      "sell_price": 21,
+      "desc": "夏夜河湾里的胖家伙，炖豆腐最见功夫",
+      "mvp": false
+    },
+    {
+      "id": "fish_perch",
+      "name": "五道黑",
+      "category": "food",
+      "buy_price": 36,
+      "sell_price": 18,
+      "desc": "身上五道黑纹，肉紧刺少，煎着吃香",
+      "mvp": false
+    },
+    {
+      "id": "fish_smelt",
+      "name": "黄瓜香",
+      "category": "food",
+      "buy_price": 28,
+      "sell_price": 14,
+      "desc": "开春洄游的小鱼，闻着有股黄瓜清香",
+      "mvp": false
+    },
+    {
+      "id": "fish_sturgeon",
+      "name": "鲟鱼",
+      "category": "food",
+      "buy_price": 120,
+      "sell_price": 60,
+      "desc": "河湾里的稀客，老渔民一年也碰不上几回",
+      "mvp": false
+    },
+    {
+      "id": "millet",
+      "name": "小米",
+      "category": "material",
+      "buy_price": 10,
+      "sell_price": 5,
+      "desc": "金黄的小粒粮，熬粥最养人",
+      "mvp": false
+    },
+    {
+      "id": "material_tofu",
+      "name": "豆腐",
+      "category": "material",
+      "buy_price": 12,
+      "sell_price": 6,
+      "desc": "卤水点的老豆腐，炖鱼炖菜都压得住",
+      "mvp": false
+    },
+    {
+      "id": "material_vermicelli",
+      "name": "粉条",
+      "category": "material",
+      "buy_price": 14,
+      "sell_price": 7,
+      "desc": "土豆粉压的宽粉，泡软了下锅最吸汤",
+      "mvp": false
+    },
+    {
+      "id": "material_sugar",
+      "name": "红糖",
+      "category": "material",
+      "buy_price": 9,
+      "sell_price": 4,
+      "desc": "熬果酱、煮甜汤都少不了一块",
+      "mvp": false
+    },
+    {
+      "id": "food_catfish_tofu",
+      "name": "鲶鱼炖豆腐",
+      "category": "food",
+      "buy_price": 62,
+      "sell_price": 30,
+      "energy": 44,
+      "desc": "鱼肥豆腐嫩，锅边一圈金黄的油泡",
+      "mvp": false
+    },
+    {
+      "id": "food_sauerkraut_noodles",
+      "name": "酸菜炖粉条",
+      "category": "food",
+      "buy_price": 48,
+      "sell_price": 23,
+      "energy": 38,
+      "desc": "酸香直往鼻子里钻，粉条滑溜溜",
+      "mvp": false
+    },
+    {
+      "id": "food_corn_porridge",
+      "name": "大碴粥",
+      "category": "food",
+      "buy_price": 30,
+      "sell_price": 14,
+      "energy": 32,
+      "desc": "大碴子熬得开花，配咸菜能连喝两碗",
+      "mvp": false
+    },
+    {
+      "id": "food_crucian_tofu_soup",
+      "name": "鲫鱼豆腐汤",
+      "category": "food",
+      "buy_price": 44,
+      "sell_price": 21,
+      "energy": 30,
+      "desc": "奶白的汤，鲜得人想把碗底也舔干净",
+      "mvp": false
+    },
+    {
+      "id": "food_hazelnut_porridge",
+      "name": "榛子小米粥",
+      "category": "food",
+      "buy_price": 38,
+      "sell_price": 18,
+      "energy": 34,
+      "desc": "坚果香混着米香，一早喝下去浑身热乎",
+      "mvp": false
+    },
+    {
+      "id": "food_grape_jam",
+      "name": "山葡萄果酱",
+      "category": "food",
+      "buy_price": 34,
+      "sell_price": 16,
+      "energy": 16,
+      "desc": "紫黑色的果酱，酸甜里带着山风",
+      "mvp": false
+    },
+    {
+      "id": "food_pear_soup",
+      "name": "冻梨甜汤",
+      "category": "food",
+      "buy_price": 26,
+      "sell_price": 12,
+      "energy": 20,
+      "desc": "冻梨化开煮成汤，凉甜解燥",
+      "mvp": false
+    },
+    {
+      "id": "food_seabuckthorn_juice",
+      "name": "沙棘汁",
+      "category": "food",
+      "buy_price": 30,
+      "sell_price": 14,
+      "energy": 22,
+      "desc": "金红的一杯，酸得精神一振",
+      "mvp": false
+    },
+    {
+      "id": "gift_sunflower_seeds",
+      "name": "烤葵花籽",
+      "category": "gift",
+      "buy_price": 18,
+      "sell_price": 8,
+      "desc": "铁锅炒得焦香，装一小口袋，盘账时一颗一颗嗑",
+      "mvp": true
+    },
+    {
+      "id": "gift_tofu_brain",
+      "name": "豆腐脑",
+      "category": "gift",
+      "buy_price": 20,
+      "sell_price": 9,
+      "desc": "卤子咸香，趁热端过去，碗边还冒着白气",
+      "mvp": true
+    },
+    {
+      "id": "gift_ledger",
+      "name": "耐用账本",
+      "category": "gift",
+      "buy_price": 65,
+      "sell_price": 28,
+      "desc": "硬壳布面，翻不烂，夹得住粮站一整年的秤单",
+      "mvp": true
+    },
+    {
+      "id": "gift_fountain_pen",
+      "name": "好钢笔",
+      "category": "gift",
+      "buy_price": 80,
+      "sell_price": 34,
+      "desc": "笔尖顺滑，写小字也不洇，适合把账记清楚",
+      "mvp": true
+    },
+    {
+      "id": "gift_tea_leaves",
+      "name": "茶叶",
+      "category": "gift",
+      "buy_price": 35,
+      "sell_price": 15,
+      "desc": "纸包里的碎茶，抓一撮能泡一下午",
+      "mvp": true
+    },
+    {
+      "id": "gift_hot_tea",
+      "name": "热茶",
+      "category": "gift",
+      "buy_price": 18,
+      "sell_price": 8,
+      "desc": "搪瓷缸里泡好的浓茶，用棉布裹着送过去还不凉",
+      "mvp": true
+    },
+    {
+      "id": "gift_stamps",
+      "name": "邮票",
+      "category": "gift",
+      "buy_price": 30,
+      "sell_price": 12,
+      "desc": "几种旧版式混在一起，边角压得平平整整",
+      "mvp": true
+    },
+    {
+      "id": "gift_hot_soup",
+      "name": "热汤",
+      "category": "gift",
+      "buy_price": 22,
+      "sell_price": 10,
+      "desc": "用厚布包着保温，走到邮局还烫手",
+      "mvp": true
+    },
+    {
+      "id": "gift_old_newspaper",
+      "name": "旧报纸",
+      "category": "gift",
+      "buy_price": 12,
+      "sell_price": 5,
+      "desc": "几年前的报到，包东西、糊墙、闲时翻翻都行",
+      "mvp": true
+    },
+    {
+      "id": "gift_knee_pads",
+      "name": "护膝",
+      "category": "gift",
+      "buy_price": 55,
+      "sell_price": 24,
+      "desc": "厚棉缝的，走雪路能挡一层寒气",
+      "mvp": true
+    },
+    {
+      "id": "gift_hawthorn",
+      "name": "山楂",
+      "category": "gift",
+      "buy_price": 16,
+      "sell_price": 7,
+      "desc": "红得发亮，酸口开胃，做糖葫芦也合适",
+      "mvp": true
+    },
+    {
+      "id": "gift_clay_bowl",
+      "name": "粗陶碗",
+      "category": "gift",
+      "buy_price": 45,
+      "sell_price": 20,
+      "desc": "胎厚，盛热汤不烫手，磕一下也不心疼",
+      "mvp": true
+    },
+    {
+      "id": "gift_kitchen_knife",
+      "name": "好用菜刀",
+      "category": "gift",
+      "buy_price": 95,
+      "sell_price": 40,
+      "desc": "刀背沉，刃口顺，剁骨头、切酸菜都不费劲",
+      "mvp": true
+    },
+    {
+      "id": "gift_good_lumber",
+      "name": "好木料",
+      "category": "gift",
+      "buy_price": 70,
+      "sell_price": 30,
+      "desc": "干透了的老榆木，纹理直，敲起来声音清",
+      "mvp": true
+    },
+    {
+      "id": "gift_old_tools",
+      "name": "旧工具",
+      "category": "gift",
+      "buy_price": 40,
+      "sell_price": 16,
+      "desc": "一把用旧的刨子，铁口还锋利，木柄磨得发亮",
+      "mvp": true
+    },
+    {
+      "id": "gift_nails",
+      "name": "铁钉",
+      "category": "gift",
+      "buy_price": 14,
+      "sell_price": 6,
+      "desc": "大小一对，装在纸包里，敲进木头不弯",
+      "mvp": true
+    },
+    {
+      "id": "gift_work_gloves",
+      "name": "结实手套",
+      "category": "gift",
+      "buy_price": 38,
+      "sell_price": 16,
+      "desc": "厚帆布掌心，搬木料时不容易磨破",
+      "mvp": true
+    },
+    {
+      "id": "gift_strong_tea",
+      "name": "烈性茶",
+      "category": "gift",
+      "buy_price": 32,
+      "sell_price": 14,
+      "desc": "抓一把就苦，干冷天喝下去，人立刻醒透",
+      "mvp": true
+    },
+    {
+      "id": "gift_medical_book",
+      "name": "医学书",
+      "category": "gift",
+      "buy_price": 90,
+      "sell_price": 38,
+      "desc": "书脊有些裂，里面夹着前主人画满的批注",
+      "mvp": true
+    },
+    {
+      "id": "gift_clean_towel",
+      "name": "干净毛巾",
+      "category": "gift",
+      "buy_price": 24,
+      "sell_price": 10,
+      "desc": "洗得发白，晒过太阳，闻着有皂角味",
+      "mvp": true
+    },
+    {
+      "id": "gift_hawthorn_can",
+      "name": "山楂罐头",
+      "category": "gift",
+      "buy_price": 34,
+      "sell_price": 15,
+      "desc": "玻璃瓶里泡着红果，甜水清亮，病人也吃得下",
+      "mvp": true
+    },
+    {
+      "id": "gift_good_pen",
+      "name": "好用的笔",
+      "category": "gift",
+      "buy_price": 28,
+      "sell_price": 12,
+      "desc": "写病历、抄药名都顺手，笔帽扣得紧",
+      "mvp": true
+    },
+    {
+      "id": "gift_opera_script",
+      "name": "二人转唱本",
+      "category": "gift",
+      "buy_price": 48,
+      "sell_price": 20,
+      "desc": "旧唱本，页角卷起，慢板处还留着铅笔打的拍子",
+      "mvp": true
+    },
+    {
+      "id": "gift_old_record",
+      "name": "旧唱片",
+      "category": "gift",
+      "buy_price": 42,
+      "sell_price": 18,
+      "desc": "黑胶面上有几道细痕，放起来略带沙沙声",
+      "mvp": true
+    },
+    {
+      "id": "gift_strings",
+      "name": "琴弦",
+      "category": "gift",
+      "buy_price": 36,
+      "sell_price": 15,
+      "desc": "一束新弦，拿在手里还带着纸包的干爽",
+      "mvp": true
     }
   ],
   "crop_buy_prices": [

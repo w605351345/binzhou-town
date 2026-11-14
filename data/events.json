@@ -1,0 +1,496 @@
+{
+  "_meta": {
+    "version": "v1.0",
+    "updated": "2026-11-13",
+    "scope": "六名 NPC × 三段好感事件。事件文字以 docs/BZC-人物圣经-v5.md 为准。",
+    "note": "lines 直接交给 DialogueRunner 运行；requires_events 保证一段一段递进；done_days 用于事件之间的等待。"
+  },
+  "events": [
+    {
+      "id": "zhang_e1", "npc_id": "zhang_xiaofang", "title": "空秤",
+      "affection_min": 20, "location_id": "L03",
+      "seasons": ["spring", "autumn"], "time_from": "19:00", "time_to": "21:00",
+      "priority": 10,
+      "lines": [
+        {"id": "open", "text": "镇中心早没人了，粮站的秤却还在响。张晓芳蹲在秤台边，一格一格校着空秤。她听见脚步，先把算盘往围裙里塞。", "options": [
+          {"text": "这么晚还校秤？", "next": "why"},
+          {"text": "我帮你扶秤杆。", "next": "help"},
+          {"text": "不打扰了，你忙。", "next": "leave"}
+        ]},
+        {"id": "why", "text": "“白天人多，秤不准，人家当面不说，背后能说一年。”她拿袖口擦掉秤星上的灰，“我十二岁那年就听过一回。”", "options": [
+          {"text": "那不是你的错。", "next": "stay"},
+          {"text": "你记得谁说的？", "next": "name"}
+        ]},
+        {"id": "name", "text": "她报了一个名字，又立刻摇头：“算了。人家也老了。记着没意思。”秤杆一沉，她把砝码重新拨回去。", "options": [
+          {"text": "我陪你校完这杆。", "next": "stay", "action": "add_affection", "data": {"amount": 4}}
+        ]},
+        {"id": "help", "text": "她愣了一下，还是把秤杆另一头递过来。两个人谁都没说话，只有铁秤砣碰木头的轻响。校完，她说：“你这人，手稳。”", "options": [
+          {"text": "明天还来吗？", "next": "stay"},
+          {"text": "走了。", "next": null, "action": "set_flag", "data": {"flag": "zhang_e1_helped", "value": true}}
+        ]},
+        {"id": "stay", "text": "“别跟旁人说。”她把校好的秤锁进柜子，又回头补一句，“明天来收粮，我给你留头一秤。”", "options": [
+          {"text": "记住了。", "next": null, "action": "set_flag", "data": {"flag": "zhang_e1_helped", "value": true}}
+        ]},
+        {"id": "leave", "text": "她点点头，没有留你。走出几步，身后的秤又响了一下，像谁在空屋里轻轻叹气。", "options": [
+          {"text": "回头看一眼。", "next": null, "action": "set_flag", "data": {"flag": "zhang_e1_left", "value": true}}
+        ]}
+      ]
+    },
+    {
+      "id": "zhang_e2", "npc_id": "zhang_xiaofang", "title": "开仓",
+      "affection_min": 50, "location_id": "L03",
+      "seasons": ["autumn"], "time_from": "18:00", "time_to": "22:00",
+      "requires_events": ["zhang_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "秋霜还有几天。粮站本该关门，仓门却开着一道缝。张晓芳站在灯下，面前排着几户没预约的粮车。“机器热着，顺手。”她说得很轻。", "options": [
+          {"text": "你是在替大家抢霜前。", "next": "truth"},
+          {"text": "这不合规矩。", "next": "rule"},
+          {"text": "我帮你记账。", "next": "ledger"}
+        ]},
+        {"id": "truth", "text": "“霜一下来，他们一年就白干了。”她盯着账本，“我收，按正常价，一分不占。可你要说我搞特殊，我也认。”", "options": [
+          {"text": "今晚没人会说你搞特殊。", "next": "end_help", "action": "set_flag", "data": {"flag": "zhang_e2_open", "value": true}}
+        ]},
+        {"id": "rule", "text": "她沉默很久，把仓门重新关上。外面的农户没有吵，只把车往回赶。她背对着你，声音发硬：“规矩就是规矩。”", "options": [
+          {"text": "我陪你守完这班。", "next": "end_rule", "action": "set_flag", "data": {"flag": "zhang_e2_rule", "value": true}}
+        ]},
+        {"id": "ledger", "text": "你报数，她复秤。写到第三页，她忽然说：“我爹当年也这么记过。后来账丢了，人就说不清了。”她没有抬头，笔尖却停了半拍。", "options": [
+          {"text": "这次账不会丢。", "next": "end_help", "action": "set_flag", "data": {"flag": "zhang_e2_open", "value": true}}
+        ]},
+        {"id": "end_help", "text": "最后一车粮卸完，她把仓门锁好，钥匙在掌心攥得发热。“明天要是有人问，你就说没看见。”说完自己先笑了。", "options": [{"text": "我什么也没看见。", "next": null}]},
+        {"id": "end_rule", "text": "灯灭以后，她还在门口站了很久。你听见她小声说：“要是当年也有人替我担一回就好了。”", "options": [{"text": "明天再来。", "next": null}]}
+      ]
+    },
+    {
+      "id": "zhang_e3", "npc_id": "zhang_xiaofang", "title": "旧账",
+      "affection_min": 80, "location_id": "L05",
+      "seasons": ["winter"], "time_from": "15:00", "time_to": "19:00",
+      "requires_events": ["zhang_e2"], "priority": 30,
+      "lines": [
+        {"id": "open", "text": "韩守义把一只发黄的信封推到你面前，又把手收回去。“这信我不能替她拆。”门外，张晓芳站在雪地里，围巾上落了一层白，没有进来。", "options": [
+          {"text": "把信拿给她。", "next": "give"},
+          {"text": "先问韩叔，信里是什么。", "next": "ask"},
+          {"text": "让她自己决定。", "next": "wait"}
+        ]},
+        {"id": "ask", "text": "“她爹走那年写的。按说早该到。”韩守义摘下眼镜擦了很久，“可有些信，晚到二十年，就不一定是好消息。”", "options": [
+          {"text": "那更该让她知道。", "next": "give"},
+          {"text": "先陪她在门外站一会儿。", "next": "wait"}
+        ]},
+        {"id": "give", "text": "张晓芳没有接。她先问：“没拆过？”得到回答后，才用两根手指捏住信封，像捏着一块烫铁。“我不识字。”她说。你看见她另一只手在抖。", "options": [
+          {"text": "我念给你听。", "next": "read", "action": "set_flag", "data": {"flag": "zhang_e3_read", "value": true}},
+          {"text": "你明天再拆也行。", "next": "later"}
+        ]},
+        {"id": "read", "text": "信只有半页。父亲说当年没脸回来，说那本旧账不是她的错，也说“别学我，别一辈子替别人记账”。张晓芳听完，先把信折回原样，才哭。", "options": [
+          {"text": "她哭得很轻。", "next": "after"}
+        ]},
+        {"id": "wait", "text": "你们在屋檐下站到雪停了。她最终把信放进围裙内袋：“先不拆。不是怕，是想等自己愿意的时候。”韩守义在门里点了点头。", "options": [
+          {"text": "那就等。", "next": "after", "action": "set_flag", "data": {"flag": "zhang_e3_wait", "value": true}}
+        ]},
+        {"id": "later", "text": "她把信贴身收好，转身去扫邮局门口的雪。扫到一半停下，说：“谢谢你没替我拆。”", "options": [
+          {"text": "这是你的信。", "next": "after", "action": "set_flag", "data": {"flag": "zhang_e3_wait", "value": true}}
+        ]},
+        {"id": "after", "text": "第二天，粮站墙上多了一张旧照片。照片里的秤还是那杆秤，人却都年轻。张晓芳从那天起不再连夜校空秤，但每次收粮，仍会复秤。", "options": [{"text": "这样就好。", "next": null}]}
+      ]
+    },
+    {
+      "id": "han_e1", "npc_id": "han_shouyi", "title": "死信",
+      "affection_min": 20, "location_id": "L05",
+      "seasons": ["spring", "summer", "autumn", "winter"],
+      "time_from": "18:00", "time_to": "21:00", "weather": ["rain", "snow"],
+      "priority": 10,
+      "lines": [
+        {"id": "open", "text": "你进屋避雨，韩守义正在分拣一叠退回的信。最上面那封没有收件人，只有四个字：守礼亲启。他把信压在掌下，像怕被风吹走。", "options": [
+          {"text": "守礼是谁？", "next": "brother"},
+          {"text": "要帮你送出去吗？", "next": "send"},
+          {"text": "我先不问了。", "next": "silence"}
+        ]},
+        {"id": "brother", "text": "“我弟弟。”他停了一下，“按说也不该叫弟弟了，三十年没见。地址换了，人也换了。”他笑笑，把信塞回死信盒。", "options": [
+          {"text": "信为什么没寄？", "next": "why"},
+          {"text": "地址能查。", "next": "address"}
+        ]},
+        {"id": "why", "text": "“当年我娘病着，我留下，他走了。后来我写了很多封，写完就骂自己没出息。”他顿了顿，“信送到了就行，人不回来也没啥。”这句话说得很顺，像背了三十年。", "options": [
+          {"text": "你想让他回来。", "next": "end_truth", "action": "set_flag", "data": {"flag": "han_e1_read", "value": true}}
+        ]},
+        {"id": "address", "text": "他从柜台下摸出一张旧纸，南方工厂的宿舍地址已经让雨水洇开。“问过，拆了。”", "options": [
+          {"text": "那就再写一封。", "next": "end_truth", "action": "set_flag", "data": {"flag": "han_e1_read", "value": true}}
+        ]},
+        {"id": "send", "text": "他把信封翻过来，背面写着一行没寄出的日期。墨迹新旧叠在一起。“不急。按说，不急。”", "options": [
+          {"text": "我等你。", "next": "end_wait", "action": "set_flag", "data": {"flag": "han_e1_leave", "value": true}}
+        ]},
+        {"id": "silence", "text": "你们听着雨点敲窗。过了很久，他说：“这镇上的人，都把话写在纸上。纸比人可靠。”", "options": [
+          {"text": "可人也会等纸。", "next": "end_wait", "action": "set_flag", "data": {"flag": "han_e1_leave", "value": true}}
+        ]},
+        {"id": "end_truth", "text": "临走时，他把你送到门口，忽然问：“你下回进城，能帮我看看邮局有没有旧地址簿吗？”这是今晚第一句不像遗言的话。", "options": [{"text": "能。", "next": null}]},
+        {"id": "end_wait", "text": "死信盒没有关严。你走到街口回头，看见邮局还亮着灯，窗上是一个人低头的影子。", "options": [{"text": "明天再来。", "next": null}]}
+      ]
+    },
+    {
+      "id": "han_e2", "npc_id": "han_shouyi", "title": "地址",
+      "affection_min": 50, "location_id": "L05",
+      "seasons": ["spring"], "time_from": "15:00", "time_to": "18:00",
+      "weather": ["rain"], "requires_events": ["han_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "雨把邮局玻璃糊成毛玻璃。韩守义对着一张旧地址单发呆，地址是南方一座工厂的宿舍，旁边用铅笔写了三个“已拆”。", "options": [
+          {"text": "我托人问到了新地址。", "next": "new_address"},
+          {"text": "也许该放下了。", "next": "let_go"},
+          {"text": "这封信我来寄。", "next": "post"}
+        ]},
+        {"id": "new_address", "text": "他没有立刻接，先把手在裤子上擦了擦。纸被捏出一个角。“人还在？”他问的是弟弟，眼睛却看着窗外。", "options": [
+          {"text": "还在。地址是真的。", "next": "write", "action": "set_flag", "data": {"flag": "han_e2_sent", "value": true}}
+        ]},
+        {"id": "let_go", "text": "“放下”两个字让他沉默了很久。“我替我娘守了三十年门，门里的人走光了，我还站在门后头。”他把旧地址单折成很小一块。", "options": [
+          {"text": "门也可以为自己开。", "next": "write"},
+          {"text": "不寄也没关系。", "next": "end_not", "action": "set_flag", "data": {"flag": "han_e2_not_sent", "value": true}}
+        ]},
+        {"id": "post", "text": "他摇头：“这封我自己来。你替我看着封口就行。”", "options": [
+          {"text": "我替你看着。", "next": "write", "action": "set_flag", "data": {"flag": "han_e2_sent", "value": true}}
+        ]},
+        {"id": "write", "text": "他写了不到十行，撕掉三次。最后只剩一句：“守礼，地址变了，人要是还在，回个话。”他把信投进邮袋，手在袋口停了一下。", "options": [
+          {"text": "会到的。", "next": null}
+        ]},
+        {"id": "end_not", "text": "他把旧地址单放进死信盒，压在从前那些草稿下面。“雨停了。”他说。可雨其实还在下。", "options": [{"text": "陪你坐一会儿。", "next": null}]}
+      ]
+    },
+    {
+      "id": "han_e3", "npc_id": "han_shouyi", "title": "回音",
+      "affection_min": 80, "location_id": "L05",
+      "seasons": ["autumn", "winter"], "time_from": "15:00", "time_to": "19:00",
+      "requires_events": ["han_e2"], "days_since_event_min": 3,
+      "days_since_event_max": 7, "priority": 30,
+      "lines": [
+        {"id": "open", "text": "柜台上放着一封南方寄来的信。韩守义没有拆。他说：“你念。我眼睛花。”但你看见他把眼镜擦了三遍。", "options": [
+          {"text": "我念。", "next": "read"},
+          {"text": "你自己拆，我等着。", "next": "self"}
+        ]},
+        {"id": "read", "text": "信很短：哥，我地址变了，下次别寄旧地方。没有道歉，也没有长谈。信封里夹着一张近照，照片上的弟弟也老了，身后站着一家人。", "options": [
+          {"text": "他还在。", "next": "after"},
+          {"text": "要回信吗？", "next": "reply"}
+        ]},
+        {"id": "self", "text": "他拆得很慢，读完把信放在柜台上，又拿起来读第二遍。最后说：“这小子，还是不会写信。”声音却轻得像怕把纸吹破。", "options": [
+          {"text": "照片给我看看。", "next": "after"}
+        ]},
+        {"id": "reply", "text": "他抽出一张明信片，正面是雪后的戏台。“我字不好看，你给我写。”你写一句，他念一句。最后他坚持添上：“家里都好。”", "options": [
+          {"text": "这句是实话吗？", "next": "after", "action": "set_flag", "data": {"flag": "han_e3_replied", "value": true}}
+        ]},
+        {"id": "after", "text": "第二天，韩守义把“退休申请”压在柜台玻璃下，又在死信盒上贴了一张新纸：待寄。他开始每天问玩家有没有信要寄，像在练习什么。", "options": [{"text": "慢慢来。", "next": null}]}
+      ]
+    },
+    {
+      "id": "sun_e1", "npc_id": "sun_yumei", "title": "留桌",
+      "affection_min": 20, "location_id": "L06",
+      "seasons": ["spring", "autumn"], "time_from": "14:30", "time_to": "16:00",
+      "priority": 10,
+      "lines": [
+        {"id": "open", "text": "午后饭馆空着，靠窗那张桌却摆着一副干净碗筷。孙玉梅说是给客人留的，可门口没有客人。她把手腕上的膏药往袖子里掖了掖。", "options": [
+          {"text": "这桌是给刘川留的？", "next": "son"},
+          {"text": "我坐这儿行吗？", "next": "sit"},
+          {"text": "碗筷我帮你收。", "next": "clear"}
+        ]},
+        {"id": "son", "text": "“他小时候坐不住，就这个位置能看见门口。”她把碗又摆正一点，“南边厂里忙，今年说不准回。说不准，就是还没定。”", "options": [
+          {"text": "你很想他。", "next": "end_stay"},
+          {"text": "先把这桌给今天的人用吧。", "next": "end_clear"}
+        ]},
+        {"id": "sit", "text": "她立刻把碗筷收走，又拿抹布擦了一遍：“坐，坐。给你下碗面，不要钱。”转身进厨房前，她回头看了看那张空桌。", "options": [
+          {"text": "面少放点，我陪你吃。", "next": "end_stay", "action": "set_flag", "data": {"flag": "sun_e1_stay", "value": true}}
+        ]},
+        {"id": "clear", "text": "她没有拦，只在旁边看着。碗筷收进柜子后，她说：“其实也该收了。留三年，桌角都磨亮了。”", "options": [
+          {"text": "磨亮的是有人等过。", "next": "end_clear", "action": "set_flag", "data": {"flag": "sun_e1_clear", "value": true}}
+        ]},
+        {"id": "end_stay", "text": "面端上来，她在对面坐下，自己却没动筷。“你这人吃饭实在，不挑。”她笑了笑，眼睛先眯起来。", "options": [{"text": "下回还来。", "next": null}]},
+        {"id": "end_clear", "text": "傍晚开门前，她把靠窗桌重新铺好，只是这次摆了两副碗筷。一副给客人，一副给自己。", "options": [{"text": "这样挺好。", "next": null}]}
+      ]
+    },
+    {
+      "id": "sun_e2", "npc_id": "sun_yumei", "title": "失约",
+      "affection_min": 50, "location_id": "L06",
+      "seasons": ["summer", "autumn"], "time_from": "18:00", "time_to": "21:00",
+      "requires_events": ["sun_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "刘川打电话来说今年不回来了。孙玉梅挂了电话，照常开门，做了六个菜，摆满一桌。没有一个客人点这些。她站在灶台前，右手一直没离开过菜刀。", "options": [
+          {"text": "我陪你吃。", "next": "eat"},
+          {"text": "手腕还疼吗？", "next": "wrist"},
+          {"text": "为什么不关门？", "next": "why"}
+        ]},
+        {"id": "why", "text": "“门一关，别人就知道我难受。”她拿起锅铲，又放下，“开门做买卖，难过也得把菜切匀。”", "options": [
+          {"text": "今天可以不切匀。", "next": "wrist"}
+        ]},
+        {"id": "wrist", "text": "她把袖子往上撸了一点，膏药边缘已经翘起。“老毛病。拿锅还行，剁骨头费劲。”她见你盯着，立刻笑，“别跟林小满说。”", "options": [
+          {"text": "我不说，但你得去卫生所。", "next": "six", "action": "set_flag", "data": {"flag": "sun_e2_clinic", "value": true}},
+          {"text": "那今晚我帮你。", "next": "eat", "action": "set_flag", "data": {"flag": "sun_e2_helped", "value": true}}
+        ]},
+        {"id": "eat", "text": "你们把六个菜一样尝了一口。她嫌咸、嫌淡、嫌火大了，最后却说：“其实还行。不是非得等谁来，才叫一顿饭。”", "options": [
+          {"text": "这话你早该说。", "next": "after"}
+        ]},
+        {"id": "six", "text": "她嘴上骂你多管闲事，第二天还是去了卫生所。回来时把靠窗桌的六道菜换成了三道：“两个人也吃得完。”", "options": [{"text": "进步了。", "next": "after"}]},
+        {"id": "after", "text": "打烊后，孙玉梅把剩下的菜分给街坊。她没再给刘川留那桌，但把电话挪到了柜台最顺手的地方。", "options": [{"text": "明天来吃面。", "next": null}]}
+      ]
+    },
+    {
+      "id": "sun_e3", "npc_id": "sun_yumei", "title": "换桌",
+      "affection_min": 80, "location_id": "L06",
+      "seasons": ["winter"], "time_from": "17:00", "time_to": "21:00",
+      "requires_events": ["sun_e2"], "priority": 30,
+      "lines": [
+        {"id": "open", "text": "连锁饭馆的老板刚走，桌上还留着转让合同。孙玉梅把合同压在茶壶下，问你：“你说，我这招牌值多少钱？”", "options": [
+          {"text": "招牌不值钱，你值。", "next": "worth"},
+          {"text": "你想换的不只是招牌吧？", "next": "more"},
+          {"text": "先看看合同条件。", "next": "contract"}
+        ]},
+        {"id": "contract", "text": "合同写得很体面：保留店名，换掉菜单，厨师全部培训上岗。她指着“保留店名”四个字笑了，“他们留的是字，不是我这人。”", "options": [
+          {"text": "那就别签。", "next": "more"},
+          {"text": "可以谈成合伙。", "next": "choose_partner"}
+        ]},
+        {"id": "worth", "text": "她先笑，后来不笑了。“我十九岁学切墩，二十三岁盘下这店。刘川他爸走了以后，我就没想过还能干别的。”", "options": [
+          {"text": "现在可以想。", "next": "more"}
+        ]},
+        {"id": "more", "text": "她从后厨拿出一本旧菜单，最后一页是刘川小时候画的歪字：“妈，长大我给你开大饭馆。”她看了很久，把这一页折下来。", "options": [
+          {"text": "把这一页留给刘川。", "next": "choose_keep", "action": "set_flag", "data": {"flag": "sun_e3_keep", "value": true}},
+          {"text": "把这一页留给新的饭馆。", "next": "choose_new", "action": "set_flag", "data": {"flag": "sun_e3_new", "value": true}},
+          {"text": "让林小满也来听你说。", "next": "choose_partner", "action": "set_flag", "data": {"flag": "sun_e3_partner", "value": true}}
+        ]},
+        {"id": "choose_keep", "text": "她把折下的纸夹进账本。“店先不转。我把菜单改一半，留一半。等哪天刘川回来，让他看看他妈也不是只会等。”", "options": [{"text": "那就改。", "next": null}]},
+        {"id": "choose_new", "text": "她在合同背面写了一行自己的条件，推回给老板。“合伙可以，菜得听我的。我这手腕不剁骨头了，但还拿得动炒勺。”", "options": [{"text": "这才像你。", "next": null}]},
+        {"id": "choose_partner", "text": "林小满赶来时还带着药箱。她一边给孙玉梅换膏药，一边说：“先把手腕养好，店怎么开再谈。”孙玉梅第一次没有顶嘴。", "options": [{"text": "慢慢商量。", "next": null}]}
+      ]
+    },
+    {
+      "id": "zhao_e1", "npc_id": "zhao_changhe", "title": "门轴",
+      "affection_min": 20, "location_id": "L08",
+      "seasons": ["spring"], "time_from": "08:00", "time_to": "11:00",
+      "priority": 10,
+      "lines": [
+        {"id": "open", "text": "赵长河来修农场院门，三下五除二装好，又用脚轻轻踢了踢门框试稳。你拿出坏掉的旧农具，他的手停在半空，指头上的旧疤一下白了。", "options": [
+          {"text": "能修吗？", "next": "fix"},
+          {"text": "不修也行，先喝口茶。", "next": "tea"},
+          {"text": "这疤是打谷机留的？", "next": "scar"}
+        ]},
+        {"id": "fix", "text": "“能修。”他把农具翻过来，先量尺寸，再量一遍。“能修的东西，就别急着造新的。”钉锤落下去，声音很实。", "options": [
+          {"text": "那新东西呢？", "next": "new"},
+          {"text": "修好就成，我不催。", "next": "end_quiet"}
+        ]},
+        {"id": "tea", "text": "他接过茶缸，没喝，只暖着手。“你这院门底下得垫块石头，要不一开春就沉。”说着就弯腰去找石头，像刚才那一停没发生过。", "options": [
+          {"text": "你手还疼吗？", "next": "scar"}
+        ]},
+        {"id": "scar", "text": "他把手往袖子里缩：“老伤，不碍事。”停了一会儿又说，“十年前那台机子，使着使着散了。人不该站前头。”", "options": [
+          {"text": "那也不是你一个人的错。", "next": "new"},
+          {"text": "所以你现在只修不造？", "next": "new"}
+        ]},
+        {"id": "new", "text": "他没有回答，只把修好的农具递给你。“使着看，坏了我再修。新玩意儿，不急。”可他收工具时，手指在木柄上多停了一息。", "options": [
+          {"text": "不急。", "next": "end_quiet", "action": "set_flag", "data": {"flag": "zhao_e1_patient", "value": true}}
+        ]},
+        {"id": "end_quiet", "text": "院门重新合上，门轴没有一丝响。你送他出门，他回头看了看门，又看了看自己的手。", "options": [{"text": "下次再来。", "next": null}]}
+      ]
+    },
+    {
+      "id": "zhao_e2", "npc_id": "zhao_changhe", "title": "手伤",
+      "affection_min": 50, "location_id": "L08",
+      "seasons": ["spring", "autumn"], "time_from": "13:00", "time_to": "18:00",
+      "requires_events": ["zhao_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "赵长河在木工房刨一块厚板，左手一直发抖。木屑落在伤口上，他像没看见。林小满站在门口，药箱还没放下：“你今天又没去卫生所。”", "options": [
+          {"text": "先把手放下。", "next": "stop"},
+          {"text": "林医生都来了，别犟。", "next": "nurse"},
+          {"text": "我们等你处理完再谈。", "next": "wait"}
+        ]},
+        {"id": "stop", "text": "“活等不起。”他说。可刨子推到一半，木板歪了。他盯着那道歪线，很久没动。", "options": [
+          {"text": "人也等不起。", "next": "nurse"},
+          {"text": "今天不干了。", "next": "wait"}
+        ]},
+        {"id": "nurse", "text": "林小满把药箱打开，动作一点不客气。赵长河嘴上说“就破点皮”，手却老老实实伸过去。换药时他问：“会不会影响拿刨子？”", "options": [
+          {"text": "听她的，就能。", "next": "end_care", "action": "set_flag", "data": {"flag": "zhao_e2_treated", "value": true}}
+        ]},
+        {"id": "wait", "text": "他沉默着把刨子挂回墙上，像是交出什么重要的东西。林小满处理伤口时，他一声没吭，等缠好布才说：“明早能干活吗？”", "options": [
+          {"text": "明早先来复查。", "next": "end_care", "action": "set_flag", "data": {"flag": "zhao_e2_treated", "value": true}}
+        ]},
+        {"id": "end_care", "text": "林小满走后，赵长河看着包扎好的手，忽然说：“她跟我闺女差不多大，管起人来倒厉害。”说完自己先咧了咧嘴。", "options": [
+          {"text": "有人管是好事。", "next": null}
+        ]}
+      ]
+    },
+    {
+      "id": "zhao_e3", "npc_id": "zhao_changhe", "title": "上台",
+      "affection_min": 80, "location_id": "L11",
+      "seasons": ["autumn"], "time_from": "14:00", "time_to": "18:00",
+      "requires_events": ["zhao_e2"], "priority": 30,
+      "lines": [
+        {"id": "open", "text": "戏台台板换了一半。赵长河说最后一块必须有人上去踩一踩。第二版打谷机就停在台下，盖布掀开一角，铁件擦得发亮。周德顺在旁边不说话。", "options": [
+          {"text": "我先上台走一圈。", "next": "player_test"},
+          {"text": "让周叔慢慢走一遍。", "next": "zhou_test"},
+          {"text": "赵师傅，你自己上去。", "next": "zhao_test"}
+        ]},
+        {"id": "player_test", "text": "你走到台中央，台板稳得像一块整木。赵长河在台下攥着工具，直到你下来才松手。他摸了摸接缝，没说好，只把工具收回袋里。", "options": [
+          {"text": "稳了。", "next": "after"}
+        ]},
+        {"id": "zhou_test", "text": "周德顺慢慢走了一圈，每一步都踩在节拍上。走到台口，他冲台下说：“赵师傅的手艺，能托住一台戏。”赵长河低头把一块木屑弹开。", "options": [
+          {"text": "听见了吧。", "next": "after", "action": "set_flag", "data": {"flag": "zhao_e3_public", "value": true}}
+        ]},
+        {"id": "zhao_test", "text": "他推了两次，最后还是上了台。只站了三秒就下来，耳朵通红。可第二天，木工房门口第一次挂出了写着他名字的木牌。", "options": [
+          {"text": "三秒也是上台。", "next": "after", "action": "set_flag", "data": {"flag": "zhao_e3_self", "value": true}}
+        ]},
+        {"id": "after", "text": "当晚，第二版打谷机被推到院子里晒太阳。赵长河说还没成，但不再盖油布。戏台支撑成了他公开的作品，木工房招牌重做，底下多了一行小字：修，也造。", "options": [{"text": "等它转起来。", "next": null}]}
+      ]
+    },
+    {
+      "id": "lin_e1", "npc_id": "lin_xiaoman", "title": "手抖",
+      "affection_min": 20, "location_id": "L07",
+      "seasons": ["spring", "summer", "autumn", "winter"],
+      "time_from": "18:00", "time_to": "20:00", "priority": 10,
+      "lines": [
+        {"id": "open", "text": "你干农活时划破了手，来卫生所时天已经黑了。林小满给你清理伤口，手却轻轻抖了一下。她立刻笑：“今天针头不听话。”", "options": [
+          {"text": "你是不是太累了？", "next": "tired"},
+          {"text": "我自己按着就行。", "next": "self"},
+          {"text": "刚才那一下，不像针头。", "next": "honest"}
+        ]},
+        {"id": "tired", "text": "“我一天睡四个小时，够了。”她把纱布绕得很整齐，“你别学我。白天干一天活，晚上还来诊所，铁打的也受不住。”", "options": [
+          {"text": "你也一样。", "next": "honest"},
+          {"text": "那我们一起早点收工。", "next": "end_soft"}
+        ]},
+        {"id": "self", "text": "她没有逞强，把棉签递给你，自己扶着你的手腕。“按紧，别怕疼。疼说明还知道躲。”", "options": [
+          {"text": "你手为什么抖？", "next": "honest"}
+        ]},
+        {"id": "honest", "text": "她停了停，把杯子拧开又拧上。“我妈走那天，我在值夜班。后来每次给人包扎，我都会想，当时要是有人多问一句，会不会不一样。”", "options": [
+          {"text": "那不是你的错。", "next": "end_soft"},
+          {"text": "你可以先照顾好自己。", "next": "end_soft", "action": "set_flag", "data": {"flag": "lin_e1_heard", "value": true}}
+        ]},
+        {"id": "end_soft", "text": "伤口包好，她把你的袖子放下来。门口风很冷，她把自己的旧保温杯塞给你：“路上喝。明天来换药，别自己拆。”", "options": [{"text": "你也早点睡。", "next": null}]}
+      ]
+    },
+    {
+      "id": "lin_e2", "npc_id": "lin_xiaoman", "title": "通知",
+      "affection_min": 50, "location_id": "L09",
+      "seasons": ["autumn"], "time_from": "18:00", "time_to": "21:00",
+      "requires_events": ["lin_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "河岸的风把芦苇压得很低。林小满坐在石头上，手里捏着一封省城医院的进修通知，截止日期就在冬天。她看见你，先把信翻过去。", "options": [
+          {"text": "你要走？", "next": "go"},
+          {"text": "先别收，让我看看。", "next": "read"},
+          {"text": "你其实不想走。", "next": "stay"}
+        ]},
+        {"id": "read", "text": "通知写得很客气：欢迎回来，待遇从优。她把石头边的一颗小石子踢进河里。“他们不是要我，是要一个能值夜班的人。”", "options": [
+          {"text": "那你想做什么？", "next": "want"},
+          {"text": "留下也可以不是逃。", "next": "stay"}
+        ]},
+        {"id": "go", "text": "“镇上留不住人。”她说完又改口，“留不住我。”风把她短发吹乱，她没有去理。", "options": [
+          {"text": "你妈会希望你留下吗？", "next": "mother"},
+          {"text": "你可以自己决定。", "next": "want"}
+        ]},
+        {"id": "mother", "text": "她低下头，很久才说：“我不知道。她最后那段时间，我连她想吃什么都没问过。”", "options": [
+          {"text": "现在问也不晚。问问你自己。", "next": "want"}
+        ]},
+        {"id": "want", "text": "“我想让镇上有个能看病的人。也想证明，我回来不是输了。”她看着河面，“这两件事，有时候是一件事，有时候不是。”", "options": [
+          {"text": "那就先不急着回城。", "next": "end_choose", "action": "set_flag", "data": {"flag": "lin_e2_stay", "value": true}},
+          {"text": "去进修，再回来。", "next": "end_choose", "action": "set_flag", "data": {"flag": "lin_e2_go", "value": true}}
+        ]},
+        {"id": "stay", "text": "她把通知折好，没有塞回口袋，而是放在石头上。“我总说暂住。可我已经把诊室的窗帘换了两次。”", "options": [
+          {"text": "暂住也能住很久。", "next": "end_choose", "action": "set_flag", "data": {"flag": "lin_e2_stay", "value": true}}
+        ]},
+        {"id": "end_choose", "text": "回去时，她把通知借给你拿着。“帮我保管到冬天。不是让你替我选，是让我每天都能看见它，再做决定。”", "options": [{"text": "我替你收着。", "next": null}]}
+      ]
+    },
+    {
+      "id": "lin_e3", "npc_id": "lin_xiaoman", "title": "风雪",
+      "affection_min": 80, "location_id": "L07",
+      "seasons": ["winter"], "time_from": "18:00", "time_to": "22:00",
+      "weather": ["blizzard"], "requires_events": ["lin_e2"], "priority": 40,
+      "lines": [
+        {"id": "open", "text": "暴风雪夜，卫生所的电话同时响了两回：周德顺突然胸闷，省城医院也来催她明天报到。林小满把两件事写在同一张纸上，笔尖把纸戳破了。", "options": [
+          {"text": "我陪你去周叔家。", "next": "go_together"},
+          {"text": "我去叫赵长河帮忙。", "next": "call_zhao"},
+          {"text": "先联系城里医院。", "next": "call_city"}
+        ]},
+        {"id": "go_together", "text": "路上风把话吹碎。她边走边骂：“一个两个都不肯戴助听器，也不肯按时吃药。”骂到周家门口，声音忽然低下去，“我妈最后也是一个人在家。”", "options": [
+          {"text": "这次不是你一个人。", "next": "after", "action": "set_flag", "data": {"flag": "lin_e3_together", "value": true}}
+        ]},
+        {"id": "call_zhao", "text": "赵长河披着棉袄赶来，先把周德顺背到车上，又回头修好卫生所被风刮坏的门。林小满看着门，终于把省城通知塞回抽屉。", "options": [
+          {"text": "先把人安顿好。", "next": "after", "action": "set_flag", "data": {"flag": "lin_e3_community", "value": true}}
+        ]},
+        {"id": "call_city", "text": "省城医院说可以派车，但雪大，得等。林小满没等，拎起药箱就出门：“等他们到，人早凉了。”", "options": [
+          {"text": "我跟你走。", "next": "after", "action": "set_flag", "data": {"flag": "lin_e3_together", "value": true}}
+        ]},
+        {"id": "after", "text": "天亮时，周德顺的呼吸稳了。林小满坐在走廊长椅上，把进修通知摊在膝盖上看了很久，最后写下“延期一年”。她说：“不是牺牲。是我还没把这里的事做完。”", "options": [{"text": "一年很长。", "next": null}]}
+      ]
+    },
+    {
+      "id": "zhou_e1", "npc_id": "zhou_deshun", "title": "扫台",
+      "affection_min": 20, "location_id": "L11",
+      "seasons": ["spring"], "time_from": "14:30", "time_to": "18:00",
+      "priority": 10,
+      "lines": [
+        {"id": "open", "text": "古戏台空着，周德顺一个人扫地。扫到台口，他冲台下喊：“能听见我说话不？”你还没答，他就笑起来：“试回声，试回声。”", "options": [
+          {"text": "能听见，很清楚。", "next": "clear"},
+          {"text": "您是不是听不清？", "next": "ears"},
+          {"text": "我上台帮您扫。", "next": "sweep"}
+        ]},
+        {"id": "clear", "text": "“那就好。”他把扫帚往台边一靠，又突然换了话题，“这台板子一空，脚步声就显大。人一散，连风都像在催场。”", "options": [
+          {"text": "您还想再演一场。", "next": "song"},
+          {"text": "空台也有空台的好。", "next": "quiet"}
+        ]},
+        {"id": "ears", "text": "他没有生气，只把耳朵侧过来：“你再说一遍。”你重复后，他点点头：“年纪大了，声音都往后退。台上锣一响，我就得看人口型。”", "options": [
+          {"text": "让林小满看看耳朵吧。", "next": "song"},
+          {"text": "您可以教孩子，不必自己上场。", "next": "quiet"}
+        ]},
+        {"id": "sweep", "text": "你们一人扫一半。扫到后台，他掀开一块旧布，下面是一摞唱本和一把缺弦的二胡。“都是老东西。”他说，手却没停。", "options": [
+          {"text": "老东西还能唱。", "next": "song"},
+          {"text": "我帮您把弦换上。", "next": "song", "action": "set_flag", "data": {"flag": "zhou_e1_helped", "value": true}}
+        ]},
+        {"id": "song", "text": "他拉了一小段，手指在指板上摸到刻痕才落弓。曲子很短，像有人从很远的地方喊了一声。拉完他问：“还行不？”", "options": [
+          {"text": "行。下次我还来听。", "next": null, "action": "set_flag", "data": {"flag": "zhou_e1_listen", "value": true}}
+        ]},
+        {"id": "quiet", "text": "“人老了，就怕安静。”他把扫帚立回墙角，“不过你说得对，空台也是台。总得有人把它扫干净。”", "options": [{"text": "下次一起扫。", "next": null}]}
+      ]
+    },
+    {
+      "id": "zhou_e2", "npc_id": "zhou_deshun", "title": "合拍",
+      "affection_min": 50, "location_id": "L11",
+      "seasons": ["summer", "autumn"], "time_from": "15:00", "time_to": "18:00",
+      "requires_events": ["zhou_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "临时乐队在台上排练，周德顺明显跟不上拍。他还在笑，右手却一直在琴杆上摸刻痕。乐队的人互相看，没人敢先说。", "options": [
+          {"text": "我在台下帮您打拍子。", "next": "beat"},
+          {"text": "先歇一会儿，别硬撑。", "next": "rest"},
+          {"text": "周叔，去让林小满看看耳朵。", "next": "doctor"}
+        ]},
+        {"id": "beat", "text": "你大声打拍，放慢半拍。他勉强合上，可第二次又乱了。他忽然停下，对乐队说：“是我拖累你们了。”台上一时没人应。", "options": [
+          {"text": "换一段慢的，重新来。", "next": "adapt", "action": "set_flag", "data": {"flag": "zhou_e2_adapt", "value": true}},
+          {"text": "今天就到这儿。", "next": "rest"}
+        ]},
+        {"id": "rest", "text": "他坐回后台，把二胡放进盒里，又打开，再放进去。“耳朵背点好，台上清净。”这句话说得太熟，像替自己挡了很多年。", "options": [
+          {"text": "清净不是听不见。", "next": "doctor"},
+          {"text": "那我们改慢曲。", "next": "adapt"}
+        ]},
+        {"id": "doctor", "text": "他先发火：“我还没聋到那个份上！”第二天却自己去了卫生所。林小满给他测听力时，他一直看着窗外，测完说：“别告诉台上那些人。”", "options": [
+          {"text": "他们会等您。", "next": "after", "action": "set_flag", "data": {"flag": "zhou_e2_doctor", "value": true}}
+        ]},
+        {"id": "adapt", "text": "你们把曲牌改成慢板，锣鼓点写在纸上贴到台口。周德顺一边看口型一边拉，第三遍终于合上了。乐队的人没鼓掌，只把下一段又放慢一点。", "options": [
+          {"text": "慢一点也能满场。", "next": "after", "action": "set_flag", "data": {"flag": "zhou_e2_adapt", "value": true}}
+        ]},
+        {"id": "after", "text": "排练散场，周德顺没有说“最后一次”。他把二胡盒扣好，对你说：“下次早点来，给我占第一排。”", "options": [{"text": "一定。", "next": null}]}
+      ]
+    },
+    {
+      "id": "zhou_e3", "npc_id": "zhou_deshun", "title": "满台",
+      "affection_min": 80, "location_id": "L11",
+      "seasons": ["autumn"], "time_from": "16:00", "time_to": "22:00",
+      "requires_events": ["zhou_e2"], "priority": 30,
+      "lines": [
+        {"id": "open", "text": "秋收节演出前，乐队临时少了一个人。周德顺听不清开场锣，手在琴杆上摸了又摸。台下坐满了人，韩守义在第一排大声重复报幕。", "options": [
+          {"text": "我上去替他打锣。", "next": "drum"},
+          {"text": "让年轻人和他一起上场。", "next": "young"},
+          {"text": "先别开场，等您找准拍子。", "next": "wait"}
+        ]},
+        {"id": "drum", "text": "你站到侧幕，按他看得见的地方落锣。第一声还是有些乱，第二声他跟上来了。台下没人笑，只有人慢慢坐直。", "options": [
+          {"text": "继续。", "next": "finale"}
+        ]},
+        {"id": "young", "text": "学唱段的孩子站到他身边，一句一句接。周德顺起初皱眉，后来把弓往孩子那边让了让。台下的人跟着拍手，拍子终于稳了。", "options": [
+          {"text": "这不是满场，是传下去。", "next": "finale", "action": "set_flag", "data": {"flag": "zhou_e3_young", "value": true}}
+        ]},
+        {"id": "wait", "text": "你走到台口，对观众说稍等。台下安静下来，周德顺闭眼数了三拍，睁眼时弓已经落下去。开场锣跟着响，像等了他很久。", "options": [
+          {"text": "现在开始。", "next": "finale", "action": "set_flag", "data": {"flag": "zhou_e3_wait", "value": true}}
+        ]},
+        {"id": "finale", "text": "演出结束，周德顺没有立刻下台。他把二胡盒里那首给亡妻的曲子完整拉完，台下没有掌声，只有风吹幕布。然后他把手抄唱本交给孩子，又递给你一本。", "options": [
+          {"text": "下次还来听。", "next": "after", "action": "set_flag", "data": {"flag": "zhou_e3_full", "value": true}}
+        ]},
+        {"id": "after", "text": "第二天，戏台门口出现“学唱段”的告示。周德顺不再把“最后一次”挂在嘴上，改成“下一次”。韩守义在后台给他留了一把写着“老韩”的椅子。", "options": [{"text": "下一次。", "next": null}]}
+      ]
+    }
+  ]
+}

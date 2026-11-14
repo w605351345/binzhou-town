@@ -14,7 +14,7 @@ const REQUIRED_JOYPAD_ACTIONS := [
 	"move_left", "move_right", "move_up", "move_down",
 	"interact",
 	"tool_till", "tool_water", "tool_seed", "tool_harvest", "tool_plough",
-	"sleep", "travel",
+	"sleep", "travel", "travel_post",
 	"ui_pause", "ui_inventory",
 ]
 
@@ -22,8 +22,24 @@ const REQUIRED_JOYPAD_ACTIONS := [
 const REQUIRED_KEY_ACTIONS := [
 	"move_left", "move_right", "move_up", "move_down",
 	"interact", "tool_till", "tool_water", "tool_seed", "tool_harvest",
-	"tool_plough", "sleep", "travel", "ui_pause", "ui_inventory",
+	"tool_plough", "sleep", "travel", "travel_post", "ui_pause", "ui_inventory",
 ]
+
+## 文档与 Steam Input 模板必须和 project.godot 的真实映射一致。
+## Godot JoyButton: A=0 B=1 X=2 Y=3 BACK=4 GUIDE=5 START=6 L3=7 R3=8 LB=9 RB=10。
+const EXPECTED_JOYPAD_BUTTONS := {
+	"interact": 0,
+	"travel_post": 1,
+	"tool_till": 2,
+	"tool_water": 3,
+	"ui_inventory": 4,
+	"travel": 5,
+	"ui_pause": 6,
+	"sleep": 7,
+	"tool_plough": 8,
+	"tool_seed": 9,
+	"tool_harvest": 10,
+}
 
 func _init() -> void:
 	print("=== 《宾州小镇》输入映射自测 (手柄 / 键鼠) ===")
@@ -32,6 +48,7 @@ func _init() -> void:
 	_test_joypad_covered()
 	_test_keyboard_kept()
 	_test_no_duplicate_conflicts()
+	_test_documented_button_mapping()
 	print("--------------------------------------------------")
 	print("结果: %d 通过 / %d 失败" % [_passed, _failed])
 	if _failed > 0:
@@ -90,3 +107,14 @@ func _test_no_duplicate_conflicts() -> void:
 				used[idx] = action
 	check("无按钮冲突", conflicts.is_empty(),
 		"" if conflicts.is_empty() else "→ " + ", ".join(conflicts))
+
+func _test_documented_button_mapping() -> void:
+	print("\n[5] 手柄按钮与文档一致")
+	for action in EXPECTED_JOYPAD_BUTTONS:
+		var found := false
+		for e in InputMap.action_get_events(action):
+			if e is InputEventJoypadButton \
+					and (e as InputEventJoypadButton).button_index == EXPECTED_JOYPAD_BUTTONS[action]:
+				found = true
+				break
+		check("%s 使用 %d 号按钮" % [action, EXPECTED_JOYPAD_BUTTONS[action]], found)

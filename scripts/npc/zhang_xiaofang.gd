@@ -11,9 +11,9 @@ func _init() -> void:
 	buys_crops = true
 	buy_ratio = 0.9
 	daily_positions = [
-		Vector2(380, 300),   # 早市
-		Vector2(490, 320),   # 晌午
-		Vector2(320, 340),   # 傍晚
+		Vector2(2180, 1040), # 早市
+		Vector2(2070, 1100), # 晌午
+		Vector2(2300, 990),  # 傍晚
 	]
 
 ## 收购加成:好感度越高,给的价越好
