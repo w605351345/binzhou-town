@@ -89,6 +89,7 @@ func _build_ui() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.custom_minimum_size = Vector2(0, 260)
+	scroll.follow_focus = true
 	column.add_child(scroll)
 
 	_body_label = Label.new()
@@ -121,6 +122,7 @@ func open_panel() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	GameStateManager.set_postcard_open(true)
 	_refresh()
+	_focus_first_button.call_deferred()
 
 func close_panel() -> void:
 	if not visible:
@@ -149,9 +151,20 @@ func send_buttons() -> Array:
 			out.append(child)
 	return out
 
+func _focus_first_button() -> void:
+	if not visible:
+		return
+	for node in find_children("*", "Button", true, false):
+		var button := node as Button
+		if button != null and not button.disabled:
+			button.grab_focus()
+			return
+
 func send_to(recipient_id: String) -> Dictionary:
 	var res := PostcardSystem.send(
 		GameStateManager.state, GameStateManager.state.calendar, recipient_id)
+	if bool(res.get("ok", false)):
+		GameStateManager.state.flags["postcard_sent_once"] = true
 	_message_label.text = String(res.get("message", ""))
 	_refresh()
 	return res

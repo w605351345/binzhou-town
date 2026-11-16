@@ -39,11 +39,13 @@ static func talk(state: GameState, npc_id: String) -> Dictionary:
 			"message": "今天已经聊过了，关系不会再增加。"}
 	rel["last_talk_day"] = today
 	rel["talked_today"] = true
-	rel["affection"] = int(rel.get("affection", 0)) + TALK_GAIN
+	var gain := TALK_GAIN + SkillSystem.social_talk_bonus(state.player)
+	rel["affection"] = int(rel.get("affection", 0)) + gain
 	state.relationships[npc_id] = rel
 	QuestSystem.progress(state, "talk", 1)
-	return {"ok": true, "gain": TALK_GAIN, "already": false,
-		"message": "聊了几句，好感 +%d。" % TALK_GAIN}
+	SkillSystem.add_xp(state.player, "social", 3)
+	return {"ok": true, "gain": gain, "already": false,
+		"message": "聊了几句，好感 +%d。" % gain}
 
 static func give_gift(state: GameState, npc_data: Dictionary, item_id: String) -> Dictionary:
 	if state == null or npc_data.is_empty():
@@ -83,6 +85,7 @@ static func give_gift(state: GameState, npc_data: Dictionary, item_id: String) -
 		int(npc_data.get("affection_max", 100)))
 	state.relationships[npc_id] = rel
 	QuestSystem.progress(state, "gift", 1)
+	SkillSystem.add_xp(state.player, "social", 6)
 
 	var message := "%s%s了%s。" % [npc_data.get("name", "对方"), "收下" if gain >= 0 else "没有收", item_name]
 	if reaction == "喜欢":

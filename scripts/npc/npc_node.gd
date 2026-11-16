@@ -10,6 +10,8 @@ const FRAME_SIZE := Vector2i(48, 72)
 ## 呼吸动画用哪两帧(走路循环里身体起伏最大的那一对)
 const IDLE_FRAMES := [0, 4]
 const IDLE_FPS := 1.4
+const NAMEPLATE_RANGE := 350.0
+const BODY_SCALE := 1.12
 
 @onready var label: Label = $Label
 @onready var body: Node2D = $Body
@@ -17,9 +19,14 @@ const IDLE_FPS := 1.4
 
 var npc: NpcBase = null
 var _sprite_path := SHEET_PATH
+var _nameplate: ColorRect = null
+var _near_player := false
 
 func _ready() -> void:
+	body.scale = Vector2.ONE * BODY_SCALE
 	_build_frames()
+	_build_collision()
+	_build_nameplate()
 
 func setup(p_npc: NpcBase) -> void:
 	npc = p_npc
@@ -35,6 +42,18 @@ func _refresh_position() -> void:
 
 func _process(_delta: float) -> void:
 	_refresh_position()
+	_update_nameplate()
+
+func _draw() -> void:
+	var tint := Color(0.98, 0.78, 0.35, 0.24) if _near_player \
+		else Color(0.92, 0.84, 0.62, 0.12)
+	var radius := 25.0 if _near_player else 20.0
+	draw_set_transform(Vector2(0, -1), 0.0, Vector2(1.0, 0.38))
+	draw_circle(Vector2.ZERO, radius, tint)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+func nameplate_visible() -> bool:
+	return _nameplate != null and _nameplate.visible
 
 ## 用精灵表的前两帧拼一个站立呼吸动画
 func _build_frames() -> void:
@@ -50,9 +69,11 @@ func _build_frames() -> void:
 		if selected != "":
 			requested = selected
 	var path := requested
-	if not FileAccess.file_exists(path):
+	# 发行包只保留导入后的 .ctex,源 PNG 不一定作为普通文件存在。
+	# FileAccess 判断会把可加载的导入资源误判为缺失;ResourceLoader 才准确。
+	if not ResourceLoader.exists(path):
 		path = SHEET_PATH
-	if not FileAccess.file_exists(path):
+	if not ResourceLoader.exists(path):
 		push_warning("NpcNode: 找不到 NPC 精灵表 %s" % requested)
 		return
 	_sprite_path = path
@@ -74,6 +95,64 @@ func _build_frames() -> void:
 		frames.add_frame("idle", atlas)
 	sprite.sprite_frames = frames
 	sprite.animation = "idle"
+
+## NPC 也是实体,不能和主角互相穿过去。碰撞体只覆盖脚边一小块,
+## 头顶名字与立绘不受影响。
+func _build_collision() -> void:
+	if get_node_or_null("Solid") != null:
+		return
+	var body := StaticBody2D.new()
+	body.name = "Solid"
+	body.collision_layer = 4
+	body.collision_mask = 2
+	var collision := CollisionShape2D.new()
+	collision.name = "Collision"
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(26, 30)
+	collision.shape = shape
+	collision.position = Vector2(0, -15)
+	body.add_child(collision)
+	add_child(body)
+
+## 暖色小名牌比黑色底板更融入场景，也更不容易被雪地和木地板吞掉。
+func _build_nameplate() -> void:
+	if label == null or get_node_or_null("NamePlate") != null:
+		return
+	var plate := ColorRect.new()
+	plate.name = "NamePlate"
+	plate.color = Color(0.44, 0.31, 0.17, 0.78)
+	plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	plate.position = Vector2(-54, -90)
+	plate.size = Vector2(108, 28)
+	plate.z_index = 1
+	add_child(plate)
+	_nameplate = plate
+	label.position = Vector2(-54, -92)
+	label.size = Vector2(108, 28)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 19)
+	label.add_theme_constant_override("outline_size", 3)
+	label.add_theme_color_override("font_outline_color", Color(0.28, 0.17, 0.08, 0.9))
+	label.z_index = 2
+
+func _update_nameplate() -> void:
+	if _nameplate == null:
+		return
+	var tree := get_tree()
+	if tree == null:
+		return
+	var player := tree.get_first_node_in_group("player") as Node2D
+	if player == null:
+		_nameplate.visible = true
+		return
+	var near := global_position.distance_to(player.global_position) <= NAMEPLATE_RANGE
+	_nameplate.visible = near
+	if label != null:
+		label.visible = near
+	if near != _near_player:
+		_near_player = near
+		queue_redraw()
 
 ## 实际加载成功的贴图路径。数据路径缺失时会回退到通用占位图。
 func resolved_sprite_path() -> String:

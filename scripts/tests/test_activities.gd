@@ -10,7 +10,7 @@ func _initialize() -> void:
 	_run()
 
 func _run() -> void:
-	print("=== 《宾州小镇》四季活动自测 (activities test) ===")
+	print("=== 《麦溪镇》四季活动自测 (activities test) ===")
 	_test_forage()
 	_test_fishing()
 	_test_cooking()
@@ -35,6 +35,9 @@ func check(label: String, cond: bool, detail: String = "") -> void:
 	else:
 		_failed += 1
 		print("  ❌ %s %s" % [label, detail])
+
+func _panel(panel_name: String) -> Node:
+	return _game.find_child(panel_name, true, false)
 
 func _mgr() -> Node:
 	return root.get_node("GameStateManager")
@@ -152,7 +155,7 @@ func _test_cooking() -> void:
 	check("烹饪成功", bool(result.get("ok", false)), String(result.get("message", "")))
 	check("产出进背包", int(state.player.inventory.get("food_mushroom_stew", 0)) == 1)
 	check("蘑菇被扣除", int(state.player.inventory.get("forage_mushroom", 0)) == 0)
-	check("酸菜被扣除", int(state.player.inventory.get("food_sour_cabbage", 0)) == 0)
+	check("腌菜被扣除", int(state.player.inventory.get("food_sour_cabbage", 0)) == 0)
 	check("无材料时不能做", not CookingSystem.can_cook(state, "mushroom_stew"))
 	check("强行烹饪失败", not bool(CookingSystem.cook(state, "mushroom_stew").get("ok", true)))
 
@@ -171,7 +174,7 @@ func _test_festivals() -> void:
 	check("上元灯节在今天", String(FestivalSystem.is_today(cal).get("id", "")) == "winter_lantern")
 	var acts := FestivalSystem.available_activities("autumn_harvest")
 	check("秋收节有活动", acts.size() >= 3, "→ %d 项" % acts.size())
-	check("秋收节能看二人转", _has_activity(acts, "二人转"))
+	check("秋收节能看古戏", _has_activity(acts, "古戏"))
 
 func _has_activity(acts: Array, keyword: String) -> bool:
 	for act in acts:
@@ -185,7 +188,7 @@ func _test_quests() -> void:
 		"→ %d 条" % QuestSystem.all_quests().size())
 	var state := GameState.new()
 	var quest := QuestSystem.get_quest("q_zhang_grain")
-	check("粮站任务存在", not quest.is_empty())
+	check("集市任务存在", not quest.is_empty())
 	var accepted := QuestSystem.accept(state, "q_zhang_grain")
 	check("能接取公告板任务", bool(accepted.get("ok", false)),
 		String(accepted.get("message", "")))
@@ -277,7 +280,7 @@ func _test_panels_and_wiring() -> void:
 	root.add_child(_game)
 	await create_timer(0.3).timeout
 	var world: Node2D = _game.get_node("World")
-	var fishing = _game.get_node_or_null("FishingPanel")
+	var fishing = _panel("FishingPanel")
 	check("游戏外壳里有钓鱼面板", fishing != null)
 	fishing.open_round(4242, mgr.state.calendar.get_season())
 	check("钓鱼面板能开", fishing.is_open())
@@ -285,7 +288,7 @@ func _test_panels_and_wiring() -> void:
 	fishing.close_panel()
 	await process_frame
 
-	var cooking = _game.get_node_or_null("CookingPanel")
+	var cooking = _panel("CookingPanel")
 	check("游戏外壳里有烹饪面板", cooking != null)
 	cooking.open_panel()
 	check("烹饪面板能开", cooking.is_open())
@@ -311,8 +314,8 @@ func _test_panels_and_wiring() -> void:
 	player.global_position = Vector2(990, 260)
 	home._interact()
 	await create_timer(0.2).timeout
-	check("农舍灶台打开烹饪面板", _game.get_node("CookingPanel").is_open())
-	_game.get_node("CookingPanel").close_panel()
+	check("农舍灶台打开烹饪面板", _panel("CookingPanel").is_open())
+	_panel("CookingPanel").close_panel()
 	await create_timer(0.1).timeout
 
 	mgr.request_travel("L09")
@@ -323,9 +326,9 @@ func _test_panels_and_wiring() -> void:
 	player.global_position = Vector2(1120, 690)
 	river._interact()
 	await create_timer(0.2).timeout
-	check("河岸码头打开钓鱼面板", _game.get_node("FishingPanel").is_open())
+	check("河岸码头打开钓鱼面板", _panel("FishingPanel").is_open())
 	check("钓鱼时锁住移动", mgr.input_locked)
-	_game.get_node("FishingPanel").close_panel()
+	_panel("FishingPanel").close_panel()
 	await create_timer(0.1).timeout
 	check("收竿后解锁移动", not mgr.input_locked)
 
@@ -341,7 +344,7 @@ func _test_panels_and_wiring() -> void:
 	check("树林采集点真的进背包",
 		int(mgr.state.player.inventory.get("forage_mushroom", 0)) > before_mushroom,
 		"→ %d" % int(mgr.state.player.inventory.get("forage_mushroom", 0)))
-	check("采集后提示物品名", forest.message_label.text.contains("榛蘑"),
+	check("采集后提示物品名", forest.message_label.text.contains("野蘑菇"),
 		"→ %s" % forest.message_label.text)
 
 	mgr.request_travel("L03")
@@ -351,7 +354,7 @@ func _test_panels_and_wiring() -> void:
 	player.global_position = Vector2(1770, 880)
 	town._interact()
 	await create_timer(0.2).timeout
-	var quest_panel = _game.get_node_or_null("QuestPanel")
+	var quest_panel = _panel("QuestPanel")
 	check("公告板打开任务面板", quest_panel != null and quest_panel.is_open())
 	check("公告板列任务", quest_panel.quest_buttons().size() >= 1,
 		"→ %d 个" % quest_panel.quest_buttons().size())
@@ -370,12 +373,12 @@ func _test_panels_and_wiring() -> void:
 	mgr.request_travel("L11")
 	await create_timer(0.3).timeout
 	var theater: Node = world.get_child(0)
-	check("已进入古戏台", theater.location_id == "L11")
+	check("已进入月桂剧场", theater.location_id == "L11")
 	theater._handle_interactable({"action": "theater", "label": "看戏"})
 	await create_timer(0.1).timeout
-	check("秋收节戏台显示节日活动",
-		theater.message_label.text.contains("秋收节")
-		and theater.message_label.text.contains("二人转"),
+	check("秋收戏剧节剧场显示节日活动",
+		theater.message_label.text.contains("秋收戏剧节")
+		and theater.message_label.text.contains("古戏"),
 		"→ %s" % theater.message_label.text)
 	_game.queue_free()
 	await create_timer(0.1).timeout
@@ -435,8 +438,8 @@ func _test_location_actions() -> void:
 	root.add_child(theater)
 	await process_frame
 	theater._handle_interactable({"action": "theater", "label": "看戏"})
-	check("戏台有独立演出内容", theater.message_label.text.contains("周德顺")
-		or theater.message_label.text.contains("大西厢"),
+	check("剧场有独立演出内容", theater.message_label.text.contains("周德顺")
+		or theater.message_label.text.contains("月桂谣"),
 		"→ %s" % theater.message_label.text)
 	theater.queue_free()
 	await process_frame

@@ -1,22 +1,25 @@
 extends SceneTree
-## 世界地图自测:11 张地图、双向门、出生点、互动点、相机边界。
+## 世界地图自测:14 张地图、双向门、出生点、互动点、相机边界。
 ## 运行: godot --headless --script res://scripts/tests/test_world.gd
 
 var _passed := 0
 var _failed := 0
 
 const EXPECTED := {
-	"L01": {"name": "自家农场", "size": Vector2i(3200, 2240)},
-	"L02": {"name": "农舍室内", "size": Vector2i(1280, 896)},
-	"L03": {"name": "宾州镇中心", "size": Vector2i(3840, 1920)},
+	"L01": {"name": "柳溪农场", "size": Vector2i(3200, 2240)},
+	"L02": {"name": "农舍", "size": Vector2i(1280, 896)},
+	"L03": {"name": "麦溪镇中心", "size": Vector2i(3840, 1920)},
 	"L04": {"name": "杂货店", "size": Vector2i(1280, 896)},
 	"L05": {"name": "老邮局", "size": Vector2i(1280, 896)},
-	"L06": {"name": "玉梅饭馆", "size": Vector2i(1536, 1024)},
-	"L07": {"name": "镇卫生所", "size": Vector2i(1280, 896)},
-	"L08": {"name": "赵家木工房", "size": Vector2i(1280, 896)},
-	"L09": {"name": "河岸", "size": Vector2i(2560, 1280)},
-	"L10": {"name": "桦树林", "size": Vector2i(2560, 1600)},
-	"L11": {"name": "古戏台", "size": Vector2i(1920, 1280)},
+	"L06": {"name": "玉梅旅店", "size": Vector2i(1536, 1024)},
+	"L07": {"name": "麦溪诊所", "size": Vector2i(1280, 896)},
+	"L08": {"name": "赵氏木工坊", "size": Vector2i(1280, 896)},
+	"L09": {"name": "河湾", "size": Vector2i(2560, 1280)},
+	"L10": {"name": "柳溪林", "size": Vector2i(2560, 1600)},
+	"L11": {"name": "月桂剧场", "size": Vector2i(1920, 1280)},
+	"L12": {"name": "北岭矿洞", "size": Vector2i(1600, 1152)},
+	"L13": {"name": "牧云牧场", "size": Vector2i(2560, 1600)},
+	"L14": {"name": "麦溪镇史馆", "size": Vector2i(1280, 896)},
 }
 
 func _initialize() -> void:
@@ -46,7 +49,7 @@ func check(label: String, cond: bool, detail: String = "") -> void:
 func test_database() -> void:
 	print("\n[1] 地图数据库")
 	var ids := MapDatabase.all_ids()
-	check("恰好 11 张地图", ids.size() == 11, "→ %d 张" % ids.size())
+	check("恰好 14 张地图", ids.size() == 14, "→ %d 张" % ids.size())
 	for id in EXPECTED.keys():
 		var map := MapDatabase.get_map(id)
 		var expected: Dictionary = EXPECTED[id]
@@ -75,6 +78,16 @@ func test_links() -> void:
 	print("\n[2] 门双向可达")
 	var errors := MapDatabase.validate_links()
 	check("门与出生点全部合法", errors.is_empty(), "→ %s" % str(errors))
+	for id in MapDatabase.all_ids():
+		var map := MapDatabase.get_map(id)
+		var start := MapDatabase.spawn_point(map)
+		var unreachable: Array = []
+		for door in map.get("doors", []):
+			if not MapDatabase.is_reachable(map, start,
+					MapDatabase.door_rect(door).get_center()):
+				unreachable.append(String(door.get("id", "?")))
+		check("%s 每扇门都能从出生点走到" % id, unreachable.is_empty(),
+			"→ %s" % str(unreachable))
 	var door_count := 0
 	for id in MapDatabase.all_ids():
 		door_count += Array(MapDatabase.get_map(id).get("doors", [])).size()
@@ -99,7 +112,7 @@ func _has_link(from_id: String, to_id: String) -> bool:
 	return false
 
 func test_scene_wrappers() -> void:
-	print("\n[3] 11 个地点场景可加载")
+	print("\n[3] 14 个地点场景可加载")
 	for id in MapDatabase.all_ids():
 		var path := SceneRouter.scene_path(id)
 		var packed: PackedScene = load(path)
@@ -139,7 +152,7 @@ func test_spatial_door() -> void:
 	var farm: Node = packed.instantiate()
 	root.add_child(farm)
 	await create_timer(0.15).timeout
-	var door: Dictionary = farm.door_at(Vector2(1550, 2180))
+	var door: Dictionary = farm.door_at(Vector2(1890, 1774))
 	check("农场南门可识别", String(door.get("target", "")) == "L03",
 		"→ %s" % door.get("target", "无"))
 	var indoors: Dictionary = farm.door_at(Vector2(1400, 800))
@@ -150,7 +163,7 @@ func test_spatial_door() -> void:
 	await create_timer(0.05).timeout
 
 func test_sleep_requires_bed() -> void:
-	print("\n[5] 只能回农舍火炕睡觉")
+	print("\n[5] 只能回农舍木床睡觉")
 	var mgr: Node = root.get_node("GameStateManager")
 	var saved_state: Variant = mgr.state
 	mgr.state = GameState.new()
@@ -159,12 +172,12 @@ func test_sleep_requires_bed() -> void:
 	await create_timer(0.15).timeout
 	var day_before: int = int(mgr.state.calendar.abs_day())
 	home.player.position = Vector2(640, 720)
-	check("离火炕远时不能跳天", not home._try_sleep())
+	check("离木床远时不能跳天", not home._try_sleep())
 	check("拒绝后日期不变", mgr.state.calendar.abs_day() == day_before)
-	check("提示回农舍火炕", home.message_label.text.contains("火炕"),
+	check("提示走近木床", home.message_label.text.contains("木床"),
 		"→ %s" % home.message_label.text)
 	home.player.position = Vector2(280, 400)
-	check("靠近火炕可以睡到次日", home._try_sleep()
+	check("靠近木床可以睡到次日", home._try_sleep()
 		and mgr.state.calendar.abs_day() == day_before + 1)
 	home.queue_free()
 	mgr.state = saved_state
@@ -179,7 +192,7 @@ func test_spatial_travel() -> void:
 	var world: Node = game.get_node("World")
 	var farm: Node = world.get_child(0)
 	var player: Node2D = farm.get_node("Player")
-	player.position = Vector2(1600, 2180)
+	player.position = Vector2(1890, 1774)
 	await create_timer(1.0).timeout
 	check("从农场南门进入镇中心", String(world.get_child(0).name) == "Town",
 		"→ %s" % world.get_child(0).name)

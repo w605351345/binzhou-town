@@ -60,6 +60,7 @@ func _build_ui() -> void:
 	column.add_child(_status)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.follow_focus = true
 	column.add_child(scroll)
 	_list = VBoxContainer.new()
 	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -76,6 +77,7 @@ func open_panel() -> void:
 	GameStateManager.set_quest_open(true)
 	_status.text = "纸角被风掀着。接一条活，或者把办完的交上去。"
 	_refresh()
+	_focus_first_button.call_deferred()
 
 func close_panel() -> void:
 	if not visible:
@@ -97,6 +99,15 @@ func quest_buttons() -> Array:
 		if child is Button:
 			out.append(child)
 	return out
+
+func _focus_first_button() -> void:
+	if not visible:
+		return
+	for node in find_children("*", "Button", true, false):
+		var button := node as Button
+		if button != null and not button.disabled:
+			button.grab_focus()
+			return
 
 func accept_quest(quest_id: String) -> Dictionary:
 	var result := QuestSystem.accept(GameStateManager.state, quest_id)

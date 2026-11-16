@@ -21,19 +21,22 @@ const FRAMES_PER_DIRECTION := 8
 const FRAME_DURATION := 0.08
 
 ## 行走速度
-const WALK_SPEED := 220.0
+const WALK_SPEED := 210.0
 
 var facing: int = Facing.DOWN
 var is_moving: bool = false
 
 var _animation_time: float = 0.0
+var _input_direction := Vector2.ZERO
 
 ## 设置朝向与移动意图。dir 为归一化前的输入向量(任意长度均可)。
 func set_input(dir: Vector2) -> void:
 	if dir.length_squared() < 0.0001:
 		is_moving = false
+		_input_direction = Vector2.ZERO
 		return
 	is_moving = true
+	_input_direction = dir.limit_length(1.0)
 	# 斜向时取绝对值较大的轴,避免 8 向移动
 	if absf(dir.x) > absf(dir.y):
 		facing = Facing.RIGHT if dir.x > 0.0 else Facing.LEFT
@@ -44,16 +47,7 @@ func set_input(dir: Vector2) -> void:
 func velocity() -> Vector2:
 	if not is_moving:
 		return Vector2.ZERO
-	match facing:
-		Facing.UP:
-			return Vector2.UP * WALK_SPEED
-		Facing.DOWN:
-			return Vector2.DOWN * WALK_SPEED
-		Facing.LEFT:
-			return Vector2.LEFT * WALK_SPEED
-		Facing.RIGHT:
-			return Vector2.RIGHT * WALK_SPEED
-	return Vector2.ZERO
+	return _input_direction * WALK_SPEED
 
 ## 推进动画计时,返回当前帧序号(0-7)
 func advance_animation(delta: float) -> int:

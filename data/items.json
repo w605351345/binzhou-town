@@ -14,7 +14,7 @@
       "buy_price": 30,
       "sell_price": 15,
       "icon": "res://assets/sprites/items/seed_corn.png",
-      "desc": "黑土地的当家种,晚收,得抢在秋霜前割完",
+      "desc": "麦溪镇田地的当家种，晚收，要抢在初霜前收完",
       "mvp": true
     },
     {
@@ -25,7 +25,7 @@
       "buy_price": 20,
       "sell_price": 10,
       "icon": "res://assets/sprites/items/seed_potato.png",
-      "desc": "早熟马铃薯,7 月就能收,腾茬早能再种一茬秋菜",
+      "desc": "早熟马铃薯，夏季就能收，腾地后还能补种一茬田园蔬菜",
       "mvp": true
     },
     {
@@ -36,7 +36,7 @@
       "buy_price": 18,
       "sell_price": 9,
       "icon": "res://assets/sprites/items/seed_autumn_vegetable.png",
-      "desc": "大白菜萝卜黄瓜,早收腾茬后 7 月抢种,9 月秋收",
+      "desc": "卷心菜、胡萝卜和豌豆，早收腾地后补种，入秋收获",
       "mvp": true
     },
     {
@@ -56,7 +56,7 @@
       "buy_price": 45,
       "sell_price": 20,
       "icon": "res://assets/sprites/items/tool_bucket.png",
-      "desc": "从井边打水浇地,黑土地最怕旱",
+      "desc": "从井边打水浇地，麦溪镇的作物最怕旱",
       "mvp": true
     },
     {
@@ -71,32 +71,32 @@
     },
     {
       "id": "food_sticky_bean_bun",
-      "name": "黏豆包",
+      "name": "蜂蜜燕麦面包",
       "category": "food",
       "buy_price": 15,
       "sell_price": 8,
       "icon": "res://assets/sprites/items/food_sticky_bean_bun.png",
-      "desc": "大黄米面做的,冻在院子里随吃随蒸,是年货",
+      "desc": "燕麦与蜂蜜烤成，外皮微脆，掰开还是温热的",
       "mvp": true
     },
     {
       "id": "food_sour_cabbage",
-      "name": "酸菜",
+      "name": "酸渍蔬菜",
       "category": "food",
       "buy_price": 12,
       "sell_price": 6,
       "icon": "res://assets/sprites/items/food_sour_cabbage.png",
-      "desc": "白菜腌渍,酸菜炖粉条是杀猪菜的灵魂",
+      "desc": "卷心菜与胡萝卜盐渍而成，酸香爽脆",
       "mvp": true
     },
     {
       "id": "food_frozen_pear",
-      "name": "冻梨",
+      "name": "烤苹果",
       "category": "food",
       "buy_price": 10,
       "sell_price": 5,
       "icon": "res://assets/sprites/items/food_frozen_pear.png",
-      "desc": "梨冻成黑褐色,凉水泡开拔凉拔凉还爆汁",
+      "desc": "苹果烤到边缘焦糖化，配蜂蜜和肉桂最香",
       "mvp": true
     },
     {
@@ -106,7 +106,7 @@
       "buy_price": 8,
       "sell_price": 4,
       "icon": "res://assets/sprites/items/food_dried_corn.png",
-      "desc": "场院晾晒编成玉米辫子挂房梁,熏过的有老味道",
+      "desc": "在谷仓前晾晒成串，煮汤和做饲料都方便",
       "mvp": true
     },
     {
@@ -116,44 +116,44 @@
       "buy_price": 30,
       "sell_price": 12,
       "icon": "res://assets/sprites/items/material_fertilizer.png",
-      "desc": "牲口圈里攒的粪土,上到地里攒劲,黑土地越种越肥",
+      "desc": "牲口圈里攒的粪土，上到地里攒劲，田越种越肥",
       "mvp": false
     },
     {
       "id": "material_salt",
-      "name": "大粒盐",
+      "name": "粗盐",
       "category": "material",
       "buy_price": 6,
       "sell_price": 3,
       "icon": "res://assets/sprites/items/material_salt.png",
-      "desc": "腌菜用,一缸酸菜少不了它",
+      "desc": "腌黄瓜和酸渍蔬菜都少不了它",
       "mvp": false
     },
     {
       "id": "forage_mushroom",
-      "name": "榛蘑",
+      "name": "野蘑菇",
       "category": "food",
       "buy_price": 18,
       "sell_price": 9,
-      "desc": "桦树林腐木上的一窝小伞，晒干了炖小鸡最香",
+      "desc": "柳溪林腐木上的一窝小伞，晒干了炖鸡最香",
       "mvp": false
     },
     {
       "id": "forage_berry",
-      "name": "山葡萄",
+      "name": "野莓",
       "category": "food",
       "buy_price": 14,
       "sell_price": 7,
-      "desc": "河岸边的野果，酸得人眯眼，酿酒正合适",
+      "desc": "河岸边的野果，酸得人眯眼，熬果酱正合适",
       "mvp": false
     },
     {
       "id": "forage_fern",
-      "name": "刺老芽",
+      "name": "蕨芽",
       "category": "food",
       "buy_price": 16,
       "sell_price": 8,
-      "desc": "春天冒头的嫩芽，焯水蘸酱，是山里人的一口鲜",
+      "desc": "春天冒头的嫩芽，焯水拌上油醋汁，是林间的一口鲜",
       "mvp": false
     },
     {
@@ -162,83 +162,83 @@
       "category": "material",
       "buy_price": 8,
       "sell_price": 4,
-      "desc": "桦树林里拾的倒木，塞进火炕能烧半宿",
+      "desc": "柳溪林里拾的倒木，塞进壁炉能烧半宿",
       "mvp": false
     },
     {
       "id": "fish_crucian",
-      "name": "鲫鱼",
+      "name": "太阳鱼",
       "category": "food",
       "buy_price": 24,
       "sell_price": 12,
-      "desc": "河湾里最常见的小鱼，炖豆腐最鲜",
+      "desc": "河湾里最常见的小鱼，煎到金黄最鲜",
       "mvp": false
     },
     {
       "id": "fish_carp",
-      "name": "鲤鱼",
+      "name": "虹鳟",
       "category": "food",
       "buy_price": 38,
       "sell_price": 19,
-      "desc": "秋膘肥厚，铁锅炖鱼贴饼子少不了它",
+      "desc": "秋膘肥厚，抹上香草烤一烤，配面包正好",
       "mvp": false
     },
     {
       "id": "fish_pike",
-      "name": "狗鱼",
+      "name": "河鲈",
       "category": "food",
       "buy_price": 46,
       "sell_price": 23,
-      "desc": "河水冷，鱼肉紧，老渔民说这鱼有脾气",
+      "desc": "河水清，鱼肉紧，老渔夫说这鱼有脾气",
       "mvp": false
     },
     {
       "id": "fish_mandarin",
-      "name": "鳌花",
+      "name": "白鲑",
       "category": "food",
       "buy_price": 70,
       "sell_price": 35,
-      "desc": "河里的稀罕物，清蒸才不糟践",
+      "desc": "河里的稀罕物，用香草和黄油煎最合适",
       "mvp": false
     },
     {
       "id": "food_mushroom_stew",
-      "name": "小鸡炖蘑菇",
+      "name": "香草蘑菇炖鸡",
       "category": "food",
       "buy_price": 55,
       "sell_price": 26,
       "energy": 40,
-      "desc": "榛蘑吸饱了汤，掀锅盖时满屋都是山里的味儿",
+      "desc": "野蘑菇吸饱了汤，掀锅盖时满屋都是林间香气",
       "mvp": false
     },
     {
       "id": "food_fish_stew",
-      "name": "铁锅炖鱼",
+      "name": "香草烤鱼",
       "category": "food",
       "buy_price": 60,
       "sell_price": 30,
       "energy": 36,
-      "desc": "鱼汤咕嘟着，锅边贴一圈苞米面饼子",
+      "desc": "鱼皮烤得微脆，配一圈热面包正好",
       "mvp": false
     },
     {
       "id": "food_fern_salad",
-      "name": "凉拌刺老芽",
+      "name": "春季野菜沙拉",
       "category": "food",
       "buy_price": 32,
       "sell_price": 15,
       "energy": 24,
-      "desc": "焯过水的山野菜，拌上蒜末，是一口春天",
+      "desc": "焯过水的嫩野菜，拌上油醋汁，是一口春天",
       "mvp": false
     },
     {
       "id": "food_millet_porridge",
-      "name": "小米粥",
+      "name": "燕麦粥",
       "category": "food",
       "buy_price": 22,
       "sell_price": 10,
       "energy": 28,
-      "desc": "熬出米油的热粥，胃里暖了，人也踏实",
+      "desc": "熬得浓稠的热粥，胃里暖了，人也踏实",
       "mvp": false
     },
     {
@@ -247,30 +247,30 @@
       "category": "food",
       "buy_price": 15,
       "sell_price": 7,
-      "desc": "春末夏初的山蕨菜，焯水晒干能吃到冬天",
+      "desc": "春末夏初的林间蕨菜，焯水晒干能吃到冬天",
       "mvp": false
     },
     {
       "id": "forage_dandelion",
-      "name": "婆婆丁",
+      "name": "蒲公英叶",
       "category": "food",
       "buy_price": 10,
       "sell_price": 5,
-      "desc": "开春第一口苦味，蘸酱吃最下火",
+      "desc": "开春第一口清苦，拌进沙拉最清爽",
       "mvp": false
     },
     {
       "id": "forage_wild_garlic",
-      "name": "山韭菜",
+      "name": "野韭",
       "category": "food",
       "buy_price": 12,
       "sell_price": 6,
-      "desc": "河滩边一丛丛的野韭菜，包饺子有冲劲儿",
+      "desc": "河滩边一丛丛的野韭，切碎拌进面糊里很香",
       "mvp": false
     },
     {
       "id": "forage_burdock",
-      "name": "牛蒡根",
+      "name": "牛蒡",
       "category": "food",
       "buy_price": 14,
       "sell_price": 7,
@@ -279,25 +279,25 @@
     },
     {
       "id": "forage_chanterelle",
-      "name": "黄蘑",
+      "name": "鸡油菌",
       "category": "food",
       "buy_price": 22,
       "sell_price": 11,
-      "desc": "雨后林子里亮黄的一小簇，鲜得不用放味精",
+      "desc": "雨后林子里亮黄的一小簇，鲜得不用另加调味",
       "mvp": false
     },
     {
       "id": "forage_hazelnut",
-      "name": "榛子",
+      "name": "榛果",
       "category": "food",
       "buy_price": 20,
       "sell_price": 10,
-      "desc": "榛柴棵子下捡的秋果，炒熟了一咬满口香",
+      "desc": "灌木下捡的秋果，烤熟了一咬满口香",
       "mvp": false
     },
     {
       "id": "forage_walnut",
-      "name": "山核桃",
+      "name": "核桃",
       "category": "food",
       "buy_price": 24,
       "sell_price": 12,
@@ -306,11 +306,11 @@
     },
     {
       "id": "forage_sea_buckthorn",
-      "name": "沙棘",
+      "name": "野莓",
       "category": "food",
       "buy_price": 18,
       "sell_price": 9,
-      "desc": "雪后枝头一挂金红，酸得人直眯眼",
+      "desc": "林缘枝头一挂金红，酸得人直眯眼",
       "mvp": false
     },
     {
@@ -319,25 +319,25 @@
       "category": "food",
       "buy_price": 42,
       "sell_price": 21,
-      "desc": "夏夜河湾里的胖家伙，炖豆腐最见功夫",
+      "desc": "夏夜河湾里的胖家伙，煎烤炖汤都见功夫",
       "mvp": false
     },
     {
       "id": "fish_perch",
-      "name": "五道黑",
+      "name": "银鲈",
       "category": "food",
       "buy_price": 36,
       "sell_price": 18,
-      "desc": "身上五道黑纹，肉紧刺少，煎着吃香",
+      "desc": "身上带着银色纹路，肉紧刺少，煎着吃香",
       "mvp": false
     },
     {
       "id": "fish_smelt",
-      "name": "黄瓜香",
+      "name": "溪银鱼",
       "category": "food",
       "buy_price": 28,
       "sell_price": 14,
-      "desc": "开春洄游的小鱼，闻着有股黄瓜清香",
+      "desc": "开春洄游的小鱼，入口清甜",
       "mvp": false
     },
     {
@@ -346,78 +346,78 @@
       "category": "food",
       "buy_price": 120,
       "sell_price": 60,
-      "desc": "河湾里的稀客，老渔民一年也碰不上几回",
+      "desc": "河湾里的稀客，老渔夫一年也碰不上几回",
       "mvp": false
     },
     {
       "id": "millet",
-      "name": "小米",
+      "name": "燕麦",
       "category": "material",
       "buy_price": 10,
       "sell_price": 5,
-      "desc": "金黄的小粒粮，熬粥最养人",
+      "desc": "金黄的小粒粮，熬粥和烤面包都合适",
       "mvp": false
     },
     {
       "id": "material_tofu",
-      "name": "豆腐",
+      "name": "农庄奶酪",
       "category": "material",
       "buy_price": 12,
       "sell_price": 6,
-      "desc": "卤水点的老豆腐，炖鱼炖菜都压得住",
+      "desc": "牧场牛乳做成的软奶酪，炖菜和烤鱼都压得住",
       "mvp": false
     },
     {
       "id": "material_vermicelli",
-      "name": "粉条",
+      "name": "面条",
       "category": "material",
       "buy_price": 14,
       "sell_price": 7,
-      "desc": "土豆粉压的宽粉，泡软了下锅最吸汤",
+      "desc": "手擀的宽面，煮软了下锅最吸汤",
       "mvp": false
     },
     {
       "id": "material_sugar",
-      "name": "红糖",
+      "name": "蜂蜜糖浆",
       "category": "material",
       "buy_price": 9,
       "sell_price": 4,
-      "desc": "熬果酱、煮甜汤都少不了一块",
+      "desc": "熬果酱、烤甜点都少不了一勺",
       "mvp": false
     },
     {
       "id": "food_catfish_tofu",
-      "name": "鲶鱼炖豆腐",
+      "name": "河鱼奶酪浓汤",
       "category": "food",
       "buy_price": 62,
       "sell_price": 30,
       "energy": 44,
-      "desc": "鱼肥豆腐嫩，锅边一圈金黄的油泡",
+      "desc": "鱼肉鲜嫩，奶酪汤底浓滑，锅边一圈金黄",
       "mvp": false
     },
     {
       "id": "food_sauerkraut_noodles",
-      "name": "酸菜炖粉条",
+      "name": "酸香蘑菇面",
       "category": "food",
       "buy_price": 48,
       "sell_price": 23,
       "energy": 38,
-      "desc": "酸香直往鼻子里钻，粉条滑溜溜",
+      "desc": "酸香直往鼻子里钻，面条滑溜溜",
       "mvp": false
     },
     {
       "id": "food_corn_porridge",
-      "name": "大碴粥",
+      "name": "玉米浓汤",
       "category": "food",
       "buy_price": 30,
       "sell_price": 14,
       "energy": 32,
-      "desc": "大碴子熬得开花，配咸菜能连喝两碗",
+      "desc": "甜玉米熬得浓稠，配腌黄瓜能连喝两碗",
       "mvp": false
     },
     {
       "id": "food_crucian_tofu_soup",
-      "name": "鲫鱼豆腐汤",
+      "name": "太阳鱼奶油汤",
       "category": "food",
       "buy_price": 44,
       "sell_price": 21,
@@ -427,42 +427,42 @@
     },
     {
       "id": "food_hazelnut_porridge",
-      "name": "榛子小米粥",
+      "name": "榛果燕麦粥",
       "category": "food",
       "buy_price": 38,
       "sell_price": 18,
       "energy": 34,
-      "desc": "坚果香混着米香，一早喝下去浑身热乎",
+      "desc": "坚果香混着麦香，一早喝下去浑身热乎",
       "mvp": false
     },
     {
       "id": "food_grape_jam",
-      "name": "山葡萄果酱",
+      "name": "野莓果酱",
       "category": "food",
       "buy_price": 34,
       "sell_price": 16,
       "energy": 16,
-      "desc": "紫黑色的果酱，酸甜里带着山风",
+      "desc": "紫红色的果酱，酸甜里带着林间清风",
       "mvp": false
     },
     {
       "id": "food_pear_soup",
-      "name": "冻梨甜汤",
+      "name": "苹果肉桂甜汤",
       "category": "food",
       "buy_price": 26,
       "sell_price": 12,
       "energy": 20,
-      "desc": "冻梨化开煮成汤，凉甜解燥",
+      "desc": "烤苹果化开煮成汤，凉甜解燥",
       "mvp": false
     },
     {
       "id": "food_seabuckthorn_juice",
-      "name": "沙棘汁",
+      "name": "野莓汽水",
       "category": "food",
       "buy_price": 30,
       "sell_price": 14,
       "energy": 22,
-      "desc": "金红的一杯，酸得精神一振",
+      "desc": "金红的一杯，酸甜得精神一振",
       "mvp": false
     },
     {
@@ -471,16 +471,16 @@
       "category": "gift",
       "buy_price": 18,
       "sell_price": 8,
-      "desc": "铁锅炒得焦香，装一小口袋，盘账时一颗一颗嗑",
+      "desc": "炉火烤得焦香，装一小口袋，盘账时一颗一颗嗑",
       "mvp": true
     },
     {
       "id": "gift_tofu_brain",
-      "name": "豆腐脑",
+      "name": "苹果布丁",
       "category": "gift",
       "buy_price": 20,
       "sell_price": 9,
-      "desc": "卤子咸香，趁热端过去，碗边还冒着白气",
+      "desc": "苹果与蜂蜜烤成，趁热端过去，碗边还冒着白气",
       "mvp": true
     },
     {
@@ -489,7 +489,7 @@
       "category": "gift",
       "buy_price": 65,
       "sell_price": 28,
-      "desc": "硬壳布面，翻不烂，夹得住粮站一整年的秤单",
+      "desc": "硬壳布面，翻不烂，夹得住集市一整年的秤单",
       "mvp": true
     },
     {
@@ -503,11 +503,11 @@
     },
     {
       "id": "gift_tea_leaves",
-      "name": "茶叶",
+      "name": "花草茶",
       "category": "gift",
       "buy_price": 35,
       "sell_price": 15,
-      "desc": "纸包里的碎茶，抓一撮能泡一下午",
+      "desc": "纸包里的干花与香草，抓一撮能泡一下午",
       "mvp": true
     },
     {
@@ -516,7 +516,7 @@
       "category": "gift",
       "buy_price": 18,
       "sell_price": 8,
-      "desc": "搪瓷缸里泡好的浓茶，用棉布裹着送过去还不凉",
+      "desc": "保温杯里泡好的热茶，用棉布裹着送过去还不凉",
       "mvp": true
     },
     {
@@ -557,11 +557,11 @@
     },
     {
       "id": "gift_hawthorn",
-      "name": "山楂",
+      "name": "野莓",
       "category": "gift",
       "buy_price": 16,
       "sell_price": 7,
-      "desc": "红得发亮，酸口开胃，做糖葫芦也合适",
+      "desc": "红得发亮，酸口开胃，做果酱也合适",
       "mvp": true
     },
     {
@@ -579,7 +579,7 @@
       "category": "gift",
       "buy_price": 95,
       "sell_price": 40,
-      "desc": "刀背沉，刃口顺，剁骨头、切酸菜都不费劲",
+      "desc": "刀背沉，刃口顺，切面包、切蔬菜都不费劲",
       "mvp": true
     },
     {
@@ -588,7 +588,7 @@
       "category": "gift",
       "buy_price": 70,
       "sell_price": 30,
-      "desc": "干透了的老榆木，纹理直，敲起来声音清",
+      "desc": "干透了的橡木，纹理直，敲起来声音清",
       "mvp": true
     },
     {
@@ -620,7 +620,7 @@
     },
     {
       "id": "gift_strong_tea",
-      "name": "烈性茶",
+      "name": "浓香红茶",
       "category": "gift",
       "buy_price": 32,
       "sell_price": 14,
@@ -647,11 +647,11 @@
     },
     {
       "id": "gift_hawthorn_can",
-      "name": "山楂罐头",
+      "name": "野莓果酱罐",
       "category": "gift",
       "buy_price": 34,
       "sell_price": 15,
-      "desc": "玻璃瓶里泡着红果，甜水清亮，病人也吃得下",
+      "desc": "玻璃瓶里封着红果酱，甜香清亮，病人也吃得下",
       "mvp": true
     },
     {
@@ -665,11 +665,11 @@
     },
     {
       "id": "gift_opera_script",
-      "name": "二人转唱本",
+      "name": "古戏剧本",
       "category": "gift",
       "buy_price": 48,
       "sell_price": 20,
-      "desc": "旧唱本，页角卷起，慢板处还留着铅笔打的拍子",
+      "desc": "旧剧本，页角卷起，慢板处还留着铅笔打的拍子",
       "mvp": true
     },
     {
@@ -689,6 +689,169 @@
       "sell_price": 15,
       "desc": "一束新弦，拿在手里还带着纸包的干爽",
       "mvp": true
+    },
+    {
+      "id": "material_stone",
+      "name": "石料",
+      "category": "material",
+      "buy_price": 4,
+      "sell_price": 2,
+      "desc": "矿洞里敲下来的硬石，垒墙、垫路都用得上",
+      "mvp": false
+    },
+    {
+      "id": "material_coal",
+      "name": "煤块",
+      "category": "material",
+      "buy_price": 12,
+      "sell_price": 7,
+      "desc": "矿洞浅层捡的煤，烧起来烟不大",
+      "mvp": false
+    },
+    {
+      "id": "ore_copper",
+      "name": "铜矿石",
+      "category": "material",
+      "buy_price": 18,
+      "sell_price": 11,
+      "desc": "带孔雀绿的矿石，石铁山拿来做农具包边",
+      "mvp": false
+    },
+    {
+      "id": "ore_iron",
+      "name": "铁矿石",
+      "category": "material",
+      "buy_price": 34,
+      "sell_price": 22,
+      "desc": "沉甸甸的硬矿，砸开断面发银光",
+      "mvp": false
+    },
+    {
+      "id": "ore_gold",
+      "name": "金矿石",
+      "category": "material",
+      "buy_price": 85,
+      "sell_price": 62,
+      "desc": "暗河底冲下来的金砂结成的矿块",
+      "mvp": false
+    },
+    {
+      "id": "gem_amber",
+      "name": "矿脉琥珀",
+      "category": "material",
+      "buy_price": 120,
+      "sell_price": 88,
+      "desc": "岩层深处挖出的暖色石头，对着灯看像一小片黄昏",
+      "mvp": false
+    },
+    {
+      "id": "feed_hay",
+      "name": "干草饲料",
+      "category": "material",
+      "buy_price": 8,
+      "sell_price": 3,
+      "desc": "干草拌燕麦碎，棚里牲口一天的口粮",
+      "mvp": false
+    },
+    {
+      "id": "bait_worm",
+      "name": "鱼饵",
+      "category": "material",
+      "buy_price": 3,
+      "sell_price": 1,
+      "desc": "用野莓汁和盐拌的饵，河湾的鱼认这个味",
+      "mvp": false
+    },
+    {
+      "id": "animal_egg",
+      "name": "农庄鸡蛋",
+      "category": "food",
+      "buy_price": 16,
+      "sell_price": 10,
+      "desc": "壳上带细褐点，早晨还温着",
+      "mvp": false
+    },
+    {
+      "id": "animal_milk",
+      "name": "羊奶",
+      "category": "food",
+      "buy_price": 28,
+      "sell_price": 18,
+      "desc": "煮开后有薄薄一层奶皮，腥气不重",
+      "mvp": false
+    },
+    {
+      "id": "animal_wool",
+      "name": "兔毛",
+      "category": "material",
+      "buy_price": 32,
+      "sell_price": 21,
+      "desc": "又软又轻，攒够了能絮一副手套",
+      "mvp": false
+    },
+    {
+      "id": "placeable_chest",
+      "name": "木储物箱",
+      "category": "material",
+      "buy_price": 90,
+      "sell_price": 38,
+      "desc": "榫卯咬得紧，盖子压手，风掀不开",
+      "mvp": false
+    },
+    {
+      "id": "sprinkler_basic",
+      "name": "简易喷灌器",
+      "category": "tool",
+      "buy_price": 260,
+      "sell_price": 110,
+      "desc": "放在农具箱里，清早自动替你浇三块地",
+      "mvp": false
+    },
+    {
+      "id": "furnace_basic",
+      "name": "小熔炉",
+      "category": "tool",
+      "buy_price": 320,
+      "sell_price": 140,
+      "desc": "石头垒的小炉，能把矿石炼成锭",
+      "mvp": false
+    },
+    {
+      "id": "preserve_jar",
+      "name": "腌渍罐",
+      "category": "tool",
+      "buy_price": 180,
+      "sell_price": 75,
+      "desc": "罐口一圈水槽，压住盖，酸渍蔬菜能吃到开春",
+      "mvp": false
+    },
+    {
+      "id": "food_hot_soup",
+      "name": "热汤",
+      "category": "food",
+      "buy_price": 24,
+      "sell_price": 10,
+      "energy": 24,
+      "desc": "卫生所火墙上温着的一碗汤，捧在手里就不冷了",
+      "mvp": false
+    },
+    {
+      "id": "material_copper_bar",
+      "name": "铜锭",
+      "category": "material",
+      "buy_price": 32,
+      "sell_price": 22,
+      "desc": "小熔炉里炼出的铜锭，断面泛着暗红的光",
+      "mvp": false
+    },
+    {
+      "id": "material_iron_bar",
+      "name": "铁锭",
+      "category": "material",
+      "buy_price": 58,
+      "sell_price": 40,
+      "desc": "沉甸甸一块熟铁，石铁山拿在手里会先听声",
+      "mvp": false
     }
   ],
   "crop_buy_prices": [
@@ -697,7 +860,7 @@
       "name": "玉米",
       "base_sell_price": 26,
       "buy_ratio": 0.9,
-      "note": "晚收作物,抢在秋霜前收完"
+      "note": "晚收作物,抢在初霜前收完"
     },
     {
       "crop_id": "potato",
@@ -721,7 +884,7 @@
       "category": "restore",
       "restore_energy": 30,
       "buy_price": 20,
-      "desc": "苞米面饼子就咸菜,吃一顿顶半宿"
+      "desc": "玉米面饼子就咸菜,吃一顿顶半宿"
     }
   ]
 }

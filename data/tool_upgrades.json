@@ -1,0 +1,26 @@
+{
+  "_meta": {"version": "v1.0", "scope": "石铁山的农具升级表"},
+  "tools": [
+    {
+      "id": "hoe", "name": "铁锹",
+      "levels": [
+        {"level": 2, "name": "包钢锹", "cost": 180, "ingredients": {"material_copper_bar": 2}, "desc": "刃口包一层钢，翻田更省劲。"},
+        {"level": 3, "name": "精铁锹", "cost": 480, "ingredients": {"material_iron_bar": 2, "material_coal": 2}, "desc": "铁口更韧，碰到石碴也不卷刃。"}
+      ]
+    },
+    {
+      "id": "water", "name": "水桶",
+      "levels": [
+        {"level": 2, "name": "加厚铁皮桶", "cost": 140, "ingredients": {"material_copper_bar": 1}, "desc": "桶沿加厚，一担水不再路上漏半桶。"},
+        {"level": 3, "name": "长嘴水桶", "cost": 420, "ingredients": {"material_iron_bar": 2, "material_coal": 1}, "desc": "长嘴好控水，浇垄沟不冲苗。"}
+      ]
+    },
+    {
+      "id": "pickaxe", "name": "镐",
+      "levels": [
+        {"level": 2, "name": "包钢镐", "cost": 220, "ingredients": {"material_copper_bar": 2}, "desc": "北岭矿洞的硬岩也能凿开。"},
+        {"level": 3, "name": "精铁镐", "cost": 560, "ingredients": {"material_iron_bar": 2, "material_coal": 3}, "desc": "落点更准，矿脉深处的石头也吃得下。"}
+      ]
+    }
+  ]
+}

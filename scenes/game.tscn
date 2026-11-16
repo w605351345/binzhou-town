@@ -10,49 +10,195 @@ script = ExtResource("1_gamehud")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
+[node name="TopBackdrop" type="ColorRect" parent="HUD"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 86.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0.08, 0.11, 0.08, 0.82)
+
 [node name="HBox" type="HBoxContainer" parent="HUD"]
-offset_right = 1920.0
-offset_bottom = 40.0
-theme_override_constants/separation = 24
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 5.0
+offset_right = -20.0
+offset_bottom = 73.0
+grow_horizontal = 2
+theme_override_constants/separation = 22
 
 [node name="HudLabel" type="Label" parent="HUD/HBox"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.98, 0.91, 0.72, 1)
+theme_override_font_sizes/font_size = 19
 text = ""
+autowrap_mode = 2
+vertical_alignment = 1
 
 [node name="SeasonLabel" type="Label" parent="HUD/HBox"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.94, 0.91, 0.80, 1)
+theme_override_font_sizes/font_size = 19
 text = ""
+autowrap_mode = 2
+vertical_alignment = 1
 
 [node name="AlmanacLabel" type="Label" parent="HUD/HBox"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.98, 0.82, 0.44, 1)
+theme_override_font_sizes/font_size = 19
+text = ""
+autowrap_mode = 2
+vertical_alignment = 1
+
+[node name="StaminaBar" type="ProgressBar" parent="HUD"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 76.0
+offset_right = -20.0
+offset_bottom = 84.0
+grow_horizontal = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="GuideBackdrop" type="ColorRect" parent="HUD"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -430.0
+offset_top = 102.0
+offset_right = -20.0
+offset_bottom = 218.0
+grow_horizontal = 0
+mouse_filter = 2
+color = Color(0.08, 0.11, 0.08, 0.70)
+visible = false
+
+[node name="GuidePanel" type="VBoxContainer" parent="HUD"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -414.0
+offset_top = 108.0
+offset_right = -36.0
+offset_bottom = 210.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 3
+
+[node name="GuideTitle" type="Label" parent="HUD/GuidePanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.99, 0.84, 0.48, 1)
+theme_override_colors/font_shadow_color = Color(0.08, 0.06, 0.03, 0.92)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "今日小目标"
+
+[node name="GuideLabel" type="Label" parent="HUD/GuidePanel"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.94, 0.9, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0.08, 0.06, 0.03, 0.92)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 16
+text = ""
+autowrap_mode = 2
+
+[node name="BottomBackdrop" type="ColorRect" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -226.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.07, 0.10, 0.07, 0.90)
+visible = false
+
+[node name="BottomBox" type="VBoxContainer" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -196.0
+offset_right = -24.0
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 3
+
+[node name="ContextLabel" type="Label" parent="HUD/BottomBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1.0, 0.8, 0.36, 1)
+theme_override_colors/font_shadow_color = Color(0.08, 0.06, 0.03, 0.95)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 22
 text = ""
+horizontal_alignment = 1
+autowrap_mode = 2
 
-[node name="MessageLabel" type="Label" parent="."]
-offset_left = 40.0
-offset_top = 60.0
-offset_right = 1880.0
-offset_bottom = 110.0
-theme_override_font_sizes/font_size = 28
+[node name="MessageLabel" type="Label" parent="HUD/BottomBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.97, 0.92, 0.81, 1)
+theme_override_colors/font_shadow_color = Color(0.08, 0.06, 0.03, 0.95)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 19
 text = ""
 horizontal_alignment = 1
+autowrap_mode = 2
 
-[node name="TipLabel" type="Label" parent="."]
-offset_left = 40.0
-offset_top = 900.0
-offset_right = 1880.0
-offset_bottom = 945.0
-theme_override_font_sizes/font_size = 24
-text = ""
-horizontal_alignment = 1
-
-[node name="KeyHint" type="Label" parent="."]
-offset_left = 40.0
-offset_top = 1010.0
-offset_right = 1880.0
-offset_bottom = 1045.0
+[node name="TipLabel" type="Label" parent="HUD/BottomBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.82, 0.7, 1)
+theme_override_colors/font_shadow_color = Color(0.08, 0.06, 0.03, 0.95)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 16
 text = ""
 horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="KeyHint" type="Label" parent="HUD/BottomBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.74, 0.7, 1)
+theme_override_colors/font_shadow_color = Color(0.08, 0.06, 0.03, 0.95)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="SceneTitle" type="Label" parent="HUD"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -360.0
+offset_top = 108.0
+offset_right = 360.0
+offset_bottom = 166.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1.0, 0.94, 0.74, 1)
+theme_override_colors/font_shadow_color = Color(0.08, 0.07, 0.04, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 32
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+modulate = Color(1, 1, 1, 0)
 
 [node name="PauseMenu" parent="." instance=ExtResource("3_pause")]

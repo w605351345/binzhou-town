@@ -10,7 +10,7 @@ var _passed := 0
 var _failed := 0
 
 func _init() -> void:
-	print("=== 《宾州小镇》对话系统自测 (dialogue test) ===")
+	print("=== 《麦溪镇》对话系统自测 (dialogue test) ===")
 	print("设定:张晓芳是玩家理解『一年一熟』的活教材 —— 台词必须挂在农时上")
 	print("--------------------------------------------------")
 
@@ -128,7 +128,7 @@ func test_seasonal_greeting() -> void:
 		4: "地化冻",
 		7: "庄稼正长",
 		10: "霜要下来了",
-		1: "猫冬",
+		1: "歇冬",
 	}
 	for month in expected.keys():
 		var cal := GameCalendar.new()
@@ -155,7 +155,7 @@ func test_option_filter() -> void:
 		texts.append(String(o.get("text", "")))
 	check("有『卖粮』选项", texts.has("卖粮"))
 	check("有『买种子』选项", texts.has("买种子"))
-	check("有『秋霜啥时候来?』选项", texts.has("秋霜啥时候来?"))
+	check("有『初霜啥时候来?』选项", texts.has("初霜啥时候来?"))
 	check("有收尾选项", texts.has("没别的了,走了"))
 
 	# 带条件的选项:好感度不够时不该出现
@@ -184,9 +184,9 @@ func test_topic_navigation() -> void:
 	runner.start()
 	check("开场白是秋收那句", runner.current_text().contains("霜"), "→ " + runner.current_text().substr(0, 18) + "…")
 
-	# 选『秋霜啥时候来?』
-	var idx := _find_option(runner, "秋霜啥时候来?")
-	check("找到秋霜话题选项", idx >= 0)
+	# 选『初霜啥时候来?』
+	var idx := _find_option(runner, "初霜啥时候来?")
+	check("找到初霜话题选项", idx >= 0)
 	var result := runner.choose(idx)
 	check("跳转成功", String(result.get("type", "")) == "line",
 		"→ " + String(result.get("type", "")))

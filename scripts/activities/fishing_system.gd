@@ -41,7 +41,7 @@ static func fish_for_season(season: String) -> Array:
 			out.append(raw.duplicate(true))
 	return out
 
-func start(seed: int, season: String = "spring") -> void:
+func start(seed: int, season: String = "spring", bait_bonus: float = 0.0) -> void:
 	_ensure_loaded()
 	var pool := fish_for_season(season)
 	if pool.is_empty():
@@ -61,7 +61,7 @@ func start(seed: int, season: String = "spring") -> void:
 			break
 	_elapsed = 0.0
 	_bite_at = rng.randf_range(0.8, 2.8)
-	_window = 0.8 + 0.15 * float(_target.get("difficulty", 1))
+	_window = (0.8 + 0.15 * float(_target.get("difficulty", 1))) * (1.0 + maxf(0.0, bait_bonus))
 	_bite_left = _window
 	_finished = false
 	_result = {}

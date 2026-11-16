@@ -2,8 +2,8 @@ extends RefCounted
 class_name FarmSystem
 
 ## 农场系统:管理 3x3 地块集合,执行翻土/浇水/播种/收获闭环。
-## 黑龙江设定:一年一熟。春播(4-5月)→夏长(6-8月)→秋收(9-10月)→冬歇(11-2月)。
-## 秋霜(10月)后未收作物冻死;早收作物腾茬早,可当年复种一季。
+## 麦溪镇设定:一年一熟。春播(4-5月)→夏长(6-8月)→秋收(9-10月)→冬歇(11-2月)。
+## 初霜(10月)后未收作物冻死;早收作物腾茬早,可当年复种一季。
 
 const DEFAULT_WIDTH := 3
 const DEFAULT_HEIGHT := 3
@@ -78,7 +78,7 @@ func plant_crop(index: int, crop_id: String) -> bool:
 		return false
 	return p.plant(crop_id, calendar.get_season(), calendar.get_real_month())
 
-## 秋翻地:秋收后或冬季深翻积肥(黑龙江黑土地保护核心农法)
+## 秋翻地:秋收后或冬季深翻积肥(西境田园保护核心农法)
 func autumn_plough_plot(index: int) -> bool:
 	var p := get_plot(index)
 	if p == null:
@@ -144,7 +144,7 @@ func early_harvest_crops() -> Array:
 			out.append(c.id)
 	return out
 
-## 晚收作物(9-10月,紧贴秋霜,压力来源)
+## 晚收作物(9-10月,紧贴初霜,压力来源)
 func late_harvest_crops() -> Array:
 	var out: Array = []
 	for c in CropDatabase.all_crops():

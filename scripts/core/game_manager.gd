@@ -22,10 +22,19 @@ signal post_office_requested
 signal shop_requested
 ## 农舍储物柜:复用背包面板,但由场景互动触发。
 signal inventory_requested
+## 功能 NPC / 工作台 / 运输箱 / 矿洞 / 工程板：由常驻外壳打开统一服务面板。
+signal service_requested(service_type: String)
+## 月桂剧场:地点场景只发请求，古戏剧本面板由常驻外壳打开。
+signal drama_requested
 ## 邮差送到的明信片(可能一次收到多张,正常每天最多一张)。
 signal postcards_delivered(cards: Array)
 signal clock_changed(minute_of_day: int)
+## 地点场景把"当前能做什么"交给常驻 HUD 统一显示,避免地点自己再叠一套
+## 消息/提示标签。三个字段分别是:最近消息、附近交互提示、地块状态。
+signal location_context_changed(message: String, prompt: String, plot_info: String)
 signal player_collapsed
+signal shipping_settled(report: Dictionary)
+signal livestock_produced(report: Dictionary)
 
 const SAVE_DIR := "user://saves"
 
@@ -136,6 +145,16 @@ func _process(delta: float) -> void:
 	if state.clock.should_force_sleep():
 		_collapse_from_exhaustion()
 
+## 农活不只是扣体力,也应当消耗当天时间。否则玩家可以在 06:00 一口气干完
+## 所有活,游戏日却完全没有流动感。
+func spend_time(minutes: int) -> void:
+	if state == null or minutes <= 0:
+		return
+	state.clock.advance_minutes(minutes)
+	clock_changed.emit(state.clock.minute_of_day)
+	if state.clock.should_force_sleep():
+		_collapse_from_exhaustion()
+
 ## 新游戏/回主菜单后统一重置会话级状态,避免上一局的锁和季节缓存残留。
 func new_session() -> void:
 	state = GameState.new()
@@ -144,7 +163,7 @@ func new_session() -> void:
 	modal_stack.clear()
 	_paused = false
 
-## 睡醒后体力回满(黑龙江农活是重体力活,一天干不动太多活)
+## 睡醒后体力回满(麦溪镇农活是重体力活,一天干不动太多活)
 func rest_and_recover() -> void:
 	if state.player.stamina != null:
 		state.player.stamina.sleep()
@@ -155,6 +174,9 @@ func advance_day() -> void:
 	state.weather.refresh(state.calendar, state.weather.seed)
 	state.farm.apply_weather(state.weather.today, state.calendar.abs_day())
 	state.farm.advance_day()
+	var shipping_report := ShippingSystem.settle(state)
+	var livestock_report := LivestockSystem.advance_day(state)
+	CraftingSystem.apply_sprinklers(state)
 	var delivered := PostcardSystem.deliver_due(state, state.calendar)
 	rest_and_recover()
 	state.clock.reset()
@@ -165,6 +187,10 @@ func advance_day() -> void:
 	day_started.emit(state.calendar.day_of_year)
 	if not delivered.is_empty():
 		postcards_delivered.emit(delivered)
+	if bool(shipping_report.get("ok", false)):
+		shipping_settled.emit(shipping_report)
+	if bool(livestock_report.get("ok", false)):
+		livestock_produced.emit(livestock_report)
 
 ## 02:00 未睡:强制结算，次日体力只有六成，不死亡、不删档。
 func _collapse_from_exhaustion() -> void:
@@ -275,3 +301,21 @@ func set_quest_open(v: bool) -> void:
 		modal_stack.push("quest")
 	else:
 		modal_stack.pop("quest")
+
+func set_service_open(v: bool) -> void:
+	if v:
+		modal_stack.push("service")
+	else:
+		modal_stack.pop("service")
+
+func set_drama_open(v: bool) -> void:
+	if v:
+		modal_stack.push("drama")
+	else:
+		modal_stack.pop("drama")
+
+func set_gift_open(v: bool) -> void:
+	if v:
+		modal_stack.push("gift")
+	else:
+		modal_stack.pop("gift")

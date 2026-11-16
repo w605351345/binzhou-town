@@ -27,7 +27,7 @@ SCENES = {
     "menu": "res://scenes/main_menu.tscn",
     "game": "res://scenes/game.tscn",
 }
-for _i in range(1, 12):
+for _i in range(1, 15):
     SCENES["L%02d" % _i] = "res://scenes/locations/L%02d.tscn" % _i
 
 

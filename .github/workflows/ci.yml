@@ -25,16 +25,26 @@ jobs:
           python-version: '3.12'
 
       - name: 安装 Godot 4.3
-        uses: chickensoft-games/setup-godot@v1
+        # v1 在 macOS 用硬链接生成 godot 别名会损坏二进制并触发 Killed: 9;v2 改为真实符号链接
+        uses: chickensoft-games/setup-godot@v2
         with:
           version: 4.3.0
           use-dotnet: false
+
+      - name: Godot 可执行文件自检
+        run: godot --version
 
       - name: 静态数据校验
         run: python tools/validate_data.py data/
 
       - name: 手柄映射与 Steam 模板校验
         run: python tools/validate_controls.py
+
+      - name: Python 工具单测(AI 资产管线)
+        run: python -m unittest discover -s tools/tests -p 'test_*.py' -v
+
+      - name: AI 概念图资产校验
+        run: python tools/validate_ai_assets.py
 
       - name: 生成美术资源(饥荒观感手绘风)
         run: python tools/gen_art.py assets
@@ -49,7 +59,8 @@ jobs:
             test_acceptance test_art test_activities test_npc_social test_world
             test_clock_weather test_save_v2 test_core test_scenes test_integration
             test_dialogue test_shop test_inventory test_dialogue_wiring
-            test_input_map test_postcard
+            test_input_map test_postcard test_life_systems test_playability
+            test_drama test_gameplay_polish
           )
           for test in "${tests[@]}"; do
             echo "::group::$test"
@@ -64,7 +75,7 @@ jobs:
             scenes/main_menu.tscn scenes/game.tscn scenes/farm.tscn
             scenes/town_street.tscn scenes/post_office.tscn
           )
-          for i in $(seq -w 1 11); do
+          for i in $(seq -w 1 14); do
             scenes+=("scenes/locations/L${i}.tscn")
           done
           for scene in "${scenes[@]}"; do
@@ -119,7 +130,7 @@ jobs:
           python-version: '3.12'
 
       - name: 安装 Godot 4.3(含导出模板)
-        uses: chickensoft-games/setup-godot@v1
+        uses: chickensoft-games/setup-godot@v2
         with:
           version: 4.3.0
           use-dotnet: false

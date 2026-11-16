@@ -1,0 +1,8 @@
+{
+  "manifest": "tools/prompts/ai_assets.json",
+  "model": "image-01",
+  "generated": [
+    "assets/art/ai/seasons/spring.png"
+  ],
+  "skipped": []
+}

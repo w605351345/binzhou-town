@@ -5,26 +5,26 @@ class_name FarmAlmanac
 ##
 ## Week 3 收尾件「农时提示 UI」的核心逻辑层:
 ##   · 播种窗高亮 —— 今年还剩几天能下种(春播 4-5 月,7 月抢茬复种秋菜)
-##   · 秋霜倒计时 —— 晚收作物还有几天会被冻死在地里
+##   · 初霜倒计时 —— 晚收作物还有几天会被冻死在地里
 ##   · 地块倒计时 —— 哪块地几天后熟、几天后必须割
 ##
-## 黑龙江农时的三条硬线:
+## 麦溪镇农时的三条硬线:
 ##   1. 春播窗口只有 4-5 月,5 月底封窗,错过当年绝收
 ##   2. 7 月早收腾茬可复种一茬秋菜 —— 一年一熟大原则下的唯一例外
 ##   3. 收获窗口末月一过,晚收作物就冻死在地里,颗粒无收
 ##
 ## 纯逻辑,不碰节点,便于 headless 自测。
 
-## 秋霜月(与 FarmPlot.FROST_MONTH 保持一致)
+## 初霜月(与 FarmPlot.FROST_MONTH 保持一致)
 const FROST_MONTH := 10
-## 春播窗口末月(黑龙江:4-5 月,5 月底封窗)
+## 春播窗口末月(麦溪镇:4-5 月,5 月底封窗)
 const LAST_SOW_MONTH := 5
 ## 进入这个天数范围就开始提醒抢收
 const FROST_WARN_DAYS := 15
 
 # --- 倒计时 ---
 
-## 距秋霜(10月1日)还有几天;负数 = 霜期已过
+## 距初霜(10月1日)还有几天;负数 = 霜期已过
 static func days_until_frost(calendar: GameCalendar) -> int:
 	if calendar == null:
 		return -1
@@ -113,17 +113,17 @@ static func sow_tip(calendar: GameCalendar, farm: FarmSystem = null) -> String:
 	return "%s%s · %s还剩 %d 天(最晚 %s 下种)" % [
 		tag, ", ".join(names), window_cn, left, _doy_cn(deadline)]
 
-## 秋霜倒计时提示
+## 初霜倒计时提示
 static func frost_tip(calendar: GameCalendar, farm: FarmSystem = null) -> String:
 	if calendar == null:
 		return ""
 	var left := days_until_frost(calendar)
 	if left > 0:
-		return "秋霜还有 %d 天(10月1日霜降),晚收的别拖" % left
+		return "初霜还有 %d 天(10月1日霜降),晚收的别拖" % left
 	var pending := _late_harvest_pending(farm)
 	if pending > 0:
-		return "⚠ 秋霜到了,还有 %d 块晚收作物没割,10月底前割完" % pending
-	return "秋霜已过,地里该收的都收了"
+		return "⚠ 初霜到了,还有 %d 块晚收作物没割,10月底前割完" % pending
+	return "初霜已过,地里该收的都收了"
 
 ## 顶部完整提示:播种线 + 霜冻线,一句话讲清"现在该干嘛"
 static func full_tip(calendar: GameCalendar, farm: FarmSystem = null) -> String:

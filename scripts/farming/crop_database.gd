@@ -2,7 +2,7 @@ extends RefCounted
 class_name CropDatabase
 
 ## 作物数据库:从 data/crops.json 加载,提供查询与季节校验。
-## 黑龙江设定:一年一熟,春播秋收,冬季休耕。
+## 麦溪镇设定:一年一熟,春播秋收,冬季休耕。
 
 const CROPS_PATH := "res://data/crops.json"
 
@@ -49,7 +49,7 @@ static func mvp_crops() -> Array:
 			out.append(c)
 	return out
 
-## 在指定季节可播种的作物(黑龙江:春播为主)
+## 在指定季节可播种的作物(麦溪镇:春播为主)
 static func sowable_in(season: String) -> Array:
 	var out: Array = []
 	for c in all_crops():

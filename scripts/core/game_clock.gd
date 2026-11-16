@@ -7,6 +7,7 @@ class_name GameClock
 const DAY_START_MINUTE := 6 * 60
 const DAY_END_MINUTE := 26 * 60
 const MINUTES_PER_DAY := DAY_END_MINUTE - DAY_START_MINUTE
+## 1 游戏分钟 = 0.9 现实秒，完整一天约 18 分钟。
 const REAL_SECONDS_PER_GAME_MINUTE := 0.9
 
 var minute_of_day: int = DAY_START_MINUTE

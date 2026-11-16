@@ -1,7 +1,7 @@
 extends Node2D
-## 宾州镇大街(L02):张晓芳的所在地,玩家卖粮的地方。
+## 麦溪镇大街(L02):张晓芳的所在地,玩家卖粮的地方。
 ##
-## 黑龙江小镇的镇大街:一条土路,两边是门市和院墙。
+## 麦溪镇的镇大街:一条石铺路,两边是门市和院墙。
 
 @onready var player: CharacterBody2D = $Player
 @onready var message_label: Label = $HUD/MessageLabel

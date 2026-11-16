@@ -1,0 +1,15 @@
+{
+  "_meta": {"version": "v1.0", "scope": "北山矿洞楼层、矿脉与守洞野兽"},
+  "max_floor": 8,
+  "base_monster_chance": 0.24,
+  "floors": [
+    {"floor": 1, "name": "冻土浅坑", "ores": [{"id": "material_stone", "weight": 8, "min": 1, "max": 3}, {"id": "ore_copper", "weight": 4, "min": 1, "max": 2}], "monster": {"id": "mine_rat", "name": "矿洞田鼠", "hp": 18, "damage": 5}},
+    {"floor": 2, "name": "旧煤巷", "ores": [{"id": "material_coal", "weight": 7, "min": 1, "max": 2}, {"id": "ore_copper", "weight": 5, "min": 1, "max": 3}], "monster": {"id": "soot_bat", "name": "煤灰蝠", "hp": 24, "damage": 7}},
+    {"floor": 3, "name": "铜脉层", "ores": [{"id": "ore_copper", "weight": 8, "min": 2, "max": 3}, {"id": "material_stone", "weight": 5, "min": 1, "max": 4}], "monster": {"id": "rock_lizard", "name": "石缝蜥", "hp": 32, "damage": 9}},
+    {"floor": 4, "name": "冷泉裂隙", "ores": [{"id": "ore_iron", "weight": 7, "min": 1, "max": 2}, {"id": "ore_copper", "weight": 3, "min": 1, "max": 2}], "monster": {"id": "cave_toad", "name": "冷泉蟾", "hp": 38, "damage": 11}},
+    {"floor": 5, "name": "铁锈甬道", "ores": [{"id": "ore_iron", "weight": 8, "min": 2, "max": 3}, {"id": "material_coal", "weight": 5, "min": 2, "max": 3}], "monster": {"id": "rust_crawler", "name": "锈甲虫", "hp": 46, "damage": 13}},
+    {"floor": 6, "name": "琥珀洞室", "ores": [{"id": "gem_amber", "weight": 3, "min": 1, "max": 1}, {"id": "ore_iron", "weight": 7, "min": 2, "max": 3}], "monster": {"id": "amber_moth", "name": "琥珀蛾", "hp": 52, "damage": 15}},
+    {"floor": 7, "name": "金砂暗河", "ores": [{"id": "ore_gold", "weight": 4, "min": 1, "max": 2}, {"id": "ore_iron", "weight": 6, "min": 2, "max": 3}], "monster": {"id": "river_ghost", "name": "暗河影", "hp": 60, "damage": 17}},
+    {"floor": 8, "name": "山心石殿", "ores": [{"id": "ore_gold", "weight": 6, "min": 1, "max": 3}, {"id": "gem_amber", "weight": 4, "min": 1, "max": 2}], "monster": {"id": "stone_warden", "name": "镇山石灵", "hp": 78, "damage": 20}}
+  ]
+}

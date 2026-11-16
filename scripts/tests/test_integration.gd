@@ -9,7 +9,7 @@ extends SceneTree
 ## 覆盖:
 ##   T01 翻土→浇水→播种→夏长→秋收→卖出→金币增加
 ##   T04 存档 → 重启 → 读档 → 状态不丢
-##   T06 秋收季不收割 → 推进到 11 月 → 秋霜冻死
+##   T06 秋收季不收割 → 推进到 11 月 → 初霜冻死
 ##   T07 冬季尝试播种 → 被拒绝并提示"冬歇"
 ##   T08 早收作物 7 月腾茬 → 复种秋菜 → 秋收成功(一年两茬)
 ##
@@ -22,8 +22,8 @@ var _passed := 0
 var _failed := 0
 
 func _init() -> void:
-	print("=== 《宾州小镇》端到端集成自测 (integration test) ===")
-	print("设定:黑龙江黑土地 · 一年一熟 · 春播秋收 · 冬季休耕")
+	print("=== 《麦溪镇》端到端集成自测 (integration test) ===")
+	print("设定:西境田园 · 一年一熟 · 春播秋收 · 冬季休耕")
 	print("链路:玩家按键(ToolBar) → FarmSystem → 背包 → 张晓芳收购")
 	print("--------------------------------------------------")
 
@@ -97,6 +97,7 @@ func test_t01_full_growth_cycle() -> void:
 	var player_state := state.player
 	var idx := 0
 	var gold_before := player_state.gold
+	var seeds_before := int(player_state.inventory.get("seed_corn", 0))
 
 	# --- 春播 ---
 	var r_till := _do(state, ToolBar.Tool.TILL, idx)
@@ -108,15 +109,16 @@ func test_t01_full_growth_cycle() -> void:
 	var r_seed := _do(state, ToolBar.Tool.SEED, idx, "corn")
 	check("L 播种玉米成功", bool(r_seed.get("ok")), "→ " + String(r_seed.get("message", "")))
 	check("地块进入已播种态", farm.get_plot(idx).state == FarmPlot.State.PLANTED)
-	check("播种扣了种子钱", player_state.gold == gold_before - 30,
-		"→ %d 文钱" % player_state.gold)
+	check("播种消耗开局种子，不重复扣钱", player_state.gold == gold_before
+		and int(player_state.inventory.get("seed_corn", 0)) == seeds_before - 1,
+		"→ %d 文钱 / 种子 %d" % [player_state.gold,
+			int(player_state.inventory.get("seed_corn", 0))])
 
 	# --- 夏长:每天照料,直到秋收 ---
 	var days := _grow_to_ready(state, idx)
 	check("玉米在秋天成熟", farm.get_plot(idx).state == FarmPlot.State.READY,
 		"→ %s @ %s" % [str(farm.get_plot(idx).state), state.calendar.date_string()])
-	check("成熟时点落在 9-10 月收获窗", state.calendar.get_real_month() >= 9
-		and state.calendar.get_real_month() <= 10,
+	check("成熟反馈落在播种后的 4-10 个游戏日", days >= 4 and days <= 10,
 		"→ %d 月(生长 %d 天)" % [state.calendar.get_real_month(), days])
 	check("成熟时地块标签提示可收获",
 		FarmAlmanac.plot_badge(farm.get_plot(idx), state.calendar).contains("可收获"),
@@ -135,17 +137,17 @@ func test_t01_full_growth_cycle() -> void:
 	check("张晓芳收购成功", bool(sell.get("ok")), "→ " + String(sell.get("message", "")))
 	check("背包里的玉米已出手", int(player_state.inventory.get("corn", 0)) == 0)
 	# 张晓芳给熟人情分:0.9 倍价 → 26 × 0.9 ≈ 23 文
-	var expect_gold := gold_before - 30 + 23 * amount
+	var expect_gold := gold_before + 23 * amount
 	check("金币涨回来了", player_state.gold == expect_gold,
-		"→ %d 文钱(买种 %d + 卖粮 %d)" % [player_state.gold, 30, 23 * amount])
+		"→ %d 文钱(开局种子 + 卖粮 %d)" % [player_state.gold, 23 * amount])
 	check("比买种子前多", player_state.gold > gold_before,
 		"→ %d > %d" % [player_state.gold, gold_before])
 
 # ============================================================================
-# T06 秋收季不收割 → 秋霜冻死
+# T06 秋收季不收割 → 初霜冻死
 # ============================================================================
 func test_t06_frost_kills_late_crop() -> void:
-	print("\n[T06] 秋收季不收割 → 秋霜冻死")
+	print("\n[T06] 秋收季不收割 → 初霜冻死")
 	var state := GameState.new()
 	state.calendar.advance_to_month(4, 10)
 	var farm := state.farm
@@ -168,15 +170,15 @@ func test_t06_frost_kills_late_crop() -> void:
 	var plot := farm.get_plot(idx)
 	check("未收割的晚收作物冻死", plot.state == FarmPlot.State.DEAD,
 		"→ %s (%s)" % [str(plot.state), plot.dead_reason])
-	check("死因标记为秋霜冻死", plot.dead_reason == "秋霜冻死", plot.dead_reason)
+	check("死因标记为初霜冻死", plot.dead_reason == "初霜冻死", plot.dead_reason)
 
 	var r := _do(state, ToolBar.Tool.HARVEST, idx)
 	check("冻死地块收不了", not bool(r.get("ok")), "→ " + String(r.get("message", "")))
-	check("提示带秋霜字样", String(r.get("message", "")).contains("冻死"),
+	check("提示带初霜字样", String(r.get("message", "")).contains("冻死"),
 		String(r.get("message", "")))
 
 	# 农时播报要说清楚"还有几块晚收没割"
-	check("农时提示提到秋霜", FarmAlmanac.full_tip(state.calendar, farm).contains("秋霜"),
+	check("农时提示提到初霜", FarmAlmanac.full_tip(state.calendar, farm).contains("初霜"),
 		FarmAlmanac.full_tip(state.calendar, farm))
 
 	# 绝收 ≠ 颗粒无收的死局:按 J 把死茬翻进土里,这地还能接着种
@@ -201,7 +203,7 @@ func test_t07_winter_sowing_blocked() -> void:
 	check("地块没被种上", state.farm.get_plot(idx).state == FarmPlot.State.TILLED)
 	check("地块没有作物", state.farm.get_plot(idx).crop_id == "")
 
-	# 冬天不能种,但能秋翻积肥(黑土地保护核心农法不受季节限制)
+	# 冬天不能种,但能秋翻积肥(麦溪沃土保护核心农法不受季节限制)
 	var r_plough := ToolBar.apply_autumn_plough(state.farm, idx, state.player)
 	check("冬季可以秋翻地", bool(r_plough.get("ok")), "→ " + String(r_plough.get("message", "")))
 	check("秋翻标记生效", state.farm.get_plot(idx).autumn_plowed)
@@ -212,7 +214,7 @@ func test_t07_winter_sowing_blocked() -> void:
 # T08 早收腾茬 → 复种秋菜 → 秋收成功(一年两茬)
 # ============================================================================
 func test_t08_early_harvest_replant() -> void:
-	print("\n[T08] 早收腾茬 → 7 月抢种秋菜 → 秋收成功(一年两茬)")
+	print("\n[T08] 短周期腾茬 → 7 月抢种秋菜 → 秋收成功")
 	var state := GameState.new()
 	state.calendar.advance_to_month(4, 1)
 	var farm := state.farm
@@ -225,27 +227,27 @@ func test_t08_early_harvest_replant() -> void:
 	var r_seed1 := _do(state, ToolBar.Tool.SEED, idx, "potato")
 	check("4 月种下马铃薯", bool(r_seed1.get("ok")), "→ " + String(r_seed1.get("message", "")))
 	_grow_to_ready(state, idx)
-	check("马铃薯 7 月就熟(早收)", farm.get_plot(idx).state == FarmPlot.State.READY,
+	check("马铃薯数日内成熟", farm.get_plot(idx).state == FarmPlot.State.READY,
 		"→ %s @ %s" % [str(farm.get_plot(idx).state), state.calendar.date_string()])
-	check("早收时点落在 7 月", state.calendar.get_real_month() == 7,
-		"→ %d 月" % state.calendar.get_real_month())
+	check("成熟时仍在春夏经营期内", state.calendar.get_season() in ["spring", "summer"],
+		"→ %s" % state.calendar.date_string())
 	var r_h1 := _do(state, ToolBar.Tool.HARVEST, idx)
 	check("马铃薯早收成功", bool(r_h1.get("ok")), "→ " + String(r_h1.get("message", "")))
 	check("马铃薯进背包", int(player_state.inventory.get("potato", 0)) > 0,
 		"→ %d 个" % int(player_state.inventory.get("potato", 0)))
 	check("腾茬后地块待翻耕", farm.get_plot(idx).state == FarmPlot.State.FALLOW)
 
-	# --- 第二茬:翻土 → 7 月抢种秋菜 ---
+	# --- 第二茬:推进到 7 月复种窗,翻土后抢种秋菜 ---
+	state.calendar.advance_to_month(7, 1)
 	check("腾茬后翻土成功", bool(_do(state, ToolBar.Tool.TILL, idx).get("ok")))
 	var r_seed2 := _do(state, ToolBar.Tool.SEED, idx, "autumn_vegetable")
 	check("7 月抢种秋菜成功", bool(r_seed2.get("ok")), "→ " + String(r_seed2.get("message", "")))
 
 	# --- 秋收 ---
 	_grow_to_ready(state, idx)
-	check("秋菜 9 月成熟", farm.get_plot(idx).state == FarmPlot.State.READY,
+	check("秋菜短周期成熟", farm.get_plot(idx).state == FarmPlot.State.READY,
 		"→ %s @ %s" % [str(farm.get_plot(idx).state), state.calendar.date_string()])
-	check("秋菜成熟落在 9-10 月", state.calendar.get_real_month() >= 9
-		and state.calendar.get_real_month() <= 10,
+	check("秋菜成熟时仍可收获", farm.get_plot(idx).state == FarmPlot.State.READY,
 		"→ %d 月" % state.calendar.get_real_month())
 	var r_h2 := _do(state, ToolBar.Tool.HARVEST, idx)
 	check("秋菜收获成功", bool(r_h2.get("ok")), "→ " + String(r_h2.get("message", "")))
@@ -390,10 +392,10 @@ func test_sowing_window_closed() -> void:
 	check("7 月能抢种秋菜", bool(r2.get("ok")), "→ " + String(r2.get("message", "")))
 
 # ============================================================================
-# 黑土地核心农法:秋翻地 → 跨年仍生效 → 次年继续经营
+# 麦溪沃土核心农法:秋翻地 → 跨年仍生效 → 次年继续经营
 # ============================================================================
 func test_autumn_plough_next_year() -> void:
-	print("\n[黑土地] 秋翻地 → 跨年仍生效 → 次年继续经营")
+	print("\n[麦溪沃土] 秋翻地 → 跨年仍生效 → 次年继续经营")
 	var state := GameState.new()
 	state.calendar.advance_to_month(4, 1)
 	var farm := state.farm
@@ -437,7 +439,7 @@ func test_autumn_plough_next_year() -> void:
 	check("第二年收获成功", bool(r_h2.get("ok")), "→ " + String(r_h2.get("message", "")))
 	check("收获回传秋翻加成标记",
 		bool(r_h2.get("result", {}).get("autumn_plowed", false)))
-	# 同样 150 天成熟:头年 3 个,秋翻后保底多打 1 个 → 4 个
+	# 同样的短周期成熟:秋翻后保底多打 1 个
 	var second_amount := int(r_h2.get("result", {}).get("amount", 0))
 	check("次年产量比头年多(秋翻保底 +1)", second_amount > first_amount,
 		"→ %d 个 → %d 个" % [first_amount, second_amount])

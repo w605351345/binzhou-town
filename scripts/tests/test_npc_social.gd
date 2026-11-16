@@ -9,13 +9,15 @@ var _game: Node = null
 const EXPECTED_IDS := [
 	"zhang_xiaofang", "han_shouyi", "sun_yumei",
 	"zhao_changhe", "lin_xiaoman", "zhou_deshun",
+	"shi_tieshan", "jiang_muyun", "he_shuigen",
+	"su_wenbo", "lang_sanshun",
 ]
 
 func _initialize() -> void:
 	_run()
 
 func _run() -> void:
-	print("=== 《宾州小镇》NPC 社交自测 (npc social test) ===")
+	print("=== 《麦溪镇》NPC 社交自测 (npc social test) ===")
 	_test_registry()
 	_test_cross_location_schedule()
 	_test_season_weather_night_variants()
@@ -24,7 +26,7 @@ func _run() -> void:
 	_test_relationship_actions()
 	_test_gifts_and_birthday()
 	_test_event_gating()
-	_test_all_eighteen_events_reachable()
+	_test_all_events_reachable()
 	_test_event_chains_complete_and_persist()
 	_test_extended_dialogue_conditions()
 	_test_event_choice_writes_flag()
@@ -47,6 +49,9 @@ func check(label: String, cond: bool, detail: String = "") -> void:
 		_failed += 1
 		print("  ❌ %s %s" % [label, detail])
 
+func _panel(panel_name: String) -> Node:
+	return _game.find_child(panel_name, true, false)
+
 func _mgr() -> Node:
 	return root.get_node("GameStateManager")
 
@@ -63,9 +68,9 @@ func _resolve(npc_id: String, day: int, minutes: int, weather_id: String = "sunn
 	return NpcScheduleSystem.resolve(data, _calendar(day), _clock(minutes), weather_id)
 
 func _test_registry() -> void:
-	print("\n[1] 六名 NPC 注册完整")
+	print("\n[1] 十一名 NPC 注册完整")
 	var all := NpcRegistry.all_npcs()
-	check("注册表有 6 人", all.size() == 6, "→ %d 人" % all.size())
+	check("注册表有 11 人", all.size() == 11, "→ %d 人" % all.size())
 	for npc_id in EXPECTED_IDS:
 		var data := NpcRegistry.get_npc(npc_id)
 		check("%s 存在" % npc_id, not data.is_empty())
@@ -90,16 +95,16 @@ func _test_cross_location_schedule() -> void:
 		"→ %s" % zhang_morning.get("location_id"))
 	check("张晓芳上午可交谈", bool(zhang_morning.get("available", false)))
 	var zhang_lunch := _resolve("zhang_xiaofang", 120, 12 * 60 + 20)
-	check("张晓芳午饭去饭馆", zhang_lunch.get("location_id") == "L06",
+	check("张晓芳午饭留在集市看摊", zhang_lunch.get("location_id") == "L03",
 		"→ %s" % zhang_lunch.get("location_id"))
-	check("午饭活动是吃饭", String(zhang_lunch.get("activity", "")).contains("饭"),
+	check("午饭活动写明吃饭", String(zhang_lunch.get("activity", "")).contains("午饭"),
 		"→ %s" % zhang_lunch.get("activity", ""))
 
 	var han_morning := _resolve("han_shouyi", 120, 9 * 60)
 	check("韩守义上午在邮局", han_morning.get("location_id") == "L05",
 		"→ %s" % han_morning.get("location_id"))
 	var han_night := _resolve("han_shouyi", 180, 19 * 60)
-	check("韩守义晚上去戏台", han_night.get("location_id") == "L11",
+	check("韩守义晚上去剧场", han_night.get("location_id") == "L11",
 		"→ %s" % han_night.get("location_id"))
 
 	var zhao_morning := _resolve("zhao_changhe", 120, 9 * 60)
@@ -109,7 +114,7 @@ func _test_cross_location_schedule() -> void:
 	check("林小满上午在卫生所", lin_morning.get("location_id") == "L07",
 		"→ %s" % lin_morning.get("location_id"))
 	var zhou_morning := _resolve("zhou_deshun", 180, 9 * 60)
-	check("周德顺上午在戏台", zhou_morning.get("location_id") == "L11",
+	check("周德顺上午在剧场", zhou_morning.get("location_id") == "L11",
 		"→ %s" % zhou_morning.get("location_id"))
 
 func _test_season_weather_night_variants() -> void:
@@ -126,7 +131,7 @@ func _test_season_weather_night_variants() -> void:
 		"→ %s" % zhang_rain.get("activity", ""))
 
 	var han_winter_night := _resolve("han_shouyi", 0, 19 * 60, "snow")
-	check("韩守义冬夜不跑戏台", han_winter_night.get("location_id") != "L11",
+	check("韩守义冬夜不跑剧场", han_winter_night.get("location_id") != "L11",
 		"→ %s" % han_winter_night.get("location_id"))
 	check("韩守义冬夜回邮局", han_winter_night.get("location_id") == "L05",
 		"→ %s" % han_winter_night.get("location_id"))
@@ -189,7 +194,6 @@ func _test_location_refresh() -> void:
 			ids[String(child.npc.id)] = true
 		check("刷新后没有重复 NPC", ids.size() == lunch_count,
 			"→ %d 个唯一 id" % ids.size())
-		check("张晓芳午饭出现", ids.has("zhang_xiaofang"))
 
 	mgr.state.clock.minute_of_day = 21 * 60 + 45
 	mgr.clock_changed.emit(mgr.state.clock.minute_of_day)
@@ -251,7 +255,7 @@ func _test_gifts_and_birthday() -> void:
 
 	var picky := zhang.duplicate(true)
 	picky["likes"] = []
-	picky["dislikes"] = ["黏豆包"]
+	picky["dislikes"] = ["蜂蜜燕麦面包"]
 	var dislike_state := GameState.new()
 	dislike_state.set_npc_affection("zhang_xiaofang", 50)
 	dislike_state.player.inventory["food_sticky_bean_bun"] = 1
@@ -293,7 +297,7 @@ func _test_event_gating() -> void:
 	state.calendar.advance_to_month(9, 10)
 	state.clock.minute_of_day = 18 * 60 + 30
 	state.set_npc_affection("zhang_xiaofang", 50)
-	check("二段事件在春/秋秋霜窗前可触发", EventSystem.can_trigger(state, "zhang_e2",
+	check("二段事件在春/秋初霜窗前可触发", EventSystem.can_trigger(state, "zhang_e2",
 		"L03", state.calendar, state.clock, state.weather))
 	check("未完成一段时二段不能抢先触发",
 		not bool(EventSystem.can_trigger(_fresh_state(50), "zhang_e2", "L03",
@@ -304,10 +308,10 @@ func _fresh_state(affection: int) -> GameState:
 	s.set_npc_affection("zhang_xiaofang", affection)
 	return s
 
-func _test_all_eighteen_events_reachable() -> void:
-	print("\n[9] 六人十八段事件全部可达")
+func _test_all_events_reachable() -> void:
+	print("\n[9] 十一人三十三段事件全部可达")
 	var events := EventSystem.all_events()
-	check("事件表共 18 段", events.size() == 18, "→ %d 段" % events.size())
+	check("事件表共 33 段", events.size() == 33, "→ %d 段" % events.size())
 	var counts := {}
 	for event in events:
 		counts[String(event.get("npc_id", ""))] = int(counts.get(
@@ -338,10 +342,10 @@ func _test_all_eighteen_events_reachable() -> void:
 			String(event.get("location_id", "")), state.calendar, state.clock,
 			state.weather):
 			unreachable.append(event_id)
-	check("18 段都能在指定条件下触发", unreachable.is_empty(), "→ %s" % str(unreachable))
+	check("33 段都能在指定条件下触发", unreachable.is_empty(), "→ %s" % str(unreachable))
 
 func _test_event_chains_complete_and_persist() -> void:
-	print("\n[10] 十八段事件完整链路与存档")
+	print("\n[10] 三十三段事件完整链路与存档")
 	var events := EventSystem.all_events()
 	for npc_id in EXPECTED_IDS:
 		var chain: Array = []
@@ -480,7 +484,7 @@ func _test_event_opens_in_game() -> void:
 	var world: Node2D = _game.get_node("World")
 	world.get_child(0)._go_to_town()
 	await create_timer(0.5).timeout
-	var box = _game.get_node_or_null("DialogueBox")
+	var box = _panel("DialogueBox")
 	check("事件对话框自动打开", box != null and box.is_open())
 	if box != null and box.is_open():
 		check("事件说话人是张晓芳", box.speaker_name() == "张晓芳",
@@ -527,7 +531,7 @@ func _test_gift_panel_in_game() -> void:
 	player.global_position = npc_node.global_position + Vector2(0, -40)
 	town._interact()
 	await create_timer(0.1).timeout
-	var box = _game.get_node("DialogueBox")
+	var box = _panel("DialogueBox")
 	var opened := false
 	for button in box.option_buttons():
 		if String(button.text).replace("· ", "") == "送点东西":
@@ -536,16 +540,16 @@ func _test_gift_panel_in_game() -> void:
 			break
 	check("对话里有送礼选项", opened)
 	await create_timer(0.1).timeout
-	var gift = _game.get_node_or_null("GiftPanel")
+	var gift = _panel("GiftPanel")
 	check("送礼面板已打开", gift != null and gift.is_open())
 	if gift != null and gift.is_open():
 		var gifted := false
 		for button in gift.gift_buttons():
-			if String(button.text).begins_with("黏豆包"):
+			if String(button.text).begins_with("蜂蜜燕麦面包"):
 				button.pressed.emit()
 				gifted = true
 				break
-		check("黏豆包出现在礼物列表", gifted)
+		check("蜂蜜燕麦面包出现在礼物列表", gifted)
 		await create_timer(0.1).timeout
 		check("面板送出后好感上升", mgr.state.npc_affection("zhang_xiaofang") >= 30,
 			"→ %d" % mgr.state.npc_affection("zhang_xiaofang"))

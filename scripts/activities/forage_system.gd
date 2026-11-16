@@ -98,6 +98,7 @@ static func collect(state: GameState, point_key: String) -> Dictionary:
 	state.forage["collected"] = collected
 	state.forage["last_day"] = today
 	QuestSystem.progress(state, "forage", count)
+	SkillSystem.add_xp(state.player, "foraging", count * 4)
 	return {
 		"ok": true, "item_id": item_id, "count": count,
 		"name": String(picked.get("name", item_id)),

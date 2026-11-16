@@ -45,50 +45,52 @@ ROWS = 3            # down / up / side(左右靠 flip_h 镜像)
 SHEET_W = CELL_W * FRAMES
 SHEET_H = CELL_H * ROWS
 
-# --- 有限暖色盘(与 BZC-ArtProposals 的黑土色系锚点一致) ---
+# --- 西式田园亮色盘：草绿、奶油石、蜂蜜木、野花黄与河水蓝 ---
 PAL = {
     "ink": INK,
-    "soil_dark": (0x3B, 0x2A, 0x1E),
-    "soil": (0x6B, 0x4E, 0x32),
-    "soil_light": (0x8A, 0x68, 0x45),
-    "autumn": (0xC8, 0xA1, 0x65),
-    "winter": (0x8F, 0xB8, 0xDE),
-    "sack": (0xD9, 0xC9, 0xA3),
-    "corn": (0x4A, 0x5D, 0x3A),
-    "sky_hi": (0x6E, 0x93, 0xB0),
-    "sky_lo": (0xE8, 0xB0, 0x6A),
-    "sky_warm": (0xF3, 0xD0, 0x92),
-    "sun": (0xFF, 0xE8, 0xB0),
-    "wood": (0x7A, 0x54, 0x33),
-    "wood_light": (0x9C, 0x70, 0x46),
-    "wall": (0xB4, 0x9C, 0x7C),
-    "wall_dark": (0x8A, 0x74, 0x59),
-    "mud": (0x5B, 0x45, 0x33),
-    "mud_light": (0x74, 0x5B, 0x43),
-    "sand": (0xC8, 0xA1, 0x65),
-    "grass": (0x6E, 0x7A, 0x42),
-    "grass_dark": (0x53, 0x5E, 0x33),
+    "soil_dark": (0x8A, 0x5D, 0x38),
+    "soil": (0xAB, 0x78, 0x4E),
+    "soil_light": (0xC9, 0x9A, 0x67),
+    "autumn": (0xE9, 0xB4, 0x54),
+    "winter": (0xB8, 0xDD, 0xF3),
+    "sack": (0xF2, 0xDF, 0xAC),
+    "corn": (0x7C, 0xC6, 0x58),
+    "sky_hi": (0x5F, 0xB3, 0xEE),
+    "sky_lo": (0x9F, 0xD8, 0xF5),
+    "sky_warm": (0xFF, 0xE6, 0xA8),
+    "sun": (0xFF, 0xF0, 0xA8),
+    "wood": (0xB9, 0x79, 0x43),
+    "wood_light": (0xE1, 0xA7, 0x60),
+    "wall": (0xF2, 0xE2, 0xBE),
+    "wall_dark": (0xC9, 0xAF, 0x87),
+    "mud": (0xB7, 0x89, 0x5A),
+    "mud_light": (0xD9, 0xB1, 0x79),
+    "sand": (0xE6, 0xCC, 0x92),
+    "grass": (0x73, 0xB8, 0x54),
+    "grass_dark": (0x4E, 0x8E, 0x3F),
 }
 
 # --- 角色配色 ---
 HERO = {
-    "coat": (0x48, 0x6A, 0x94),      # 藏蓝棉袄
-    "coat_dark": (0x34, 0x4E, 0x70),
-    "pants": (0x3A, 0x3E, 0x4E),
-    "boot": (0x2A, 0x24, 0x1E),
-    "skin": (0xEE, 0xCD, 0xB2),
-    "hair": (0x2E, 0x2A, 0x28),
-    "scarf": (0xC8, 0xA1, 0x65),
+    "coat": (0x4F, 0x84, 0xD0),      # 明亮工装蓝
+    "coat_dark": (0x36, 0x63, 0xA1),
+    "pants": (0x7C, 0x63, 0x45),
+    "boot": (0x5A, 0x3A, 0x25),
+    "skin": (0xFF, 0xD8, 0xB8),
+    "hair": (0x55, 0x36, 0x25),
+    "scarf": (0xF7, 0xEB, 0xCF),
+    "short_hair": True,
 }
 HERO_F = {
-    "coat": (0xB0, 0x5C, 0x6C),      # 玫红棉袄
-    "coat_dark": (0x8C, 0x44, 0x52),
-    "pants": (0x48, 0x42, 0x5C),
-    "boot": (0x2A, 0x24, 0x1E),
-    "skin": (0xF0, 0xD4, 0xBC),
-    "hair": (0x34, 0x28, 0x26),
-    "scarf": (0xD9, 0xC9, 0xA3),
-    "apron": (0xE4, 0xDA, 0xC0),
+    "coat": (0xF2, 0x7E, 0x8D),      # 草莓汽水色
+    "coat_dark": (0xC8, 0x55, 0x66),
+    "pants": (0x70, 0x72, 0xB8),
+    "boot": (0x64, 0x3B, 0x2B),
+    "skin": (0xFF, 0xDD, 0xC1),
+    "hair": (0x5B, 0x32, 0x24),
+    "scarf": (0xFF, 0xD9, 0x7A),
+    "apron": (0xFF, 0xF1, 0xD6),
+    "ponytail": True,
 }
 XIAOFANG = {
     "coat": (0xB0, 0x5C, 0x6C),      # 玫红棉袄
@@ -137,6 +139,40 @@ ZHOU_DESHUN = {
     "beard": (0xC5, 0xC0, 0xB3), "cane": (0x6D, 0x4C, 0x2B),
     "hunch": True,
 }
+SHI_TIESHAN = {
+    "coat": (0x4B, 0x3B, 0x32), "coat_dark": (0x31, 0x26, 0x21),
+    "pants": (0x35, 0x31, 0x2D), "boot": (0x22, 0x1E, 0x1A),
+    "skin": (0xD3, 0xAB, 0x84), "hair": (0x45, 0x3E, 0x37),
+    "scarf": (0x8A, 0x52, 0x33), "hat": (0x3A, 0x32, 0x2C),
+    "beard": (0x6C, 0x61, 0x55), "tool": (0xB8, 0xBE, 0xC0), "wide": True,
+}
+JIANG_MUYUN = {
+    "coat": (0x6F, 0x77, 0x4B), "coat_dark": (0x4C, 0x53, 0x32),
+    "pants": (0x43, 0x3B, 0x32), "boot": (0x2A, 0x24, 0x1E),
+    "skin": (0xE7, 0xC4, 0xA4), "hair": (0x38, 0x2D, 0x26),
+    "scarf": (0xC4, 0x9B, 0x5B), "apron": (0xC9, 0xBE, 0x99),
+    "headscarf": (0x5D, 0x6A, 0x3E), "wide": True,
+}
+HE_SHUIGEN = {
+    "coat": (0x42, 0x59, 0x58), "coat_dark": (0x2C, 0x40, 0x3F),
+    "pants": (0x38, 0x38, 0x33), "boot": (0x23, 0x20, 0x1C),
+    "skin": (0xC9, 0xA6, 0x85), "hair": (0xA3, 0x9D, 0x8D),
+    "scarf": (0x7D, 0x58, 0x39), "hat": (0x42, 0x4D, 0x49),
+    "beard": (0xC5, 0xC0, 0xB0), "tool": (0xA6, 0xA6, 0x92), "hunch": True,
+}
+SU_WENBO = {
+    "coat": (0x63, 0x5C, 0x54), "coat_dark": (0x45, 0x3E, 0x38),
+    "pants": (0x3A, 0x37, 0x39), "boot": (0x25, 0x22, 0x1F),
+    "skin": (0xDF, 0xBC, 0x9C), "hair": (0x31, 0x2B, 0x27),
+    "scarf": (0x7C, 0x70, 0x56), "bag": (0x59, 0x42, 0x2E),
+}
+LANG_SANSHUN = {
+    "coat": (0x71, 0x4E, 0x3C), "coat_dark": (0x50, 0x35, 0x29),
+    "pants": (0x3D, 0x3A, 0x3C), "boot": (0x25, 0x21, 0x1D),
+    "skin": (0xE1, 0xBE, 0x9B), "hair": (0x35, 0x2A, 0x24),
+    "scarf": (0xB4, 0x83, 0x4A), "hat": (0x5A, 0x44, 0x30),
+    "bag": (0x6C, 0x4D, 0x32),
+}
 
 WINTER_NPC = {
     "zhang_xiaofang": {
@@ -180,6 +216,40 @@ WINTER_NPC = {
         "skin": (0xD2, 0xAE, 0x89), "hair": (0xA2, 0x9D, 0x91),
         "scarf": (0xC0, 0x96, 0x50), "hat": (0x2B, 0x28, 0x25),
         "beard": (0xD0, 0xCB, 0xBD), "cane": (0x64, 0x45, 0x28), "hunch": True,
+    },
+    "shi_tieshan": {
+        "coat": (0x37, 0x2C, 0x27), "coat_dark": (0x24, 0x1D, 0x1A),
+        "pants": (0x2F, 0x2C, 0x29), "boot": (0x1E, 0x1B, 0x18),
+        "skin": (0xD0, 0xA8, 0x82), "hair": (0x4A, 0x42, 0x3B),
+        "scarf": (0x9C, 0x5C, 0x38), "hat": (0x32, 0x2C, 0x28),
+        "beard": (0x75, 0x69, 0x5B), "tool": (0xCF, 0xD2, 0xD1), "wide": True,
+    },
+    "jiang_muyun": {
+        "coat": (0x53, 0x59, 0x39), "coat_dark": (0x39, 0x3E, 0x27),
+        "pants": (0x3B, 0x34, 0x2D), "boot": (0x27, 0x22, 0x1D),
+        "skin": (0xE4, 0xC1, 0xA2), "hair": (0x35, 0x2A, 0x24),
+        "scarf": (0xD1, 0xA6, 0x62), "apron": (0xB8, 0xAE, 0x8C),
+        "headscarf": (0x4B, 0x56, 0x32), "wide": True,
+    },
+    "he_shuigen": {
+        "coat": (0x2E, 0x42, 0x42), "coat_dark": (0x1F, 0x2F, 0x2F),
+        "pants": (0x30, 0x30, 0x2D), "boot": (0x20, 0x1D, 0x1A),
+        "skin": (0xC7, 0xA4, 0x83), "hair": (0xA8, 0xA1, 0x91),
+        "scarf": (0x8A, 0x60, 0x3D), "hat": (0x3A, 0x45, 0x42),
+        "beard": (0xCF, 0xCA, 0xB9), "tool": (0xB2, 0xB1, 0x9C), "hunch": True,
+    },
+    "su_wenbo": {
+        "coat": (0x4B, 0x45, 0x40), "coat_dark": (0x32, 0x2E, 0x2A),
+        "pants": (0x31, 0x2F, 0x31), "boot": (0x22, 0x1F, 0x1D),
+        "skin": (0xDD, 0xBA, 0x9B), "hair": (0x2D, 0x27, 0x24),
+        "scarf": (0x8D, 0x7F, 0x61), "bag": (0x4C, 0x38, 0x28),
+    },
+    "lang_sanshun": {
+        "coat": (0x58, 0x3B, 0x2E), "coat_dark": (0x3D, 0x28, 0x20),
+        "pants": (0x34, 0x32, 0x34), "boot": (0x22, 0x1F, 0x1C),
+        "skin": (0xDF, 0xBC, 0x99), "hair": (0x31, 0x27, 0x22),
+        "scarf": (0xC1, 0x8D, 0x4D), "hat": (0x4A, 0x37, 0x27),
+        "bag": (0x5C, 0x41, 0x2B),
     },
 }
 
@@ -230,35 +300,70 @@ def _arms(c, ox, oy, colors, frame, facing):
 
 
 def _head(c, ox, oy, colors, facing):
-    """头 + 发 + 围巾。oy 为头部中心。"""
+    """圆润的大头、清晰眼睛与腮红。oy 为头部中心。"""
     if "headscarf" in colors:
-        c.fill_ellipse(ox, oy - 2, 11.5, 10.5, colors["headscarf"])
-    c.fill_circle(ox, oy, 10, colors["skin"])
+        c.fill_ellipse(ox, oy - 3, 13.7, 12.0, colors["headscarf"])
+    if "hat" in colors:
+        c.fill_ellipse(ox, oy - 9, 13.6, 5.2, colors["hat"])
+        c.fill_rect(ox - 12, oy - 15, ox + 12, oy - 9, colors["hat"])
+        c.fill_ellipse(ox + 3, oy - 10, 10.5, 2.0, shade(colors["hat"], -0.25))
+        c.thick_line((ox - 12, oy - 10), (ox + 12, oy - 10), INK, 1)
+    # 耳朵先画，脸再盖住内缘。
+    c.fill_circle(ox - 11.5, oy + 2.0, 3.2, shade(colors["skin"], -0.08))
+    c.fill_circle(ox + 11.5, oy + 2.0, 3.2, shade(colors["skin"], -0.08))
+    c.fill_ellipse(ox, oy + 0.8, 13.2, 12.0, colors["skin"])
     if facing == "up":
         # 背对镜头:整颗头都是头发
-        c.fill_ellipse(ox, oy, 10.0, 10.0, colors["hair"])
+        c.fill_ellipse(ox, oy, 13.2, 12.0, colors["hair"])
+        c.fill_ellipse(ox, oy + 6.0, 7.5, 3.0, shade(colors["hair"], -0.16))
+        if "ponytail" in colors:
+            c.fill_ellipse(ox, oy + 9.0, 5.0, 6.5, shade(colors["hair"], -0.08))
     elif facing == "side":
         # 侧脸:头发盖住后脑,脸朝右
-        c.fill_ellipse(ox - 1, oy - 1, 10.0, 9.5, colors["hair"])
-        c.fill_ellipse(ox + 4, oy + 2, 6.5, 7.5, colors["skin"])
-        c.fill_rect(ox + 6, oy + 1, ox + 8, oy + 3, INK)
+        c.fill_ellipse(ox - 1.5, oy - 1.0, 12.8, 11.5, colors["hair"])
+        if "ponytail" in colors:
+            c.fill_ellipse(ox - 12.0, oy + 3.0, 4.8, 8.5,
+                shade(colors["hair"], 0.04))
+        c.fill_ellipse(ox + 5.0, oy + 2.0, 8.0, 8.5, colors["skin"])
+        c.fill_ellipse(ox + 8.0, oy + 2.0, 2.9, 3.8, (0xFF, 0xFA, 0xEE))
+        c.fill_circle(ox + 8.8, oy + 2.3, 1.9, INK)
+        c.fill_circle(ox + 9.5, oy + 1.4, 0.72, (255, 255, 255))
+        c.fill_circle(ox + 4.8, oy + 7.0, 2.0, (0xEE, 0x99, 0x91, 120))
+        c.thick_line((ox + 8.0, oy + 7.2), (ox + 10.8, oy + 7.0),
+                     shade(colors["skin"], -0.45), 1)
     else:
-        c.fill_ellipse(ox, oy - 3, 10.0, 8.0, colors["hair"])
-        c.fill_ellipse(ox, oy + 3, 8.0, 7.5, colors["skin"])
-        c.fill_rect(ox - 5, oy + 1, ox - 3, oy + 3, INK)
-        c.fill_rect(ox + 3, oy + 1, ox + 5, oy + 3, INK)
+        c.fill_ellipse(ox, oy - 4.5, 13.2, 9.2, colors["hair"])
+        # 两侧发束与刘海，让轮廓更圆更可爱。
+        c.fill_ellipse(ox - 9.8, oy + 1.0, 3.5, 7.8, colors["hair"])
+        c.fill_ellipse(ox + 9.8, oy + 1.0, 3.5, 7.8, colors["hair"])
+        c.fill_ellipse(ox - 4.8, oy - 7.4, 5.2, 2.2,
+            shade(colors["hair"], 0.20))
+        if "ponytail" in colors:
+            c.fill_ellipse(ox + 13.0, oy + 3.5, 4.5, 7.5,
+                shade(colors["hair"], 0.04))
+        c.fill_poly([(ox - 9.0, oy - 9.0), (ox - 2.0, oy - 11.0),
+                     (ox + 1.0, oy - 3.0), (ox - 7.0, oy - 1.0)],
+                    shade(colors["hair"], 0.06))
+        c.fill_ellipse(ox - 5.2, oy + 2.0, 3.5, 4.3, (0xFF, 0xFA, 0xEE))
+        c.fill_ellipse(ox + 5.2, oy + 2.0, 3.5, 4.3, (0xFF, 0xFA, 0xEE))
+        c.fill_circle(ox - 4.8, oy + 2.5, 2.0, INK)
+        c.fill_circle(ox + 5.6, oy + 2.5, 2.0, INK)
+        c.fill_circle(ox - 5.35, oy + 1.65, 0.78, (255, 255, 255))
+        c.fill_circle(ox + 5.05, oy + 1.65, 0.78, (255, 255, 255))
+        c.fill_circle(ox - 8.1, oy + 6.2, 2.0, (0xEE, 0x99, 0x91, 135))
+        c.fill_circle(ox + 8.1, oy + 6.2, 2.0, (0xEE, 0x99, 0x91, 135))
+        c.thick_line((ox - 2.5, oy + 8.1), (ox + 2.5, oy + 8.1),
+                     shade(colors["skin"], -0.50), 1)
     if "short_hair" in colors:
-        c.fill_ellipse(ox, oy - 7, 9.0, 3.5, colors["hair"])
+        c.fill_ellipse(ox, oy - 8.5, 11.0, 3.8, colors["hair"])
     if "beard" in colors:
-        c.fill_ellipse(ox, oy + 7, 7.5, 5.0, colors["beard"])
-        c.fill_rect(ox - 6, oy + 3, ox - 3, oy + 5, colors["beard"])
-        c.fill_rect(ox + 3, oy + 3, ox + 6, oy + 5, colors["beard"])
-    if "hat" in colors:
-        c.fill_ellipse(ox, oy - 7, 11.0, 4.2, colors["hat"])
-        c.fill_rect(ox - 9, oy - 12, ox + 9, oy - 7, colors["hat"])
-        c.fill_ellipse(ox + 2, oy - 8, 8.5, 1.7, shade(colors["hat"], -0.25))
-    # 围巾(脖子)
-    c.fill_ellipse(ox, oy + 10, 9.0, 4.5, colors["scarf"])
+        c.fill_ellipse(ox, oy + 8.5, 9.0, 6.4, colors["beard"])
+        c.fill_rect(ox - 7.2, oy + 4.0, ox - 3.2, oy + 6.0, colors["beard"])
+        c.fill_rect(ox + 3.2, oy + 4.0, ox + 7.2, oy + 6.0, colors["beard"])
+    # 窄领巾只贴住脖子，不能盖住嘴和下巴。
+    c.fill_ellipse(ox, oy + 14.2, 9.2, 2.8, colors["scarf"])
+    c.thick_line((ox - 6.8, oy + 14.0), (ox + 6.8, oy + 14.0),
+                 shade(colors["scarf"], -0.18), 1)
 
 
 def draw_character(c, ox, oy, colors, frame, facing):
@@ -271,9 +376,9 @@ def draw_character(c, ox, oy, colors, frame, facing):
     if "hunch" in colors:
         bob += 3
     _legs(c, ox, oy + bob, colors, frame, facing)
-    body_top = oy - 43 + bob
-    body_bot = oy - 19 + bob
-    half = 9.0 if facing == "side" else (15.0 if "wide" in colors else 13.0)
+    body_top = oy - 40 + bob
+    body_bot = oy - 18 + bob
+    half = 8.5 if facing == "side" else (14.0 if "wide" in colors else 11.5)
     if "hunch" in colors:
         body_top += 4
     if "cane" in colors:
@@ -296,7 +401,7 @@ def draw_character(c, ox, oy, colors, frame, facing):
         c.fill_rect(ox - half + 3, body_top + 10, ox + half - 3, body_top + 12,
                     shade(colors["apron"], -0.2))
     _arms(c, ox, oy + bob, colors, frame, facing)
-    _head(c, ox, oy - 48 + bob, colors, facing)
+    _head(c, ox, oy - 49 + bob, colors, facing)
     if "bag" in colors:
         c.fill_rect(ox + half - 5, body_bot - 12, ox + half + 8, body_bot + 2,
                     colors["bag"])
@@ -898,34 +1003,34 @@ def _post_office_ground(c):
 # ---------------------------------------------------------------------------
 TILE = 256
 SEASON_TINT = {
-    "spring": {"grass": (0x67, 0x72, 0x45), "grass_dark": (0x4F, 0x5A, 0x3A),
-               "moss": (0x5D, 0x6B, 0x3D), "dirt": (0x4F, 0x3D, 0x2D),
-               "soil": (0x3B, 0x2B, 0x20), "road": (0x6D, 0x5A, 0x43),
-               "plaza": (0x79, 0x68, 0x50), "sand": (0x9B, 0x83, 0x5D),
-               "water": (0x45, 0x68, 0x72), "wall": (0x69, 0x57, 0x44),
-               "floor_wood": (0x7A, 0x58, 0x3B), "floor_tile": (0x8A, 0x88, 0x79),
-               "rug": (0x75, 0x35, 0x31), "stage_floor": (0x86, 0x5D, 0x35)},
-    "summer": {"grass": (0x49, 0x63, 0x35), "grass_dark": (0x35, 0x4B, 0x2A),
-               "moss": (0x42, 0x5B, 0x32), "dirt": (0x57, 0x42, 0x2D),
-               "soil": (0x3B, 0x2A, 0x1E), "road": (0x78, 0x61, 0x43),
-               "plaza": (0x83, 0x6D, 0x4E), "sand": (0xA9, 0x8D, 0x60),
-               "water": (0x3D, 0x65, 0x70), "wall": (0x70, 0x5A, 0x43),
-               "floor_wood": (0x80, 0x5A, 0x38), "floor_tile": (0x92, 0x8F, 0x7D),
-               "rug": (0x7D, 0x38, 0x32), "stage_floor": (0x8F, 0x62, 0x36)},
-    "autumn": {"grass": (0x7C, 0x6D, 0x3D), "grass_dark": (0x5D, 0x51, 0x31),
-               "moss": (0x6B, 0x5D, 0x36), "dirt": (0x5C, 0x44, 0x2D),
-               "soil": (0x3E, 0x2B, 0x1D), "road": (0x7C, 0x61, 0x43),
-               "plaza": (0x8A, 0x70, 0x4D), "sand": (0xA8, 0x88, 0x59),
-               "water": (0x4E, 0x62, 0x68), "wall": (0x71, 0x58, 0x3F),
-               "floor_wood": (0x7D, 0x55, 0x35), "floor_tile": (0x8A, 0x83, 0x72),
-               "rug": (0x72, 0x30, 0x2A), "stage_floor": (0x89, 0x59, 0x31)},
-    "winter": {"grass": (0xA7, 0xB5, 0xBC), "grass_dark": (0x7E, 0x91, 0x9C),
-               "moss": (0x91, 0xA1, 0xA7), "dirt": (0x6A, 0x66, 0x60),
-               "soil": (0x47, 0x48, 0x47), "road": (0x9A, 0xA5, 0xA8),
-               "plaza": (0xA7, 0xAC, 0xAA), "sand": (0xB4, 0xB4, 0xA8),
-               "water": (0x8A, 0xA9, 0xB7), "wall": (0x5B, 0x50, 0x48),
-               "floor_wood": (0x62, 0x47, 0x34), "floor_tile": (0x7A, 0x7D, 0x79),
-               "rug": (0x5F, 0x2F, 0x2A), "stage_floor": (0x6A, 0x47, 0x2D)},
+    "spring": {"grass": (0x79, 0xBF, 0x58), "grass_dark": (0x57, 0x9B, 0x45),
+               "moss": (0x8B, 0xC8, 0x62), "dirt": (0xC9, 0x9B, 0x67),
+               "soil": (0xA8, 0x76, 0x48), "road": (0xD8, 0xBE, 0x8E),
+               "plaza": (0xE7, 0xD5, 0xAF), "sand": (0xE9, 0xD0, 0x96),
+               "water": (0x67, 0xBB, 0xDA), "wall": (0xEA, 0xDE, 0xC3),
+               "floor_wood": (0xCA, 0x8D, 0x52), "floor_tile": (0xDD, 0xD6, 0xC5),
+               "rug": (0xD5, 0x6C, 0x68), "stage_floor": (0xC9, 0x8E, 0x55)},
+    "summer": {"grass": (0x61, 0xB2, 0x4B), "grass_dark": (0x42, 0x8E, 0x3A),
+               "moss": (0x77, 0xBB, 0x4E), "dirt": (0xC5, 0x91, 0x59),
+               "soil": (0xA5, 0x6F, 0x41), "road": (0xE0, 0xC5, 0x91),
+               "plaza": (0xEF, 0xDB, 0xB3), "sand": (0xF0, 0xD6, 0x98),
+               "water": (0x53, 0xAF, 0xDB), "wall": (0xEF, 0xE3, 0xC7),
+               "floor_wood": (0xCE, 0x90, 0x52), "floor_tile": (0xE1, 0xD9, 0xC6),
+               "rug": (0xD8, 0x68, 0x5D), "stage_floor": (0xCB, 0x90, 0x54)},
+    "autumn": {"grass": (0x9C, 0xB4, 0x55), "grass_dark": (0x78, 0x94, 0x43),
+               "moss": (0xAF, 0xBD, 0x61), "dirt": (0xCC, 0x9A, 0x63),
+               "soil": (0xA7, 0x73, 0x45), "road": (0xE1, 0xBE, 0x84),
+               "plaza": (0xEC, 0xD4, 0xA6), "sand": (0xE8, 0xC8, 0x88),
+               "water": (0x68, 0xA9, 0xC3), "wall": (0xF0, 0xDD, 0xB5),
+               "floor_wood": (0xCB, 0x88, 0x48), "floor_tile": (0xD8, 0xCE, 0xB7),
+               "rug": (0xC7, 0x58, 0x4F), "stage_floor": (0xC5, 0x85, 0x49)},
+    "winter": {"grass": (0xDC, 0xE9, 0xEE), "grass_dark": (0xBF, 0xD4, 0xDE),
+               "moss": (0xCD, 0xDF, 0xE4), "dirt": (0xC5, 0xC0, 0xB5),
+               "soil": (0xA7, 0x9D, 0x8E), "road": (0xE7, 0xE4, 0xD9),
+               "plaza": (0xF0, 0xEA, 0xDC), "sand": (0xED, 0xE8, 0xD8),
+               "water": (0xA8, 0xD5, 0xE9), "wall": (0xF4, 0xE9, 0xCF),
+               "floor_wood": (0xC8, 0x93, 0x5B), "floor_tile": (0xDA, 0xD7, 0xCC),
+               "rug": (0xB7, 0x54, 0x50), "stage_floor": (0xC4, 0x8C, 0x57)},
 }
 
 
@@ -991,16 +1096,17 @@ def _soil_tile(c, rng, season, kind, base):
             c.fill_ellipse(x, y, rng.uniform(2.0, 6.0), rng.uniform(1.0, 3.0),
                            shade(base, rng.uniform(-0.20, 0.17)))
     elif kind == "road":
-        # 车辙土路：中间被车轮压实，两侧散着砾石和草屑。
+        # 明亮踏实的砂土路：用不规则压痕代替重复车辙，远看仍是一条清楚的通路。
         c.fill_rect(0, 0, TILE, TILE, shade(base, -0.03))
-        for x in (54, 116, 182):
-            c.fill_rect(x + rng.uniform(-4, 4), 0, x + 28, TILE, shade(base, -0.09))
-            c.fill_rect(x + 4, 0, x + 6, TILE, shade(base, 0.07))
-        for _ in range(260):
+        for _ in range(34):
+            x, y = rng.uniform(0, TILE), rng.uniform(0, TILE)
+            c.fill_ellipse(x, y, rng.uniform(18, 52), rng.uniform(4, 15),
+                           shade(base, rng.uniform(-0.10, 0.09)))
+        for _ in range(210):
             x, y = rng.uniform(0, TILE), rng.uniform(0, TILE)
             c.fill_ellipse(x, y, rng.uniform(0.8, 2.8), rng.uniform(0.7, 2.0),
                            shade(base, rng.uniform(-0.22, 0.20)))
-        for _ in range(36):
+        for _ in range(26):
             x, y = rng.uniform(0, TILE), rng.uniform(0, TILE)
             c.thick_line((x, y), (x + rng.uniform(-3, 3), y - rng.uniform(3, 8)),
                          (0x5E, 0x6B, 0x39, 120), 1)
@@ -1166,21 +1272,21 @@ def _prop_outline(c: Canvas, kind: str) -> None:
 def _draw_prop_art(c: Canvas, kind: str) -> None:
     """256×256 透明道具/地标母版。"""
     ink = INK
-    wood, wood_d, wood_l = (0x75, 0x50, 0x31), (0x4A, 0x32, 0x21), (0xA3, 0x76, 0x49)
-    wall, roof, metal = (0x9A, 0x81, 0x62), (0x4B, 0x31, 0x24), (0x6A, 0x74, 0x78)
-    green, pale, red = (0x4A, 0x5E, 0x35), (0xD3, 0xC8, 0xAB), (0x83, 0x3E, 0x32)
+    wood, wood_d, wood_l = (0xB9, 0x79, 0x43), (0x6D, 0x42, 0x28), (0xE1, 0xA7, 0x60)
+    wall, roof, metal = (0xEF, 0xDF, 0xBB), (0xB8, 0x4E, 0x3A), (0x7C, 0x8D, 0x91)
+    green, pale, red = (0x5E, 0x9C, 0x4E), (0xF6, 0xEB, 0xCE), (0xC8, 0x55, 0x3F)
 
     if kind in ("house", "building", "barn", "backstage"):
-        # 东北木刻楞/泥草房：先立烟囱与石基，再压屋顶，最后做门窗和木构。
+        # 西式奶油石墙与红瓦坡顶：先立烟囱与石基，再压屋顶，最后做门窗和木构。
         is_barn = kind == "barn"
-        wall_col = mix(wall, (0x78, 0x45, 0x37), 0.34) if is_barn else wall
+        wall_col = mix(wall, (0xC9, 0x71, 0x4D), 0.20) if is_barn else wall
         if kind == "backstage":
-            wall_col = mix(wall, (0x4B, 0x39, 0x31), 0.46)
+            wall_col = mix(wall, (0x5B, 0x52, 0x43), 0.42)
 
         # 烟囱与淡烟：只在轮廓上方加一点生活气，不画成现代工业烟柱。
-        c.fill_rect(166, 18, 190, 66, (0x63, 0x4A, 0x3A))
-        c.fill_rect(161, 15, 195, 24, (0x43, 0x34, 0x2C))
-        c.fill_rect(169, 24, 187, 30, shade((0x63, 0x4A, 0x3A), 0.16))
+        c.fill_rect(166, 18, 190, 66, (0xB9, 0x8B, 0x64))
+        c.fill_rect(161, 15, 195, 24, (0x7D, 0x58, 0x42))
+        c.fill_rect(169, 24, 187, 30, shade((0xB9, 0x8B, 0x64), 0.16))
         for cx, cy, r, a in ((177, 8, 10, 34), (188, -3, 13, 24), (201, -14, 16, 16)):
             c.fill_circle(cx, cy, r, (0xD9, 0xD3, 0xC3, a))
 
@@ -1197,12 +1303,12 @@ def _draw_prop_art(c: Canvas, kind: str) -> None:
         c.thick_line((42, 198), (214, 198), shade(wood_d, 0.04), 5)
 
         # 石砌地基：大小不一的石块，底部压暗。
-        c.fill_rect(34, 208, 222, 228, (0x5B, 0x57, 0x4D))
+        c.fill_rect(34, 208, 222, 228, (0x9A, 0x96, 0x85))
         stone_rng = Rng(zlib.crc32(("foundation:" + kind).encode("utf-8")) & 0xFFFF)
         for x in range(38, 218, 22):
             c.fill_rect(x + 1, 211, x + 20, 224,
-                        shade((0x78, 0x71, 0x61), stone_rng.uniform(-0.12, 0.10)))
-        c.fill_rect(34, 222, 222, 228, (0x43, 0x3E, 0x36))
+                        shade((0xD1, 0xC7, 0xAD), stone_rng.uniform(-0.10, 0.10)))
+        c.fill_rect(34, 222, 222, 228, (0x7B, 0x73, 0x62))
 
         # 大坡屋顶：层层木瓦，边缘有滴水檐和压脊。
         c.fill_poly([(24, 96), (128, 24), (232, 96)], shade(roof, 0.04))
@@ -1263,8 +1369,8 @@ def _draw_prop_art(c: Canvas, kind: str) -> None:
                 c.fill_ellipse(196 + i * 5, 224 - i * 6, 15, 7,
                                shade((0xB5, 0x91, 0x49), i * 0.04))
     elif kind in ("tree", "birch"):
-        trunk = (0xD8, 0xD4, 0xC4) if kind == "birch" else (0x4B, 0x31, 0x21)
-        canopy = (0x56, 0x68, 0x3A) if kind == "birch" else (0x3F, 0x54, 0x31)
+        trunk = (0xF0, 0xEC, 0xDD) if kind == "birch" else (0x70, 0x48, 0x2B)
+        canopy = (0x78, 0xB8, 0x55) if kind == "birch" else (0x5D, 0x9B, 0x49)
         # 树干与根部：先画外扩的根盘，再收成主干，避免一根直棍。
         c.thick_line((128, 224), (124, 108), trunk, 21 if kind == "birch" else 18)
         c.thick_line((124, 218), (96, 232), shade(trunk, -0.12), 8)
@@ -1307,6 +1413,43 @@ def _draw_prop_art(c: Canvas, kind: str) -> None:
         c.thick_line((82, 78), (174, 78), wood_l, 8)
         c.thick_line((128, 78), (128, 116), (0x8C, 0x72, 0x4D), 3)
         c.fill_rect(117, 116, 139, 134, (0x5A, 0x3B, 0x28))
+    elif kind == "gate":
+        # 敞开的西式木门：两根门柱、横梁和向外张开的门扇，告诉玩家这里能走。
+        c.fill_rect(35, 76, 58, 224, wood_d)
+        c.fill_rect(198, 76, 221, 224, wood_d)
+        c.fill_poly([(31, 78), (43, 55), (55, 78)], wood_l)
+        c.fill_poly([(201, 78), (213, 55), (225, 78)], wood_l)
+        c.fill_rect(56, 104, 81, 206, wood)
+        c.fill_rect(175, 104, 200, 206, wood)
+        c.thick_line((56, 112), (81, 196), wood_l, 5)
+        c.thick_line((175, 112), (200, 196), wood_l, 5)
+        c.thick_line((58, 154), (78, 154), wood_d, 4)
+        c.thick_line((178, 154), (198, 154), wood_d, 4)
+        c.fill_circle(78, 151, 5, metal)
+        c.fill_circle(178, 151, 5, metal)
+        c.thick_line((55, 92), (201, 92), wood, 10)
+    elif kind == "flowerbed":
+        c.fill_rect(25, 154, 231, 225, wood_d)
+        c.fill_rect(32, 146, 224, 170, wood_l)
+        c.fill_rect(38, 144, 218, 158, (0x74, 0x54, 0x34))
+        flower_cols = ((0xF4, 0xB6, 0x55), (0xE8, 0x7E, 0x8F),
+                       (0xF2, 0xE4, 0xB4), (0x9B, 0x7F, 0xD2))
+        for i in range(12):
+            x = 48 + (i * 37) % 158
+            y = 119 + (i * 23) % 38
+            c.thick_line((x, 150), (x + (i % 3) - 1, y + 10), green, 3)
+            c.fill_circle(x, y, 10, flower_cols[i % len(flower_cols)])
+            c.fill_circle(x, y, 4, (0xF7, 0xD9, 0x72))
+        c.fill_rect(33, 206, 223, 224, shade(wood, -0.12))
+    elif kind == "shrub":
+        for cx, cy, r in ((84, 139, 34), (129, 113, 43), (171, 143, 36),
+                           (105, 169, 34), (154, 172, 31)):
+            c.fill_circle(cx, cy, r, green)
+            c.fill_circle(cx - 5, cy - 7, r * 0.70, shade(green, 0.12))
+        for i in range(9):
+            x = 76 + (i * 29) % 110
+            y = 112 + (i * 19) % 62
+            c.fill_circle(x, y, 4, (0xF2, 0xDE, 0x8C) if i % 2 else (0xEE, 0x9A, 0x9D))
     elif kind in ("fence", "board", "sign", "lamp", "lantern"):
         if kind == "fence":
             for x in (56, 122, 188):
@@ -1323,16 +1466,21 @@ def _draw_prop_art(c: Canvas, kind: str) -> None:
                             shade(pale, -0.20))
             c.fill_circle(72, 70, 5, red)
         elif kind == "lamp":
-            c.fill_rect(121, 72, 135, 226, metal)
-            c.fill_rect(98, 44, 158, 94, ink)
-            c.fill_rect(104, 50, 152, 88, (0xE5, 0x9A, 0x48))
-            c.fill_ellipse(128, 88, 30, 12, (0xF5, 0xC9, 0x69, 80))
+            c.fill_rect(120, 78, 136, 228, (0x4B, 0x59, 0x55))
+            c.fill_rect(111, 214, 145, 231, (0x35, 0x3D, 0x3A))
+            c.thick_line((128, 79), (128, 62), (0x4B, 0x59, 0x55), 9)
+            c.fill_poly([(99, 66), (128, 37), (157, 66)], (0x3A, 0x43, 0x40))
+            c.fill_rect(102, 64, 154, 96, (0x3A, 0x43, 0x40))
+            c.fill_rect(108, 69, 148, 91, (0xF5, 0xD4, 0x83))
         else:
-            c.fill_rect(113, 40, 143, 57, metal)
-            c.fill_rect(93, 58, 163, 178, red)
-            c.fill_rect(101, 67, 155, 169, (0xC8, 0x69, 0x45))
-            c.fill_rect(88, 174, 168, 187, ink)
-            c.thick_line((128, 39), (128, 16), ink, 4)
+            # 西式铁框玻璃灯：暖黄灯芯与深铁框，不再使用红色灯笼符号。
+            c.fill_rect(112, 38, 144, 56, metal)
+            c.fill_rect(91, 56, 165, 181, (0x3C, 0x49, 0x46))
+            c.fill_rect(101, 66, 155, 172, (0xF2, 0xC8, 0x70))
+            c.fill_rect(124, 66, 132, 172, (0x3C, 0x49, 0x46))
+            c.fill_rect(101, 112, 155, 120, (0x3C, 0x49, 0x46))
+            c.fill_rect(87, 176, 169, 190, (0x35, 0x3D, 0x3A))
+            c.thick_line((128, 38), (128, 14), (0x35, 0x3D, 0x3A), 4)
     elif kind in ("dock", "boat", "reeds"):
         if kind == "dock":
             for x in range(26, 232, 22):
@@ -1439,7 +1587,7 @@ PROP_NAMES = [
     "exam_bed", "medicine_cabinet", "mailboxes", "desk", "lumber", "saw",
     "half_built", "sign", "sofa", "barrel", "tool_rack", "plow", "cart",
     "gravestone", "haystack", "water_trough", "fish_rack", "clothesline", "mud_puddle",
-    "ice_block",
+    "ice_block", "gate", "flowerbed", "shrub",
 ]
 
 
@@ -1471,6 +1619,21 @@ PORTRAIT_PEOPLE = {
     "zhou_deshun": {"name": "周德顺", "skin": (0xC9, 0xA5, 0x80), "hair": (0xB8, 0xB3, 0xA3),
                     "coat": (0x50, 0x34, 0x32), "accent": (0xA9, 0x7D, 0x45),
                     "style": "opera", "age_lines": True},
+    "shi_tieshan": {"name": "石铁山", "skin": (0xCB, 0xA4, 0x7D), "hair": (0x4B, 0x43, 0x3B),
+                    "coat": (0x42, 0x35, 0x2E), "accent": (0x9E, 0x58, 0x35),
+                    "style": "workcap", "age_lines": True},
+    "jiang_muyun": {"name": "姜牧云", "skin": (0xE2, 0xBF, 0x9E), "hair": (0x38, 0x2C, 0x25),
+                    "coat": (0x59, 0x60, 0x3D), "accent": (0xC7, 0x9B, 0x58),
+                    "style": "headscarf", "age_lines": False},
+    "he_shuigen": {"name": "何水根", "skin": (0xBF, 0x9C, 0x7D), "hair": (0xA9, 0xA3, 0x93),
+                   "coat": (0x35, 0x4A, 0x48), "accent": (0x7B, 0x57, 0x39),
+                   "style": "postman", "age_lines": True},
+    "su_wenbo": {"name": "苏文博", "skin": (0xD8, 0xB6, 0x96), "hair": (0x30, 0x2A, 0x26),
+                 "coat": (0x4E, 0x48, 0x42), "accent": (0x8A, 0x7B, 0x5E),
+                 "style": "bun", "age_lines": False},
+    "lang_sanshun": {"name": "郎三顺", "skin": (0xDC, 0xB9, 0x97), "hair": (0x34, 0x29, 0x23),
+                     "coat": (0x5D, 0x3E, 0x30), "accent": (0xB8, 0x86, 0x49),
+                     "style": "workcap", "age_lines": False},
 }
 
 
@@ -1868,6 +2031,7 @@ def gen_season_boards(out_dir: Path) -> None:
 def main(argv):
     root = Path(argv[1]) if len(argv) > 1 else Path("assets")
     root = root if root.is_absolute() else Path.cwd() / root
+    force_fallback = "--force-fallback" in argv[2:]
     gen_dir = root / "art" / "generated"
     sprites = root / "sprites"
 
@@ -1883,6 +2047,9 @@ def main(argv):
         ("zhang_xiaofang", XIAOFANG), ("han_shouyi", HAN_SHOUYI),
         ("sun_yumei", SUN_YUMEI), ("zhao_changhe", ZHAO_CHANGHE),
         ("lin_xiaoman", LIN_XIAOMAN), ("zhou_deshun", ZHOU_DESHUN),
+        ("shi_tieshan", SHI_TIESHAN), ("jiang_muyun", JIANG_MUYUN),
+        ("he_shuigen", HE_SHUIGEN), ("su_wenbo", SU_WENBO),
+        ("lang_sanshun", LANG_SANSHUN),
     ):
         gen_character_sheet(palette, npc_dir / f"npc_{npc_id}.png")
         gen_character_sheet(WINTER_NPC[npc_id], npc_dir / f"npc_{npc_id}_winter.png")
@@ -1896,10 +2063,18 @@ def main(argv):
     gen_terrain(gen_dir / "terrain")
     print("生成地点道具 …")
     gen_props(gen_dir / "props")
-    print("生成 NPC 立绘 …")
-    gen_portraits(root / "art" / "portraits")
-    print("生成四季场景板 …")
-    gen_season_boards(root / "art" / "concept")
+    # AI 成品立绘/主菜单场景板是运行时高优先级资产，确定性管线只补缺。
+    # 需要主动重建占位版时显式传 --force-fallback。
+    if force_fallback or not (root / "art" / "portraits" / "zhang_xiaofang.png").exists():
+        print("生成 NPC 立绘回退图 …")
+        gen_portraits(root / "art" / "portraits")
+    else:
+        print("保留既有 NPC 立绘 …")
+    if force_fallback or not (root / "art" / "concept" / "season_winter.png").exists():
+        print("生成四季场景板回退图 …")
+        gen_season_boards(root / "art" / "concept")
+    else:
+        print("保留既有四季场景板 …")
     print("完成。")
     return 0
 

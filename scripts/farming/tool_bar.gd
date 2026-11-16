@@ -4,7 +4,7 @@ class_name ToolBar
 ## 工具栏(4 键:翻土/浇水/播种/收获 + 秋翻地)
 ##
 ## J = 翻土  K = 浇水  L = 播种  I = 收获
-## 秋翻地走 R(收获后或冬季深翻积肥,黑土地保护核心农法)
+## 秋翻地走 R(收获后或冬季深翻积肥,麦溪沃土保护核心农法)
 ##
 ## 本类只做"意图 → 结果"的判定与文案,真正的状态变更交给 FarmSystem。
 ## 这样 UI 层(HUD/场景)只管按键与提示,规则集中在一处。
@@ -45,11 +45,11 @@ static func tool_hint(tool: int) -> String:
 		Tool.TILL:
 			return "J · 翻土:把荒地翻松,准备好下种"
 		Tool.WATER:
-			return "K · 浇水:黑土地不缺水才出苗"
+			return "K · 浇水:麦溪沃土不缺水才出苗"
 		Tool.SEED:
 			return "L · 播种:4-5 月是唯一播种窗口"
 		Tool.HARVEST:
-			return "I · 收获:熟了才能收,过了秋霜就冻在地里"
+			return "I · 收获:熟了才能收,过了初霜就冻在地里"
 	return ""
 
 ## 当前应选中的作物(优先选当前月份可播种的)
@@ -72,23 +72,42 @@ static func apply_tool(tool: int, farm: FarmSystem, plot_index: int,
 		return _fail("主角状态异常")
 
 	var base_cost: int = TOOL_COST.get(tool, 0)
-	var cost := int(ceil(float(base_cost) * maxf(1.0, stamina_multiplier)))
+	var tool_id := ""
+	match tool:
+		Tool.TILL: tool_id = "hoe"
+		Tool.WATER: tool_id = "water"
+	var upgrade_factor := 1.0
+	if tool_id != "":
+		upgrade_factor = 1.0 - minf(0.30, float(int(player.tool_levels.get(tool_id, 1)) - 1) * 0.12)
+	var cost := maxi(0, int(ceil(float(base_cost) * maxf(1.0, stamina_multiplier) * upgrade_factor)))
 	if not player.stamina.has(cost):
 		return _fail("体力不够了(%s),歇一晚再说" % player.stamina.status_cn())
 
 	match tool:
 		Tool.TILL:
-			return _do_till(farm, plot, player, cost)
+			var till_result := _do_till(farm, plot, player, cost)
+			if bool(till_result.get("ok", false)):
+				SkillSystem.add_xp(player, "farming", 3)
+			return till_result
 		Tool.WATER:
-			return _do_water(farm, plot, player, cost)
+			var water_result := _do_water(farm, plot, player, cost)
+			if bool(water_result.get("ok", false)):
+				SkillSystem.add_xp(player, "farming", 2)
+			return water_result
 		Tool.SEED:
-			return _do_seed(farm, plot, player, cost, seed_crop_id)
+			var seed_result := _do_seed(farm, plot, player, cost, seed_crop_id)
+			if bool(seed_result.get("ok", false)):
+				SkillSystem.add_xp(player, "farming", 4)
+			return seed_result
 		Tool.HARVEST:
-			return _do_harvest(farm, plot, player, cost)
+			var harvest_result := _do_harvest(farm, plot, player, cost)
+			if bool(harvest_result.get("ok", false)):
+				SkillSystem.add_xp(player, "farming", 8)
+			return harvest_result
 	return _fail("没这个工具")
 
 static func _do_till(farm: FarmSystem, plot: FarmPlot, player: PlayerProfile, cost: int) -> Dictionary:
-	# 死株(秋霜冻死 / 缺水旱死)也得能清 —— 黑龙江秋收后翻地就是要把死茬翻进土里沤肥。
+	# 死株(初霜冻死 / 缺水旱死)也得能清 —— 麦溪镇秋收后翻地就是要把死茬翻进土里沤肥。
 	# 没有这条通路,玩家一旦错过收成,这块地就永久废了(9 块地少一块)。
 	if plot.state == FarmPlot.State.DEAD:
 		if not player.stamina.consume(cost):
@@ -189,7 +208,7 @@ static func _dead_reason_cn(plot: FarmPlot) -> String:
 		return "旱死的庄稼"
 	return "冻死的庄稼"
 
-## 秋翻地(收获后或冬季深翻积肥,黑土地保护核心农法)
+## 秋翻地(收获后或冬季深翻积肥,麦溪沃土保护核心农法)
 static func apply_autumn_plough(farm: FarmSystem, plot_index: int,
 		player: PlayerProfile, stamina_multiplier: float = 1.0) -> Dictionary:
 	var plot := farm.get_plot(plot_index)

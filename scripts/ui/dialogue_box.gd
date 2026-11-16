@@ -12,7 +12,7 @@ signal closed
 ## 需要外部执行的动作(如打开商店)
 signal action_triggered(action: String, data: Dictionary)
 
-const PANEL_COLOR := Color(0.18, 0.13, 0.09, 0.94)
+const PANEL_COLOR := Color(0.16, 0.11, 0.07, 0.96)
 const TEXT_COLOR := Color(0.96, 0.92, 0.82)
 const SPEAKER_COLOR := Color(0.96, 0.80, 0.45)
 const OPTION_COLOR := Color(0.86, 0.88, 0.92)
@@ -22,6 +22,7 @@ const OPTION_HOVER_COLOR := Color(1.0, 0.90, 0.62)
 const CHARS_PER_SEC := 26.0
 ## 语音音量
 const VOICE_VOLUME_DB := -4.0
+const VOICE_ENABLED := false
 
 var _runner: DialogueRunner = null
 var _npc: NpcBase = null
@@ -31,6 +32,7 @@ var _portrait_frame: PanelContainer
 var _portrait: TextureRect
 var _speaker_label: Label
 var _text_label: Label
+var _option_scroll: ScrollContainer
 var _option_box: VBoxContainer
 var _voice_player: AudioStreamPlayer
 
@@ -50,12 +52,9 @@ func _build_ui() -> void:
 	_panel.name = "Panel"
 	_panel.add_theme_stylebox_override("panel", _make_panel_style())
 	_panel.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	_panel.offset_left = 120.0
-	_panel.offset_right = -120.0
-	_panel.offset_top = -320.0
-	_panel.offset_bottom = -40.0
 	_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_panel)
+	_layout_panel()
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 28)
@@ -68,15 +67,17 @@ func _build_ui() -> void:
 	column.name = "Content"
 	column.add_theme_constant_override("separation", 12)
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	var content_row := HBoxContainer.new()
 	content_row.name = "ContentRow"
 	content_row.add_theme_constant_override("separation", 20)
+	content_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	margin.add_child(content_row)
 
 	_portrait_frame = PanelContainer.new()
 	_portrait_frame.name = "PortraitFrame"
-	_portrait_frame.custom_minimum_size = Vector2(168, 168)
+	_portrait_frame.custom_minimum_size = Vector2(204, 204)
 	_portrait_frame.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	_portrait_frame.add_theme_stylebox_override("panel", _make_portrait_style())
 	_portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -84,9 +85,11 @@ func _build_ui() -> void:
 
 	_portrait = TextureRect.new()
 	_portrait.name = "Portrait"
-	_portrait.custom_minimum_size = Vector2(156, 156)
+	_portrait.custom_minimum_size = Vector2(188, 188)
 	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_portrait.clip_contents = true
+	_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_portrait.visible = false
 	_portrait_frame.add_child(_portrait)
@@ -95,28 +98,64 @@ func _build_ui() -> void:
 
 	_speaker_label = Label.new()
 	_speaker_label.name = "Speaker"
-	_speaker_label.add_theme_font_size_override("font_size", 22)
+	_speaker_label.add_theme_font_size_override("font_size", 24)
 	_speaker_label.add_theme_color_override("font_color", SPEAKER_COLOR)
+	_speaker_label.add_theme_color_override("font_shadow_color", Color(0.04, 0.03, 0.02, 0.9))
+	_speaker_label.add_theme_constant_override("shadow_offset_x", 2)
+	_speaker_label.add_theme_constant_override("shadow_offset_y", 2)
 	column.add_child(_speaker_label)
 
 	_text_label = Label.new()
 	_text_label.name = "Body"
-	_text_label.add_theme_font_size_override("font_size", 19)
+	_text_label.add_theme_font_size_override("font_size", 20)
 	_text_label.add_theme_color_override("font_color", TEXT_COLOR)
 	_text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_text_label.custom_minimum_size = Vector2(0, 96)
 	column.add_child(_text_label)
 
+	# 七个默认话题在 1080p 下能完整展示；窗口更矮或事件台词更长时，
+	# 选项区自己滚动，不能把最后几个按钮裁出屏幕外。
+	_option_scroll = ScrollContainer.new()
+	_option_scroll.name = "OptionScroll"
+	_option_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_option_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	_option_scroll.custom_minimum_size = Vector2(0, 150)
+	_option_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_option_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	column.add_child(_option_scroll)
+
 	_option_box = VBoxContainer.new()
 	_option_box.name = "Options"
 	_option_box.add_theme_constant_override("separation", 6)
-	column.add_child(_option_box)
+	_option_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_option_scroll.add_child(_option_box)
 
 	# NPC 语音:普通话语音包,可在暂停菜单静音
 	_voice_player = AudioStreamPlayer.new()
 	_voice_player.name = "Voice"
 	_voice_player.volume_db = VOICE_VOLUME_DB
 	add_child(_voice_player)
+
+## 对话框贴着视口底边，但高度随窗口自适应。固定 -320 的旧值只够
+## 三四个选项，真实窗口里第七个选项会被裁掉。
+func _layout_panel() -> void:
+	if _panel == null or not is_inside_tree():
+		return
+	var viewport_size := get_viewport_rect().size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		return
+	var side := clampf(viewport_size.x * 0.06, 24.0, 120.0)
+	var bottom_margin := clampf(viewport_size.y * 0.035, 20.0, 40.0)
+	var desired_height := clampf(viewport_size.y * 0.48, 380.0, 540.0)
+	desired_height = minf(desired_height, maxf(280.0, viewport_size.y - 120.0))
+	_panel.offset_left = side
+	_panel.offset_right = -side
+	_panel.offset_top = -desired_height - bottom_margin
+	_panel.offset_bottom = -bottom_margin
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_RESIZED and _panel != null:
+		_layout_panel()
 
 func _make_panel_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
@@ -125,28 +164,35 @@ func _make_panel_style() -> StyleBoxFlat:
 	style.corner_radius_top_right = 10
 	style.corner_radius_bottom_left = 10
 	style.corner_radius_bottom_right = 10
+	style.border_width_left = 2
 	style.border_width_top = 2
-	style.border_color = Color(0.55, 0.42, 0.25, 0.8)
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.border_color = Color(0.63, 0.48, 0.27, 0.9)
+	style.shadow_color = Color(0.02, 0.01, 0.0, 0.35)
+	style.shadow_size = 10
 	style.content_margin_left = 0
 	style.content_margin_right = 0
 	return style
 
 func _make_portrait_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.10, 0.08, 0.06, 0.92)
-	style.border_width_left = 2
-	style.border_width_top = 2
-	style.border_width_right = 2
-	style.border_width_bottom = 2
-	style.border_color = Color(0.60, 0.46, 0.27, 0.86)
-	style.corner_radius_top_left = 6
-	style.corner_radius_top_right = 6
-	style.corner_radius_bottom_left = 6
-	style.corner_radius_bottom_right = 6
-	style.content_margin_left = 5
-	style.content_margin_right = 5
-	style.content_margin_top = 5
-	style.content_margin_bottom = 5
+	style.bg_color = Color(0.20, 0.14, 0.08, 0.98)
+	style.border_width_left = 3
+	style.border_width_top = 3
+	style.border_width_right = 3
+	style.border_width_bottom = 3
+	style.border_color = Color(0.91, 0.72, 0.39, 0.96)
+	style.corner_radius_top_left = 14
+	style.corner_radius_top_right = 14
+	style.corner_radius_bottom_left = 14
+	style.corner_radius_bottom_right = 14
+	style.shadow_color = Color(0.02, 0.01, 0.0, 0.42)
+	style.shadow_size = 8
+	style.content_margin_left = 7
+	style.content_margin_right = 7
+	style.content_margin_top = 7
+	style.content_margin_bottom = 7
 	return style
 
 ## 接入一位 NPC 与一份对话运行时
@@ -157,13 +203,18 @@ func setup(npc: NpcBase, runner: DialogueRunner) -> void:
 	_refresh()
 
 func open() -> void:
+	_layout_panel()
 	visible = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_refresh()
+	_focus_first_option.call_deferred()
 
 func close() -> void:
 	if _voice_player != null:
 		_voice_player.stop()
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused != null and (focused == self or self.is_ancestor_of(focused)):
+		focused.release_focus()
 	visible = false
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	closed.emit()
@@ -221,7 +272,7 @@ func _show_line(text: String) -> void:
 
 ## 播放当前台词的语音(静音或缺文件就安静跳过)
 func _play_voice() -> void:
-	if _voice_player == null or _npc == null or _runner == null:
+	if not VOICE_ENABLED or _voice_player == null or _npc == null or _runner == null:
 		return
 	if GameStateManager.state != null and not GameStateManager.state.voice_enabled:
 		return
@@ -269,6 +320,7 @@ func refresh() -> void:
 func _refresh() -> void:
 	if _runner == null:
 		return
+	_layout_panel()
 	if _npc != null and _speaker_label != null:
 		_speaker_label.text = _npc.name
 	_show_line(_runner.current_text())
@@ -287,6 +339,7 @@ func _apply_portrait(npc: NpcBase) -> void:
 	if texture == null:
 		return
 	_portrait.texture = texture
+	_portrait.visible = true
 	_portrait_frame.visible = true
 
 func _rebuild_options() -> void:
@@ -318,6 +371,35 @@ func _rebuild_options() -> void:
 		button.add_theme_color_override("font_hover_color", OPTION_HOVER_COLOR)
 		button.pressed.connect(_on_option_pressed.bind(i))
 		_option_box.add_child(button)
+	if visible:
+		_focus_first_option.call_deferred()
+
+## 键盘/手柄焦点落在第一个可选项上。原先选项只能用鼠标点，
+## 手柄玩家进了对话就选不了“卖粮”“送点东西”等长列表后半段。
+func _focus_first_option() -> void:
+	if not visible or _option_box == null:
+		return
+	for child in _option_box.get_children():
+		if child is Button:
+			child.grab_focus()
+			_option_scroll.ensure_control_visible(child)
+			return
+
+## 用 ui_up / ui_down 在选项之间移动。按钮本身放在 ScrollContainer 里，
+## 焦点移动后必须 ensure_control_visible，否则最后几项仍停在可视区外。
+func _focus_relative(step: int) -> void:
+	var buttons := option_buttons()
+	if buttons.is_empty():
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	var index := buttons.find(focused)
+	if index < 0:
+		index = 0 if step > 0 else buttons.size() - 1
+	else:
+		index = clampi(index + step, 0, buttons.size() - 1)
+	var button: Button = buttons[index]
+	button.grab_focus()
+	_option_scroll.ensure_control_visible(button)
 
 func _on_advance() -> void:
 	if _runner == null:
@@ -342,16 +424,26 @@ func _on_option_pressed(index: int) -> void:
 		_:
 			close()
 
-func _unhandled_input(event: InputEvent) -> void:
+## 用 _input 而不是 _unhandled_input: ScrollContainer 会先消费方向键滚轮事件，
+## 到 _unhandled_input 时已看不到，焦点就卡在第一个选项上。
+func _input(event: InputEvent) -> void:
 	if not visible:
+		return
+	if event.is_action_pressed("ui_down") or event.is_action_pressed("ui_up"):
+		get_viewport().set_input_as_handled()
+		_focus_relative(1 if event.is_action_pressed("ui_down") else -1)
 		return
 	if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
 		if _runner != null and _runner.current_options().is_empty():
 			_on_advance()
 		elif _runner != null:
-			# 有选项时按 E 不代替玩家选,只把话显示完整
-			reveal_all()
+			# 有选项时 E/Enter 确认当前高亮项；没有焦点就先把话显示完整。
+			var focused := get_viewport().gui_get_focus_owner()
+			if focused is Button and _option_box.is_ancestor_of(focused):
+				focused.pressed.emit()
+			else:
+				reveal_all()
 	elif event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		close()

@@ -1,17 +1,17 @@
 {
-  "_meta": {"version": "v1.0", "updated": "2026-11-13", "scope": "宾州镇四大节日"},
+  "_meta": {"version": "v1.0", "updated": "2026-11-13", "scope": "麦溪镇四大节日"},
   "festivals": [
-    {"id": "spring_plow", "name": "春耕节", "month": 4, "day": 18, "location_id": "L03", "desc": "开犁祭土，交换种子，全年的第一声鞭响。", "activities": [
-      {"name": "开犁仪式", "action": "watch"}, {"name": "换种集市", "action": "shop"}, {"name": "吃春饼", "action": "eat"}
+    {"id": "spring_plow", "name": "春播集市", "month": 4, "day": 18, "location_id": "L03", "desc": "交换种子、展示新犁，全镇一起迎接春耕。", "activities": [
+      {"name": "开犁展示", "action": "watch"}, {"name": "换种集市", "action": "shop"}, {"name": "苹果派野餐", "action": "eat"}
     ]},
-    {"id": "summer_river", "name": "河灯节", "month": 7, "day": 15, "location_id": "L09", "desc": "放河灯、吃烤鱼，孩子们把愿望写在灯纸上。", "activities": [
+    {"id": "summer_river", "name": "河湾夏灯会", "month": 7, "day": 15, "location_id": "L09", "desc": "小纸灯顺水漂流，孩子们把愿望写在灯纸上。", "activities": [
       {"name": "放河灯", "action": "river_lantern"}, {"name": "河边烤鱼", "action": "eat"}, {"name": "钓鱼比赛", "action": "fishing"}
     ]},
-    {"id": "autumn_harvest", "name": "秋收节", "month": 9, "day": 25, "location_id": "L11", "desc": "晒场、唱二人转、给一年的收成收个尾。", "activities": [
-      {"name": "二人转演出", "action": "theater"}, {"name": "新粮评比", "action": "market"}, {"name": "长桌宴", "action": "eat"}, {"name": "秋收舞", "action": "dance"}
+    {"id": "autumn_harvest", "name": "秋收戏剧节", "month": 9, "day": 25, "location_id": "L11", "desc": "晒谷、演古戏，给一年的收成收个尾。", "activities": [
+      {"name": "古戏演出", "action": "theater"}, {"name": "新粮评比", "action": "market"}, {"name": "长桌宴", "action": "eat"}, {"name": "秋收舞", "action": "dance"}
     ]},
-    {"id": "winter_lantern", "name": "上元灯节", "month": 2, "day": 15, "location_id": "L03", "desc": "挂灯笼、猜灯谜、吃元宵，猫冬里最亮的一晚。", "activities": [
-      {"name": "猜灯谜", "action": "riddle"}, {"name": "吃元宵", "action": "eat"}, {"name": "放烟花", "action": "fireworks"}
+    {"id": "winter_lantern", "name": "冬夜灯会", "month": 2, "day": 15, "location_id": "L03", "desc": "挂纸灯、看小戏、喝热苹果酒，冬夜里最亮的一晚。", "activities": [
+      {"name": "灯影小戏", "action": "riddle"}, {"name": "热苹果酒", "action": "eat"}, {"name": "放烟花", "action": "fireworks"}
     ]}
   ]
 }

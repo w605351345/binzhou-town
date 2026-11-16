@@ -28,16 +28,33 @@ static func can_interact(player_pos: Vector2, facing: Vector2, npc_pos: Vector2,
 
 ## 从候选列表中选出最佳交互目标(最近且在朝向内)。返回索引,无则 -1。
 static func find_target(player_pos: Vector2, facing: Vector2, targets: Array,
+		interact_range: float = DEFAULT_RANGE,
+		facing_tolerance: float = DEFAULT_FACING_TOLERANCE) -> int:
+	var best := -1
+	var best_dist := INF
+	for i in targets.size():
+		var t: Dictionary = targets[i]
+		var pos: Vector2 = t.get("position", Vector2.ZERO)
+		if not can_interact(player_pos, facing, pos, interact_range, facing_tolerance):
+			continue
+		var d := player_pos.distance_to(pos)
+		if d < best_dist:
+			best_dist = d
+			best = i
+	return best
+
+## 最近可交互目标,不要求玩家精确朝向。
+## 小镇里的 E/A 是"靠近就能搭话",不是动作游戏里的正面判定;
+## 旧版 100° 朝向门槛导致玩家贴着 NPC 按 E 仍然得到"附近没东西"。
+static func find_nearest(player_pos: Vector2, targets: Array,
 		interact_range: float = DEFAULT_RANGE) -> int:
 	var best := -1
 	var best_dist := INF
 	for i in targets.size():
 		var t: Dictionary = targets[i]
 		var pos: Vector2 = t.get("position", Vector2.ZERO)
-		if not can_interact(player_pos, facing, pos, interact_range):
-			continue
 		var d := player_pos.distance_to(pos)
-		if d < best_dist:
+		if d <= interact_range and d < best_dist:
 			best_dist = d
 			best = i
 	return best

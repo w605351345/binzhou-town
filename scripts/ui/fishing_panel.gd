@@ -70,12 +70,20 @@ func _build_ui() -> void:
 
 func open_round(seed: int, season: String = "spring") -> void:
 	_fishing = FishingSystem.new()
-	_fishing.start(seed, season)
+	var bait_bonus := 0.0
+	var state := GameStateManager.state
+	if state != null and int(state.player.inventory.get("bait_worm", 0)) > 0:
+		state.player.inventory["bait_worm"] = int(state.player.inventory["bait_worm"]) - 1
+		if int(state.player.inventory["bait_worm"]) <= 0:
+			state.player.inventory.erase("bait_worm")
+		bait_bonus = 0.35
+	_fishing.start(seed, season, bait_bonus)
 	visible = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	GameStateManager.set_fishing_open(true)
-	_status.text = "浮漂落进水里。别急，等它沉下去。"
+	_status.text = "浮漂落进水里。%s别急，等它沉下去。" % ("鱼饵散开，水下有动静。" if bait_bonus > 0.0 else "")
 	_button.disabled = false
+	_button.grab_focus.call_deferred()
 
 func close_panel() -> void:
 	visible = false
@@ -112,6 +120,7 @@ func _reel() -> void:
 		GameStateManager.state.player.inventory[fish_id] = \
 			int(GameStateManager.state.player.inventory.get(fish_id, 0)) + 1
 		QuestSystem.progress(GameStateManager.state, "fish", 1)
+		SkillSystem.add_xp(GameStateManager.state.player, "fishing", 8)
 	_button.disabled = true
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "title": "月桂谣",
+  "subtitle": "月桂剧场 · 三幕古戏",
+  "premise": "旧王国的月桂树一夜枯死。守灯人、渡口的琴师与失约的王女，要在同一轮月亮下决定：让旧誓成真，还是放它远去。",
+  "acts": [
+    {
+      "id": "act1",
+      "title": "第一幕 · 月下借灯",
+      "summary": "陌生旅人敲响剧场后门，想借一盏不灭的月桂灯。",
+      "unlock": {"harvested_total": 0},
+      "reward": {"gold": 80, "items": {"gift_hot_tea": 1}, "reputation": 2},
+      "nodes": [
+        {
+          "id": "a1_1",
+          "speaker": "旁白",
+          "text": "月桂剧场的旧幕布被风掀起。门外站着一个没有影子的旅人，他说自己从枯死的月桂林来，只求借一夜灯。",
+          "choices": [
+            {"id": "a1_1_kind", "label": "把灯递给他，先听他把话说完", "result": "周德顺点头：戏里最难演的，不是拒绝，是先肯听。", "reputation": 2, "bond": {"zhou_deshun": 3}},
+            {"id": "a1_1_doubt", "label": "问他为何没有影子，再决定", "result": "旅人沉默片刻，说影子留在旧王国了。台下传来一阵低低的吸气声。", "reputation": 1, "bond": {"zhou_deshun": 1}},
+            {"id": "a1_1_shut", "label": "关上门，戏台不留来历不明的人", "result": "门闩落下，灯焰却向门外弯了一下。周德顺没有责备，只把这一幕记进戏页。", "reputation": 0, "bond": {"zhou_deshun": -1}}
+          ]
+        },
+        {
+          "id": "a1_2",
+          "speaker": "旅人",
+          "text": "“灯若借我，旧城的钟会在今夜响。可钟一响，镇上的人也会听见那段被埋起来的旧誓。”",
+          "choices": [
+            {"id": "a1_2_ring", "label": "让钟响，旧誓不该永远埋着", "result": "远处传来第一声钟鸣。周德顺握紧鼓槌，像终于等到了开场。", "reputation": 2, "bond": {"zhou_deshun": 3}},
+            {"id": "a1_2_ask", "label": "先问清旧誓会伤害谁", "result": "旅人答不上来。你让他坐在台下，等戏排到那儿再一起想。", "reputation": 1, "bond": {"zhou_deshun": 2}},
+            {"id": "a1_2_keep", "label": "只借灯，不许钟响", "result": "旅人接过灯，感激里带着一点遗憾。那口钟始终没有开口。", "reputation": 0, "bond": {"zhou_deshun": 0}}
+          ]
+        },
+        {
+          "id": "a1_3",
+          "speaker": "守灯人",
+          "text": "灯要交到谁手里？台下有名角，也有第一次来看戏的孩子。周德顺把选择留给你。",
+          "choices": [
+            {"id": "a1_3_child", "label": "请孩子上台，把灯交给最小的观众", "result": "孩子捧着灯，整座剧场忽然亮起来。周德顺笑得像个刚入行的学徒。", "reputation": 3, "bond": {"zhou_deshun": 4}},
+            {"id": "a1_3_actor", "label": "交给主角，让最稳的人收住场面", "result": "主角接灯、转身、亮相，台下掌声整齐。戏稳住了，也少了点惊喜。", "reputation": 2, "bond": {"zhou_deshun": 2}},
+            {"id": "a1_3_self", "label": "自己收灯，压轴留到下一幕", "result": "你把灯护在身后。周德顺挑眉：会留扣子，也算懂戏。", "reputation": 1, "bond": {"zhou_deshun": 1}}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act2",
+      "title": "第二幕 · 渡口无舟",
+      "summary": "琴师在渡口等一艘不会来的船，王女却在台上等他先开口。",
+      "unlock": {"harvested_total": 3},
+      "reward": {"gold": 150, "items": {"food_sticky_bean_bun": 2}, "reputation": 3},
+      "nodes": [
+        {
+          "id": "a2_1",
+          "speaker": "琴师",
+          "text": "渡口的雾漫过台口。琴师拨断一根弦，说只要王女肯说一句“我来过”，船就会出现。",
+          "choices": [
+            {"id": "a2_1_truth", "label": "让王女承认她迟到了很多年", "result": "王女的独白压住了全场。周德顺在侧幕轻声说：这才叫把伤口唱开。", "reputation": 3, "bond": {"zhou_deshun": 3, "sun_yumei": 2}},
+            {"id": "a2_1_cover", "label": "替王女圆一个体面的谎", "result": "台下有人信了，也有人悄悄摇头。琴师把断弦收进袖里。", "reputation": 1, "bond": {"zhou_deshun": 1}},
+            {"id": "a2_1_silence", "label": "让两人隔着雾站完一整场", "result": "没有一句台词，雾却慢慢散了。散场后很久，没人先站起来。", "reputation": 2, "bond": {"zhou_deshun": 2, "sun_yumei": 1}}
+          ]
+        },
+        {
+          "id": "a2_2",
+          "speaker": "王女",
+          "text": "“我等的人不是船，是一个肯先喊我名字的人。”台下的镇民忽然安静，连杯盏都放下了。",
+          "choices": [
+            {"id": "a2_2_call", "label": "让琴师先喊她的名字", "result": "琴师开口时声音发颤。王女没回头，肩膀却终于松下来。", "reputation": 3, "bond": {"zhou_deshun": 2, "sun_yumei": 3}},
+            {"id": "a2_2_bell", "label": "让船铃先响，替两人破开沉默", "result": "铃声盖住犹豫，戏顺势往前走。有人觉得巧，有人觉得还不够狠。", "reputation": 2, "bond": {"zhou_deshun": 1}},
+            {"id": "a2_2_leave", "label": "让王女先走，把等待留给琴师", "result": "王女提起裙摆走下台。琴师望着空渡口，第一次自己唱完了整段。", "reputation": 2, "bond": {"zhou_deshun": 3, "sun_yumei": -1}}
+          ]
+        },
+        {
+          "id": "a2_3",
+          "speaker": "旁白",
+          "text": "渡口终于出现一只小船。台上只有一盏灯、一把缺弦的琴，和所有等着看你怎么收场的人。",
+          "choices": [
+            {"id": "a2_3_board", "label": "让两人一起上船，把旧话留到对岸", "result": "船离岸时，王女把灯放在船头。周德顺说，这一幕能给秋收节压轴。", "reputation": 3, "bond": {"zhou_deshun": 3, "sun_yumei": 2}},
+            {"id": "a2_3_stay", "label": "让琴师留下，守渡口也守戏台", "result": "琴师坐回石阶，把断弦重新系上。台下有人开始跟着哼。", "reputation": 2, "bond": {"zhou_deshun": 4}},
+            {"id": "a2_3_empty", "label": "让空船自己漂走，谁也别追", "result": "船影没入雾里。没有团圆，戏却比团圆更像真的。", "reputation": 1, "bond": {"zhou_deshun": 1}}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act3",
+      "title": "第三幕 · 满台月明",
+      "summary": "秋收节公演前夜，旧王国的钟声与新麦的香气一同进了剧场。",
+      "unlock": {"harvested_total": 8},
+      "reward": {"gold": 300, "items": {"gift_opera_script": 1, "food_fish_stew": 1}, "reputation": 5},
+      "nodes": [
+        {
+          "id": "a3_1",
+          "speaker": "周德顺",
+          "text": "“最后一幕不能只靠我。台上缺的人，是你从田里、集上和渡口认回来的那些。”他把戏页摊在台板上。",
+          "choices": [
+            {"id": "a3_1_town", "label": "请全镇人各带一句台词上台", "result": "卖种子的、修木窗的、送信的，都从台下站出来。满台忽然有了人间的声响。", "reputation": 3, "bond": {"zhou_deshun": 4, "zhang_xiaofang": 2}},
+            {"id": "a3_1_zhou", "label": "让周德顺一个人唱完压轴", "result": "老守台人把腰挺直，唱到高处却停了半拍，朝后台看了一眼。", "reputation": 2, "bond": {"zhou_deshun": 2}},
+            {"id": "a3_1_new", "label": "让第一次登台的孩子接最后一句", "result": "孩子唱得不稳，却把台下唱哭了。周德顺把鼓槌轻轻放到他手里。", "reputation": 3, "bond": {"zhou_deshun": 5}}
+          ]
+        },
+        {
+          "id": "a3_2",
+          "speaker": "旁白",
+          "text": "钟声与收割的号子同时响起。旧王国的月桂树在幕后长出第一片新叶，台上却没人回头。",
+          "choices": [
+            {"id": "a3_2_harvest", "label": "把第一束新麦献给旧王国", "result": "你把麦穗放在灯下。周德顺说，旧戏终于吃上了今年的新粮。", "reputation": 3, "bond": {"zhou_deshun": 3}},
+            {"id": "a3_2_burn", "label": "把旧戏页投进灯里，让新词自己长", "result": "火苗卷起旧字，台上的人愣了半晌，然后开始即兴唱新词。", "reputation": 2, "bond": {"zhou_deshun": 1}},
+            {"id": "a3_2_keep", "label": "把戏页收好，留给孩子再演一遍", "result": "周德顺接过戏页，用袖口擦平折角。他说这回不用怕失传了。", "reputation": 3, "bond": {"zhou_deshun": 4}}
+          ]
+        },
+        {
+          "id": "a3_3",
+          "speaker": "全体",
+          "text": "最后一句要落在哪里？台下已经有人提着灯准备回家。",
+          "choices": [
+            {"id": "a3_3_dawn", "label": "唱到天亮，让月亮和新日头接上", "result": "灯一盏盏熄下去，天光从剧场后门照进来。掌声没有停。", "reputation": 3, "bond": {"zhou_deshun": 3}},
+            {"id": "a3_3_home", "label": "收在“回家”两个字上", "result": "台上台下一起说“回家”。周德顺背过身去，肩膀抖了一下。", "reputation": 4, "bond": {"zhou_deshun": 4}},
+            {"id": "a3_3_tomorrow", "label": "留一句“明日再开台”", "result": "幕布落下，后排的孩子已经问明天还有没有。周德顺说：有，地里有粮，台上就有戏。", "reputation": 3, "bond": {"zhou_deshun": 2}}
+          ]
+        }
+      ]
+    }
+  ],
+  "endings": [
+    {"min_reputation": 20, "title": "满台月明", "text": "《月桂谣》唱成了全镇自己的戏。旧王国的钟声不再催人，只替新麦报时。"},
+    {"min_reputation": 12, "title": "灯留人间", "text": "戏没有唱完所有旧誓，却让每个人带走了一盏灯。月桂剧场从此夜夜有人来。"},
+    {"min_reputation": 0, "title": "幕落有声", "text": "旧戏收在一声叹息里。周德顺把戏页锁进柜子，说种子下了地，总还有下一场。"}
+  ]
+}

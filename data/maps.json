@@ -3,18 +3,21 @@
   "maps": [
     {
       "id": "L01",
-      "name": "自家农场",
+      "name": "柳溪农场",
       "size": [3200, 2240],
-      "spawn": [1510, 900],
+      "spawn": [1860, 940],
       "indoor": false,
       "ambience": "farm",
       "terrain": [
         {"type": "grass", "rect": [0, 0, 3200, 2240]},
-        {"type": "grass_dark", "rect": [0, 0, 940, 2240]},
-        {"type": "dirt", "rect": [980, 540, 1260, 1220]},
-        {"type": "soil", "rect": [1180, 1050, 720, 620]},
-        {"type": "road", "rect": [1480, 760, 240, 1480]},
-        {"type": "road", "rect": [1260, 640, 700, 130]},
+        {"type": "moss", "rect": [0, 0, 760, 1080]},
+        {"type": "moss", "rect": [0, 1560, 640, 680]},
+        {"type": "plaza", "rect": [1360, 700, 300, 200]},
+        {"type": "dirt", "rect": [1060, 1060, 690, 440]},
+        {"type": "dirt", "rect": [2220, 850, 480, 500]},
+        {"type": "road", "rect": [1770, 650, 240, 1080]},
+        {"type": "road", "rect": [1260, 640, 760, 130]},
+        {"type": "road", "rect": [1470, 780, 300, 110]},
         {"type": "dirt", "rect": [2380, 1160, 700, 360]}
       ],
       "props": [
@@ -22,10 +25,12 @@
         {"type": "fence", "rect": [930, 500, 60, 1300]},
         {"type": "fence", "rect": [2220, 500, 60, 1300]},
         {"type": "fence", "rect": [930, 500, 1300, 50]},
-        {"type": "fence", "rect": [930, 1760, 1300, 50]},
+        {"type": "fence", "rect": [930, 1760, 850, 50]},
+        {"type": "fence", "rect": [2020, 1760, 210, 50]},
+        {"type": "gate", "rect": [1755, 1660, 270, 130], "label": "南门"},
         {"type": "well", "rect": [2040, 920, 150, 120], "label": "老井"},
-        {"type": "woodpile", "rect": [2060, 690, 180, 150], "label": "柴垛"},
-        {"type": "barn", "rect": [2450, 1320, 410, 300], "label": "粮仓"},
+        {"type": "woodpile", "rect": [2060, 690, 180, 150], "label": "木柴堆"},
+        {"type": "barn", "rect": [2450, 1320, 410, 300], "label": "谷仓"},
         {"type": "haystack", "rect": [2470, 1680, 250, 190]},
         {"type": "cart", "rect": [2280, 1830, 260, 150]},
         {"type": "plow", "rect": [1040, 1840, 180, 100]},
@@ -34,9 +39,25 @@
         {"type": "water_trough", "rect": [2360, 940, 210, 90]},
         {"type": "tool_rack", "rect": [1250, 840, 150, 130]},
         {"type": "clothesline", "rect": [540, 760, 320, 130]},
-        {"type": "bench", "rect": [1660, 940, 190, 70]},
-        {"type": "lamp", "rect": [1440, 820, 55, 145]},
-        {"type": "lamp", "rect": [1760, 820, 55, 145]},
+        {"type": "bench", "rect": [2080, 930, 190, 70]},
+        {"type": "lamp", "rect": [1725, 840, 70, 170]},
+        {"type": "lamp", "rect": [2015, 840, 70, 170]},
+        {"type": "lamp", "rect": [1705, 1580, 70, 170]},
+        {"type": "lamp", "rect": [2035, 1580, 70, 170]},
+        {"type": "flowerbed", "rect": [1090, 760, 180, 90]},
+        {"type": "flowerbed", "rect": [1930, 720, 180, 90]},
+        {"type": "flowerbed", "rect": [1660, 1280, 100, 70]},
+        {"type": "flowerbed", "rect": [1110, 900, 150, 80]},
+        {"type": "flowerbed", "rect": [1940, 1010, 140, 80]},
+        {"type": "shrub", "rect": [1010, 620, 100, 90]},
+        {"type": "shrub", "rect": [2110, 620, 100, 90]},
+        {"type": "shrub", "rect": [1010, 1620, 110, 100]},
+        {"type": "shrub", "rect": [2050, 1580, 110, 100]},
+        {"type": "shrub", "rect": [2320, 640, 110, 100]},
+        {"type": "shrub", "rect": [1580, 1040, 100, 90]},
+        {"type": "mud_puddle", "rect": [1460, 1510, 150, 70]},
+        {"type": "bench", "rect": [1880, 880, 170, 66]},
+        {"type": "sign", "rect": [2070, 1540, 90, 100], "label": "南门 · 麦溪镇"},
         {"type": "tree", "rect": [240, 280, 160, 220]},
         {"type": "tree", "rect": [330, 1020, 170, 230]},
         {"type": "birch", "rect": [240, 1480, 120, 230]},
@@ -48,19 +69,23 @@
       ],
       "doors": [
         {"id": "farm_house", "rect": [1400, 740, 220, 110], "target": "L02", "target_spawn": [640, 760], "label": "农舍"},
-        {"id": "farm_south", "rect": [1500, 2120, 220, 120], "target": "L03", "target_spawn": [1920, 220], "label": "去镇上"},
-        {"id": "farm_east", "rect": [3070, 1060, 130, 380], "target": "L09", "target_spawn": [150, 760], "label": "去河岸"}
+        {"id": "farm_south", "rect": [1780, 1728, 220, 92], "target": "L03", "target_spawn": [1920, 220], "label": "南门 · 去麦溪镇"},
+        {"id": "farm_east", "rect": [3070, 1060, 130, 380], "target": "L09", "target_spawn": [150, 760], "label": "去河岸"},
+        {"id": "farm_ranch", "rect": [3070, 400, 130, 300], "target": "L13", "target_spawn": [180, 760], "label": "去牧场"}
       ],
       "interactables": [
         {"id": "farm_almanac", "type": "sign", "pos": [1600, 1820], "radius": 90, "label": "农事木牌", "action": "almanac"},
-        {"id": "farm_well", "type": "well", "pos": [2115, 980], "radius": 100, "label": "老井", "action": "well"}
+        {"id": "farm_well", "type": "well", "pos": [2115, 980], "radius": 100, "label": "老井", "action": "well"},
+        {"id": "farm_workbench", "type": "tool_rack", "pos": [1325, 900], "radius": 100, "label": "农具工作台", "action": "crafting"},
+        {"id": "farm_shipping", "type": "cart", "pos": [2280, 1830], "radius": 110, "label": "运输箱", "action": "shipping"},
+        {"id": "farm_barn_door", "type": "barn", "pos": [2650, 1470], "radius": 120, "label": "自家畜棚", "action": "livestock"}
       ],
       "npcs": [],
-      "farm_area": {"origin": [1260, 1160], "width": 6, "height": 4, "plot_size": 88}
+      "farm_area": {"origin": [1120, 1120], "width": 6, "height": 4, "plot_size": 88}
     },
     {
       "id": "L02",
-      "name": "农舍室内",
+      "name": "农舍",
       "size": [1280, 896],
       "spawn": [640, 720],
       "indoor": true,
@@ -71,8 +96,8 @@
         {"type": "rug", "rect": [430, 430, 420, 250]}
       ],
       "props": [
-        {"type": "bed", "rect": [140, 150, 280, 170], "label": "火炕"},
-        {"type": "stove", "rect": [880, 140, 220, 150], "label": "灶台"},
+        {"type": "bed", "rect": [140, 150, 280, 170], "label": "木床"},
+        {"type": "stove", "rect": [880, 140, 220, 150], "label": "铸铁灶"},
         {"type": "table", "rect": [500, 520, 260, 150], "label": "饭桌"},
         {"type": "chest", "rect": [780, 420, 150, 100], "label": "柜子"},
         {"type": "calendar", "rect": [1060, 160, 90, 130], "label": "日历"},
@@ -86,8 +111,8 @@
         {"id": "home_out", "rect": [560, 820, 200, 76], "target": "L01", "target_spawn": [1510, 900], "label": "出门"}
       ],
       "interactables": [
-        {"id": "home_bed", "type": "bed", "pos": [280, 300], "radius": 120, "label": "火炕", "action": "sleep"},
-        {"id": "home_stove", "type": "stove", "pos": [990, 260], "radius": 100, "label": "灶台", "action": "cook"},
+        {"id": "home_bed", "type": "bed", "pos": [280, 300], "radius": 120, "label": "木床", "action": "sleep"},
+        {"id": "home_stove", "type": "stove", "pos": [990, 260], "radius": 100, "label": "铸铁灶", "action": "cook"},
         {"id": "home_calendar", "type": "calendar", "pos": [1100, 280], "radius": 90, "label": "日历", "action": "forecast"},
         {"id": "home_chest", "type": "chest", "pos": [850, 470], "radius": 90, "label": "储物柜", "action": "storage"}
       ],
@@ -95,9 +120,9 @@
     },
     {
       "id": "L03",
-      "name": "宾州镇中心",
+      "name": "麦溪镇中心",
       "size": [3840, 1920],
-      "spawn": [1920, 1040],
+      "spawn": [1920, 820],
       "indoor": false,
       "ambience": "town",
       "terrain": [
@@ -134,7 +159,7 @@
         {"type": "fence", "rect": [1540, 1480, 760, 42]},
         {"type": "fence", "rect": [1540, 1280, 42, 240]},
         {"type": "fence", "rect": [2258, 1280, 42, 240]},
-        {"type": "stall", "rect": [2650, 780, 230, 150], "label": "山货摊"},
+        {"type": "stall", "rect": [2650, 780, 230, 150], "label": "集市熟食摊"},
         {"type": "crate", "rect": [2080, 980, 90, 76]},
         {"type": "crate", "rect": [2370, 980, 90, 76]},
         {"type": "barrel", "rect": [2250, 1040, 90, 110]},
@@ -147,7 +172,16 @@
         {"type": "lamp", "rect": [1600, 1080, 50, 120]},
         {"type": "lamp", "rect": [2280, 1080, 50, 120]},
         {"type": "lantern", "rect": [1670, 840, 46, 76]},
-        {"type": "lantern", "rect": [2040, 840, 46, 76]}
+        {"type": "lantern", "rect": [2040, 840, 46, 76]},
+        {"type": "flowerbed", "rect": [1600, 1260, 170, 80]},
+        {"type": "flowerbed", "rect": [2080, 1260, 170, 80]},
+        {"type": "shrub", "rect": [1490, 720, 90, 80]},
+        {"type": "shrub", "rect": [2320, 720, 90, 80]},
+        {"type": "mud_puddle", "rect": [1830, 1300, 150, 70]},
+        {"type": "flowerbed", "rect": [700, 930, 160, 80]},
+        {"type": "flowerbed", "rect": [2980, 930, 160, 80]},
+        {"type": "shrub", "rect": [820, 760, 95, 85]},
+        {"type": "shrub", "rect": [3020, 760, 95, 85]}
       ],
       "doors": [
         {"id": "town_north", "rect": [1760, 0, 320, 120], "target": "L01", "target_spawn": [1600, 2020], "label": "回农场"},
@@ -157,11 +191,13 @@
         {"id": "town_clinic", "rect": [3190, 580, 120, 70], "target": "L07", "target_spawn": [640, 760], "label": "卫生所"},
         {"id": "town_workshop", "rect": [470, 1510, 130, 70], "target": "L08", "target_spawn": [640, 760], "label": "木工房"},
         {"id": "town_river", "rect": [0, 820, 120, 300], "target": "L09", "target_spawn": [1300, 1040], "label": "去河岸"},
-        {"id": "town_stage", "rect": [3720, 800, 120, 320], "target": "L11", "target_spawn": [150, 760], "label": "古戏台"}
+        {"id": "town_stage", "rect": [3720, 800, 120, 320], "target": "L11", "target_spawn": [150, 760], "label": "月桂剧场"},
+        {"id": "town_museum", "rect": [3360, 1500, 130, 70], "target": "L14", "target_spawn": [640, 760], "label": "镇史馆"}
       ],
       "interactables": [
         {"id": "town_board", "type": "board", "pos": [1770, 880], "radius": 100, "label": "公告板", "action": "quest_board"},
-        {"id": "town_stall", "type": "stall", "pos": [2170, 890], "radius": 100, "label": "集市", "action": "market"}
+        {"id": "town_stall", "type": "stall", "pos": [2170, 890], "radius": 100, "label": "集市", "action": "market"},
+        {"id": "town_community_board", "type": "board", "pos": [1600, 880], "radius": 100, "label": "公共工程板", "action": "community"}
       ],
       "npcs": [
         {"id": "zhang_xiaofang", "pos": [2180, 1040]}
@@ -171,7 +207,7 @@
       "id": "L04",
       "name": "杂货店",
       "size": [1280, 896],
-      "spawn": [640, 740],
+      "spawn": [640, 800],
       "indoor": true,
       "ambience": "shop",
       "terrain": [
@@ -211,7 +247,7 @@
         {"type": "counter", "rect": [380, 180, 520, 150], "label": "邮局柜台"},
         {"type": "mailboxes", "rect": [110, 220, 210, 420], "label": "邮件格"},
         {"type": "desk", "rect": [930, 410, 220, 160], "label": "分拣桌"},
-        {"type": "stove", "rect": [980, 140, 160, 120], "label": "火炉"}
+        {"type": "stove", "rect": [980, 140, 160, 120], "label": "壁炉"}
         ,{"type": "barrel", "rect": [1150, 300, 80, 100]}
         ,{"type": "crate", "rect": [1090, 630, 100, 84]}
         ,{"type": "clothesline", "rect": [280, 690, 240, 100]}
@@ -229,7 +265,7 @@
     },
     {
       "id": "L06",
-      "name": "玉梅饭馆",
+      "name": "玉梅旅店",
       "size": [1536, 1024],
       "spawn": [768, 860],
       "indoor": true,
@@ -240,11 +276,11 @@
         {"type": "rug", "rect": [520, 560, 500, 260]}
       ],
       "props": [
-        {"type": "counter", "rect": [500, 150, 520, 150], "label": "灶台柜台"},
-        {"type": "stove", "rect": [1090, 140, 230, 160], "label": "大灶"},
-        {"type": "table", "rect": [210, 520, 240, 150], "label": "八仙桌"},
-        {"type": "table", "rect": [1050, 520, 240, 150], "label": "八仙桌"},
-        {"type": "shelf", "rect": [120, 180, 220, 260], "label": "酒坛"}
+        {"type": "counter", "rect": [500, 150, 520, 150], "label": "旅店吧台"},
+        {"type": "stove", "rect": [1090, 140, 230, 160], "label": "铸铁灶"},
+        {"type": "table", "rect": [210, 520, 240, 150], "label": "橡木餐桌"},
+        {"type": "table", "rect": [1050, 520, 240, 150], "label": "橡木餐桌"},
+        {"type": "shelf", "rect": [120, 180, 220, 260], "label": "酒桶架"}
         ,{"type": "barrel", "rect": [390, 210, 90, 110]}
         ,{"type": "barrel", "rect": [300, 300, 90, 110]}
         ,{"type": "crate", "rect": [620, 720, 110, 86]}
@@ -265,7 +301,7 @@
     },
     {
       "id": "L07",
-      "name": "镇卫生所",
+      "name": "麦溪诊所",
       "size": [1280, 896],
       "spawn": [640, 760],
       "indoor": true,
@@ -295,7 +331,7 @@
     },
     {
       "id": "L08",
-      "name": "赵家木工房",
+      "name": "赵氏木工坊",
       "size": [1280, 896],
       "spawn": [640, 760],
       "indoor": true,
@@ -318,7 +354,8 @@
         {"id": "workshop_out", "rect": [560, 820, 200, 76], "target": "L03", "target_spawn": [520, 1620], "label": "出门"}
       ],
       "interactables": [
-        {"id": "workshop_bench", "type": "workbench", "pos": [600, 270], "radius": 120, "label": "扩建农场", "action": "workshop"}
+        {"id": "workshop_bench", "type": "workbench", "pos": [600, 270], "radius": 120, "label": "扩建农场", "action": "workshop"},
+        {"id": "workshop_forge", "type": "tool_rack", "pos": [1080, 250], "radius": 100, "label": "铁砧", "action": "blacksmith"}
       ],
       "npcs": [
         {"id": "zhao_changhe", "pos": [940, 300]}
@@ -326,15 +363,19 @@
     },
     {
       "id": "L09",
-      "name": "河岸",
+      "name": "河湾",
       "size": [2560, 1280],
       "spawn": [1260, 880],
       "indoor": false,
       "ambience": "river",
       "terrain": [
         {"type": "grass", "rect": [0, 0, 2560, 1280]},
-        {"type": "water", "rect": [0, 0, 2560, 620]},
+        {"type": "water", "rect": [0, 0, 1100, 620]},
+        {"type": "water", "rect": [1460, 0, 1100, 620]},
+        {"type": "dirt", "rect": [1100, 0, 360, 620]},
         {"type": "sand", "rect": [0, 570, 2560, 170]},
+        {"type": "grass_dark", "rect": [0, 930, 920, 350]},
+        {"type": "grass_dark", "rect": [1640, 930, 920, 350]},
         {"type": "road", "rect": [1100, 720, 360, 560]}
       ],
       "props": [
@@ -356,16 +397,26 @@
         {"type": "birch", "rect": [640, 820, 120, 230]},
         {"type": "birch", "rect": [1940, 820, 120, 230]},
         {"type": "tree", "rect": [720, 990, 150, 210]},
-        {"type": "tree", "rect": [2020, 990, 150, 210]}
+        {"type": "tree", "rect": [2020, 990, 150, 210]},
+        {"type": "flowerbed", "rect": [420, 740, 170, 80]},
+        {"type": "flowerbed", "rect": [1940, 740, 170, 80]},
+        {"type": "shrub", "rect": [820, 620, 100, 90]},
+        {"type": "shrub", "rect": [1620, 620, 100, 90]},
+        {"type": "shrub", "rect": [1130, 990, 100, 90]},
+        {"type": "shrub", "rect": [1340, 990, 100, 90]},
+        {"type": "mud_puddle", "rect": [620, 940, 160, 74]},
+        {"type": "mud_puddle", "rect": [1780, 940, 160, 74]},
+        {"type": "bench", "rect": [1680, 1030, 190, 70]}
       ],
       "doors": [
         {"id": "river_west", "rect": [0, 600, 120, 300], "target": "L01", "target_spawn": [2920, 1180], "label": "回农场"},
         {"id": "river_north", "rect": [1100, 0, 360, 120], "target": "L10", "target_spawn": [1280, 1400], "label": "桦树林"},
         {"id": "river_south", "rect": [1100, 1160, 360, 120], "target": "L03", "target_spawn": [2000, 960], "label": "回镇上"},
-        {"id": "river_east", "rect": [2440, 600, 120, 300], "target": "L11", "target_spawn": [150, 760], "label": "古戏台"}
+        {"id": "river_east", "rect": [2440, 600, 120, 300], "target": "L11", "target_spawn": [150, 760], "label": "月桂剧场"}
       ],
       "interactables": [
         {"id": "river_dock", "type": "dock", "pos": [1120, 690], "radius": 130, "label": "钓鱼", "action": "fishing"},
+        {"id": "river_bait_rack", "type": "fish_rack", "pos": [520, 760], "radius": 105, "label": "渔具摊", "action": "fishmonger"},
         {"id": "river_reeds", "type": "reeds", "pos": [430, 650], "radius": 110, "label": "芦苇丛", "action": "forage"},
         {"id": "river_bank_herbs", "type": "wild_herbs", "pos": [1680, 680], "radius": 110, "label": "河滩野菜", "action": "forage"},
         {"id": "river_willow_flat", "type": "willow_flat", "pos": [720, 820], "radius": 110, "label": "柳树趟子", "action": "forage"}
@@ -374,7 +425,7 @@
     },
     {
       "id": "L10",
-      "name": "桦树林",
+      "name": "柳溪林",
       "size": [2560, 1600],
       "spawn": [1280, 1050],
       "indoor": false,
@@ -409,7 +460,8 @@
         {"type": "gravestone", "rect": [1380, 360, 90, 130]}
       ],
       "doors": [
-        {"id": "forest_south", "rect": [1100, 1480, 360, 120], "target": "L09", "target_spawn": [1280, 180], "label": "回河岸"}
+        {"id": "forest_south", "rect": [1100, 1480, 360, 120], "target": "L09", "target_spawn": [1280, 180], "label": "回河岸"},
+        {"id": "forest_mine", "rect": [2440, 600, 120, 300], "target": "L12", "target_spawn": [800, 970], "label": "北山矿洞"}
       ],
       "interactables": [
         {"id": "forest_mushroom", "type": "mushroom_log", "pos": [1910, 900], "radius": 120, "label": "采蘑菇", "action": "forage"},
@@ -421,23 +473,25 @@
     },
     {
       "id": "L11",
-      "name": "古戏台",
+      "name": "月桂剧场",
       "size": [1920, 1280],
-      "spawn": [960, 1060],
+      "spawn": [960, 780],
       "indoor": false,
       "ambience": "theater",
       "terrain": [
         {"type": "grass", "rect": [0, 0, 1920, 1280]},
-        {"type": "dirt", "rect": [240, 260, 1440, 900]},
+        {"type": "plaza", "rect": [240, 260, 1440, 900]},
+        {"type": "dirt", "rect": [240, 260, 1440, 120]},
+        {"type": "dirt", "rect": [240, 1040, 1440, 120]},
         {"type": "stage_floor", "rect": [430, 180, 1060, 360]},
         {"type": "road", "rect": [840, 1050, 240, 230]}
       ],
       "props": [
-        {"type": "stage", "rect": [380, 100, 1160, 500], "label": "古戏台"},
+        {"type": "stage", "rect": [380, 100, 1160, 500], "label": "月桂剧场"},
         {"type": "backstage", "rect": [1320, 180, 300, 280], "label": "后台"},
         {"type": "bench", "rect": [320, 760, 300, 90], "label": "观众席"},
         {"type": "bench", "rect": [1300, 760, 300, 90], "label": "观众席"},
-        {"type": "instrument", "rect": [520, 660, 180, 100], "label": "锣鼓"},
+        {"type": "instrument", "rect": [520, 660, 180, 100], "label": "剧场铃"},
         {"type": "lantern", "rect": [720, 520, 80, 130]},
         {"type": "lantern", "rect": [1120, 520, 80, 130]},
         {"type": "lantern", "rect": [430, 520, 60, 100]},
@@ -451,7 +505,15 @@
         {"type": "tree", "rect": [1650, 780, 170, 240]},
         {"type": "birch", "rect": [220, 300, 120, 230]},
         {"type": "birch", "rect": [1620, 300, 120, 230]},
-        {"type": "sign", "rect": [900, 1050, 90, 110], "label": "古戏台"}
+        {"type": "sign", "rect": [900, 1050, 90, 110], "label": "月桂剧场"},
+        {"type": "flowerbed", "rect": [300, 520, 180, 86]},
+        {"type": "flowerbed", "rect": [1440, 520, 180, 86]},
+        {"type": "flowerbed", "rect": [340, 980, 180, 86]},
+        {"type": "flowerbed", "rect": [1400, 980, 180, 86]},
+        {"type": "shrub", "rect": [240, 620, 110, 100]},
+        {"type": "shrub", "rect": [1570, 620, 110, 100]},
+        {"type": "lamp", "rect": [520, 880, 55, 145]},
+        {"type": "lamp", "rect": [1340, 880, 55, 145]}
       ],
       "doors": [
         {"id": "theater_west", "rect": [0, 600, 120, 300], "target": "L09", "target_spawn": [2340, 760], "label": "回河岸"},
@@ -459,10 +521,112 @@
       ],
       "interactables": [
         {"id": "theater_stage", "type": "stage", "pos": [960, 600], "radius": 140, "label": "看戏", "action": "theater"},
-        {"id": "theater_drums", "type": "instrument", "pos": [610, 700], "radius": 100, "label": "锣鼓", "action": "theater"}
+        {"id": "theater_drums", "type": "instrument", "pos": [610, 700], "radius": 100, "label": "剧场铃", "action": "theater"}
       ],
       "npcs": [
         {"id": "zhou_deshun", "pos": [1420, 360]}
+      ]
+    },
+    {
+      "id": "L12",
+      "name": "北岭矿洞",
+      "size": [1600, 1152],
+      "spawn": [800, 920],
+      "indoor": true,
+      "ambience": "mine",
+      "terrain": [
+        {"type": "wall", "rect": [0, 0, 1600, 1152]},
+        {"type": "floor_tile", "rect": [80, 90, 1440, 960]},
+        {"type": "road", "rect": [700, 620, 200, 450]}
+      ],
+      "props": [
+        {"type": "crate", "rect": [210, 200, 110, 86], "label": "矿工木箱"},
+        {"type": "cart", "rect": [1120, 220, 260, 150], "label": "矿车"},
+        {"type": "ice_block", "rect": [270, 740, 180, 160]},
+        {"type": "ice_block", "rect": [1160, 760, 190, 170]},
+        {"type": "lamp", "rect": [420, 140, 55, 145]},
+        {"type": "lamp", "rect": [1120, 140, 55, 145]},
+        {"type": "shrine", "rect": [730, 180, 140, 150], "label": "矿神石"},
+        {"type": "sign", "rect": [660, 760, 90, 110], "label": "北山矿洞"}
+      ],
+      "doors": [
+        {"id": "mine_out", "rect": [700, 1030, 200, 110], "target": "L10", "target_spawn": [2320, 720], "label": "出洞"}
+      ],
+      "interactables": [
+        {"id": "mine_shaft", "type": "shrine", "pos": [800, 600], "radius": 150, "label": "下矿凿石", "action": "mine"}
+      ],
+      "npcs": []
+    },
+    {
+      "id": "L13",
+      "name": "牧云牧场",
+      "size": [2560, 1600],
+      "spawn": [1280, 1200],
+      "indoor": false,
+      "ambience": "ranch",
+      "terrain": [
+        {"type": "grass", "rect": [0, 0, 2560, 1600]},
+        {"type": "dirt", "rect": [360, 300, 1840, 1000]},
+        {"type": "road", "rect": [1200, 1100, 200, 500]},
+        {"type": "grass_dark", "rect": [0, 0, 260, 1600]}
+      ],
+      "props": [
+        {"type": "barn", "rect": [960, 350, 640, 420], "label": "牧云畜棚"},
+        {"type": "fence", "rect": [360, 420, 60, 760]},
+        {"type": "fence", "rect": [2140, 420, 60, 760]},
+        {"type": "fence", "rect": [360, 420, 1840, 50]},
+        {"type": "fence", "rect": [360, 1130, 1840, 50]},
+        {"type": "haystack", "rect": [420, 720, 250, 190]},
+        {"type": "haystack", "rect": [1900, 760, 250, 190]},
+        {"type": "water_trough", "rect": [1780, 520, 260, 100]},
+        {"type": "well", "rect": [520, 500, 150, 120], "label": "牧场水井"},
+        {"type": "tree", "rect": [120, 240, 170, 240]},
+        {"type": "birch", "rect": [2280, 260, 120, 230]},
+        {"type": "cart", "rect": [1080, 1030, 260, 150]},
+        {"type": "crate", "rect": [2040, 1060, 110, 86]},
+        {"type": "tool_rack", "rect": [520, 260, 150, 130]},
+        {"type": "lamp", "rect": [1220, 1040, 55, 145]}
+      ],
+      "doors": [
+        {"id": "ranch_west", "rect": [0, 600, 120, 300], "target": "L01", "target_spawn": [2920, 550], "label": "回农场"}
+      ],
+      "interactables": [
+        {"id": "ranch_barn", "type": "barn", "pos": [1280, 740], "radius": 170, "label": "照料牲口", "action": "livestock"}
+      ],
+      "npcs": [
+        {"id": "jiang_muyun", "pos": [1120, 560]}
+      ]
+    },
+    {
+      "id": "L14",
+      "name": "麦溪镇史馆",
+      "size": [1280, 896],
+      "spawn": [640, 760],
+      "indoor": true,
+      "ambience": "museum",
+      "terrain": [
+        {"type": "wall", "rect": [0, 0, 1280, 896]},
+        {"type": "floor_wood", "rect": [70, 80, 1140, 730]},
+        {"type": "rug", "rect": [390, 350, 500, 260]}
+      ],
+      "props": [
+        {"type": "desk", "rect": [500, 360, 280, 150], "label": "捐赠台"},
+        {"type": "shelf", "rect": [110, 160, 330, 380], "label": "一号展柜"},
+        {"type": "shelf", "rect": [840, 160, 330, 380], "label": "二号展柜"},
+        {"type": "chest", "rect": [1040, 560, 150, 100]},
+        {"type": "board", "rect": [440, 140, 400, 170], "label": "镇史年表"},
+        {"type": "bench", "rect": [500, 650, 280, 80]},
+        {"type": "lantern", "rect": [620, 520, 46, 76]},
+        {"type": "crate", "rect": [180, 640, 110, 86]}
+      ],
+      "doors": [
+        {"id": "museum_out", "rect": [560, 820, 200, 76], "target": "L03", "target_spawn": [3400, 1500], "label": "出门"}
+      ],
+      "interactables": [
+        {"id": "museum_donation", "type": "desk", "pos": [640, 430], "radius": 130, "label": "捐赠藏品", "action": "museum"}
+      ],
+      "npcs": [
+        {"id": "su_wenbo", "pos": [620, 420]}
       ]
     }
   ]

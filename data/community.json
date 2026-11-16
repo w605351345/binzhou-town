@@ -1,0 +1,17 @@
+{
+  "_meta": {"version": "v1.0", "scope": "麦溪镇公共修复工程；按顺序解锁"},
+  "projects": [
+    {"id": "repair_bridge", "name": "修河桥", "desc": "河岸木桥的桩子朽了，先把桥面重新铺稳。",
+     "requires": [], "requirements": {"forage_wood": 12, "material_stone": 6},
+     "rewards": {"gold": 180, "items": {"bait_worm": 8}, "flag": "community_bridge_fixed"}},
+    {"id": "repair_school_roof", "name": "补小学屋顶", "desc": "开春前把漏雨的瓦补上，孩子们不用端着盆上课。",
+     "requires": ["repair_bridge"], "requirements": {"forage_wood": 16, "ore_copper": 4},
+     "rewards": {"gold": 260, "items": {"material_fertilizer": 5}, "flag": "community_school_roof_fixed"}},
+    {"id": "repair_clinic_stove", "name": "修卫生所火墙", "desc": "把卫生所的火墙重新盘一遍，冬天候诊的人不再缩着肩。",
+     "requires": ["repair_school_roof"], "requirements": {"material_stone": 18, "material_coal": 6},
+     "rewards": {"gold": 360, "items": {"food_hot_soup": 3}, "flag": "community_clinic_warm"}},
+    {"id": "restore_stage_lights", "name": "点亮月桂剧场", "desc": "给剧场接上几盏稳当的灯，让夜场也能唱完。",
+     "requires": ["repair_clinic_stove"], "requirements": {"ore_iron": 8, "material_coal": 8, "forage_wood": 10},
+     "rewards": {"gold": 520, "items": {"gem_amber": 1}, "flag": "community_stage_lit"}}
+  ]
+}

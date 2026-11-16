@@ -1,0 +1,32 @@
+{
+  "_meta": {"version": "v1.0", "scope": "工作台与熔炉配方"},
+  "recipes": [
+    {"id": "craft_feed", "name": "干草饲料", "station": "workbench", "skill": "crafting", "skill_level": 1,
+     "ingredients": {"forage_wood": 2, "food_dried_corn": 1}, "result": "feed_hay", "count": 3,
+     "xp": 12, "desc": "干柴不喂牲口，配上燕麦碎，冬夜也能填饱肚子。"},
+    {"id": "craft_bait", "name": "拌鱼饵", "station": "workbench", "skill": "crafting", "skill_level": 1,
+     "ingredients": {"forage_berry": 1, "material_salt": 1}, "result": "bait_worm", "count": 5,
+     "xp": 10, "desc": "野莓的酸甜味能招鱼，盐让饵更耐水泡。"},
+    {"id": "craft_chest", "name": "木储物箱", "station": "workbench", "skill": "crafting", "skill_level": 2,
+     "ingredients": {"forage_wood": 12, "material_stone": 3}, "result": "placeable_chest", "count": 1,
+     "xp": 28, "desc": "榫卯咬紧，放屋里能收一季的零碎。"},
+    {"id": "craft_sprinkler", "name": "简易喷灌器", "station": "workbench", "skill": "crafting", "skill_level": 3,
+     "ingredients": {"ore_copper": 6, "forage_wood": 4}, "result": "sprinkler_basic", "count": 1,
+     "xp": 45, "desc": "每个清早替你浇三块地，雨天不白费。"},
+    {"id": "craft_furnace", "name": "小熔炉", "station": "workbench", "skill": "crafting", "skill_level": 4,
+     "ingredients": {"material_stone": 20, "ore_copper": 5, "material_coal": 2}, "result": "furnace_basic", "count": 1,
+     "xp": 70, "desc": "能把矿石炼成锭，石铁山看见会点头。"},
+    {"id": "craft_preserve_jar", "name": "腌渍罐", "station": "workbench", "skill": "crafting", "skill_level": 2,
+     "ingredients": {"material_stone": 8, "forage_wood": 6}, "result": "preserve_jar", "count": 1,
+     "xp": 30, "desc": "西境农庄冬天离不开的一口酸香。"},
+    {"id": "smelt_copper", "name": "炼铜锭", "station": "furnace_basic", "skill": "crafting", "skill_level": 1,
+     "ingredients": {"ore_copper": 5, "material_coal": 1}, "result": "material_copper_bar", "count": 1,
+     "xp": 18, "desc": "把浅层铜矿炼成能打农具的铜锭。"},
+    {"id": "smelt_iron", "name": "炼铁锭", "station": "furnace_basic", "skill": "crafting", "skill_level": 3,
+     "ingredients": {"ore_iron": 5, "material_coal": 1}, "result": "material_iron_bar", "count": 1,
+     "xp": 34, "desc": "铁矿石烧透，锤出来的农具才吃得住力气。"},
+    {"id": "preserve_sour_cabbage", "name": "盐渍蔬菜", "station": "preserve_jar", "skill": "crafting", "skill_level": 2,
+     "ingredients": {"autumn_vegetable": 3, "material_salt": 2}, "result": "food_sour_cabbage", "count": 3,
+     "xp": 28, "desc": "田园蔬菜码进罐子，压石封口，能一路吃到开春。"}
+  ]
+}

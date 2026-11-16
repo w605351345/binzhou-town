@@ -1,5 +1,5 @@
 {
-  "_meta": {"version": "v1.0", "updated": "2026-11-13", "scope": "黑龙江河湾四季鱼种"},
+  "_meta": {"version": "v1.0", "updated": "2026-11-13", "scope": "麦溪镇河湾四季鱼种"},
   "fish": [
     {"id": "fish_crucian", "name": "鲫鱼", "seasons": ["spring", "summer", "autumn", "winter"], "weight": 45, "difficulty": 1},
     {"id": "fish_pike", "name": "狗鱼", "seasons": ["spring", "autumn", "winter"], "weight": 25, "difficulty": 3},

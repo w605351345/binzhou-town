@@ -75,10 +75,17 @@ func _build_ui() -> void:
 	_message_label.custom_minimum_size = Vector2(0, 24)
 	column.add_child(_message_label)
 
+	var scroll := ScrollContainer.new()
+	scroll.name = "ListScroll"
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.follow_focus = true
+	column.add_child(scroll)
+
 	_list_box = VBoxContainer.new()
 	_list_box.name = "List"
 	_list_box.add_theme_constant_override("separation", 6)
-	column.add_child(_list_box)
+	_list_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(_list_box)
 
 func _make_panel_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
@@ -99,6 +106,7 @@ func open_shop(npc: NpcBase, mode: int = Mode.SELL) -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	GameStateManager.set_shop_open(true)
 	_refresh()
+	_focus_first_button.call_deferred()
 
 func close_shop() -> void:
 	if not visible:
@@ -211,6 +219,15 @@ func _add_button(text: String, action: Callable) -> void:
 	button.add_theme_color_override("font_hover_color", ITEM_HOVER)
 	button.pressed.connect(action)
 	_list_box.add_child(button)
+
+func _focus_first_button() -> void:
+	if not visible:
+		return
+	for node in find_children("*", "Button", true, false):
+		var button := node as Button
+		if button != null and not button.disabled:
+			button.grab_focus()
+			return
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:

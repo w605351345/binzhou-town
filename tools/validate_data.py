@@ -94,9 +94,10 @@ VALID_TERRAIN_TYPES = {
 VALID_PROP_TYPES = {
     "backstage", "barn", "barrel", "bed", "bench", "birch", "board", "boat",
     "building", "calendar", "cart", "chest", "clothesline", "counter", "crate",
-    "desk", "dock", "exam_bed", "fallen_log", "fence", "fish_rack", "gravestone",
-    "half_built", "haystack", "house", "instrument", "lamp", "lantern", "lumber",
-    "mailboxes", "medicine_cabinet", "mushroom_log", "plow", "reeds", "saw",
+    "desk", "dock", "exam_bed", "fallen_log", "fence", "fish_rack", "flowerbed",
+    "gate", "gravestone", "half_built", "haystack", "house", "ice_block", "instrument",
+    "lamp", "lantern", "lumber", "mailboxes", "medicine_cabinet", "mud_puddle",
+    "mushroom_log", "plow", "reeds", "saw", "shrub",
     "shelf", "shrine", "sign", "stage", "stall", "stove", "table", "tool_rack",
     "tree", "water_trough", "well", "woodpile", "workbench",
 }
@@ -104,9 +105,10 @@ VALID_PROP_TYPES = {
 ## 与 scripts/world/location_scene.gd::_handle_interactable 的动作分支一一对应。
 ## shop/storage/workshop/theater 已实装，不允许再退回占位提示。
 IMPLEMENTED_MAP_ACTIONS = {
-    "almanac", "clinic", "cook", "eat", "fishing", "forage", "forecast",
-    "market", "post_office", "quest_board", "shop", "sleep", "storage",
-    "theater", "well", "workshop",
+    "almanac", "blacksmith", "clinic", "community", "cook", "crafting", "eat",
+    "fishing", "fishmonger", "forage", "forecast", "livestock", "market",
+    "merchant", "mine", "museum", "post_office", "quest_board", "ship",
+    "shipping", "shop", "sleep", "storage", "theater", "well", "workshop",
 }
 VALID_MAP_ACTIONS = IMPLEMENTED_MAP_ACTIONS
 
@@ -757,6 +759,16 @@ def validate_npcs(path: Path, maps_by_id=None, item_names=None) -> None:
                 f"{path.name}: {nid} 至少要有 3 种喜欢物能在 items.json 里获得，"
                 f"当前只有 {liked_matches}")
 
+        if npc.get("service_type"):
+            daily_lines = npc.get("daily_lines", {})
+            if not isinstance(daily_lines, dict):
+                ERRORS.append(f"{path.name}: {nid} daily_lines 必须是对象")
+            else:
+                for season in VALID_SEASONS:
+                    if not str(daily_lines.get(season, "")).strip():
+                        ERRORS.append(
+                            f"{path.name}: 功能 NPC {nid} 缺少 {season} 日常对白")
+
     print(f"  · {path.name}: {len(npcs)} 位 NPC")
 
 
@@ -874,7 +886,7 @@ def validate_dialogues(path: Path, npcs_data) -> None:
 
 
 def validate_events(path: Path, npcs_data) -> None:
-    """好感事件：18 段、引用、条件与对话分支完整。"""
+    """好感事件：引用、条件与对话分支完整。"""
     data = load_json(path)
     if data is None:
         return
@@ -1019,6 +1031,396 @@ def validate_postcards(path: Path) -> None:
     print(f"  · {path.name}: {len(recipients)} 位联系人, {len(postcards)} 张明信片")
 
 
+def validate_skills(path: Path) -> dict:
+    """技能表:等级门槛、技能 id 与后续系统的跨表引用。"""
+    data = load_json(path)
+    if data is None:
+        return {}
+
+    max_level = data.get("max_level")
+    level_xp = data.get("level_xp", [])
+    skills = data.get("skills", [])
+    if not isinstance(max_level, int) or max_level < 1:
+        ERRORS.append(f"{path.name}: max_level 必须是正整数")
+        max_level = 0
+    if not isinstance(level_xp, list) or len(level_xp) != max_level + 1:
+        ERRORS.append(
+            f"{path.name}: level_xp 长度必须为 max_level + 1 -> {len(level_xp)}")
+    elif any(not isinstance(value, int) or value < 0 for value in level_xp):
+        ERRORS.append(f"{path.name}: level_xp 必须是非负整数")
+    elif any(level_xp[index] > level_xp[index + 1]
+             for index in range(len(level_xp) - 1)):
+        ERRORS.append(f"{path.name}: level_xp 必须单调递增")
+
+    seen = set()
+    for index, skill in enumerate(skills):
+        skill_id = str(skill.get("id", "?"))
+        if skill_id in seen:
+            ERRORS.append(f"{path.name}: 重复的技能 id {skill_id}")
+        seen.add(skill_id)
+        for key in ("id", "name", "desc"):
+            if not str(skill.get(key, "")).strip():
+                ERRORS.append(f"{path.name}: skills[{index}] 缺少 {key}")
+
+    required = {
+        "farming", "ranching", "mining", "crafting", "fishing", "foraging", "social",
+    }
+    missing = sorted(required - seen)
+    if missing:
+        ERRORS.append(f"{path.name}: 缺少核心技能 {missing}")
+    print(f"  · {path.name}: {len(skills)} 项技能, 最高 {max_level} 级")
+    return {"skills": seen, "max_level": max_level}
+
+
+def validate_crafting(path: Path, valid_item_ids, skills_data) -> None:
+    """制造配方:工位、技能门槛、材料与产出必须闭环。"""
+    data = load_json(path)
+    if data is None:
+        return
+
+    recipes = data.get("recipes", [])
+    if not recipes:
+        ERRORS.append(f"{path.name}: recipes 列表为空")
+    skill_ids = set(skills_data.get("skills", set()))
+    max_level = int(skills_data.get("max_level", 0))
+    seen = set()
+    for recipe in recipes:
+        recipe_id = str(recipe.get("id", "?"))
+        if recipe_id in seen:
+            ERRORS.append(f"{path.name}: 重复的配方 id {recipe_id}")
+        seen.add(recipe_id)
+        for key in ("id", "name", "station", "skill", "ingredients", "result"):
+            if key not in recipe:
+                ERRORS.append(f"{path.name}: {recipe_id} 缺少字段 {key}")
+
+        station = str(recipe.get("station", ""))
+        if not station:
+            ERRORS.append(f"{path.name}: {recipe_id} station 不能为空")
+        elif station != "workbench" and station not in valid_item_ids:
+            ERRORS.append(f"{path.name}: {recipe_id} 的工位 '{station}' 不是道具")
+
+        skill_id = str(recipe.get("skill", ""))
+        if skill_ids and skill_id not in skill_ids:
+            ERRORS.append(f"{path.name}: {recipe_id} 引用了不存在的技能 '{skill_id}'")
+        level = recipe.get("skill_level", 1)
+        if not isinstance(level, int) or level < 1 or (max_level and level > max_level):
+            ERRORS.append(f"{path.name}: {recipe_id} 技能等级越界 -> {level}")
+
+        ingredients = recipe.get("ingredients", {})
+        if not isinstance(ingredients, dict) or not ingredients:
+            ERRORS.append(f"{path.name}: {recipe_id} ingredients 必须是非空对象")
+        else:
+            for item_id, count in ingredients.items():
+                if item_id not in valid_item_ids:
+                    ERRORS.append(
+                        f"{path.name}: {recipe_id} 材料 '{item_id}' 不存在")
+                if not isinstance(count, int) or count <= 0:
+                    ERRORS.append(
+                        f"{path.name}: {recipe_id} 材料 '{item_id}' 数量非法 -> {count}")
+
+        result_id = str(recipe.get("result", ""))
+        if result_id not in valid_item_ids:
+            ERRORS.append(f"{path.name}: {recipe_id} 产出 '{result_id}' 不存在")
+        if not isinstance(recipe.get("count", 1), int) or int(recipe.get("count", 1)) <= 0:
+            ERRORS.append(f"{path.name}: {recipe_id} count 必须是正整数")
+        if not isinstance(recipe.get("xp", 0), int) or int(recipe.get("xp", 0)) < 0:
+            ERRORS.append(f"{path.name}: {recipe_id} xp 必须是非负整数")
+
+    print(f"  · {path.name}: {len(recipes)} 条配方")
+
+
+def validate_livestock(path: Path, valid_item_ids) -> None:
+    """牧场动物:价格、饲料、产出与棚容量。"""
+    data = load_json(path)
+    if data is None:
+        return
+
+    animals = data.get("animals", [])
+    if not animals:
+        ERRORS.append(f"{path.name}: animals 列表为空")
+    feed_item = str(data.get("feed_item", ""))
+    if feed_item not in valid_item_ids:
+        ERRORS.append(f"{path.name}: feed_item '{feed_item}' 不存在")
+    if not isinstance(data.get("feed_price"), int) or int(data.get("feed_price", 0)) <= 0:
+        ERRORS.append(f"{path.name}: feed_price 必须是正整数")
+    if not isinstance(data.get("barn_capacity"), int) or int(data.get("barn_capacity", 0)) <= 0:
+        ERRORS.append(f"{path.name}: barn_capacity 必须是正整数")
+
+    seen = set()
+    for animal in animals:
+        animal_id = str(animal.get("id", "?"))
+        if animal_id in seen:
+            ERRORS.append(f"{path.name}: 重复的动物 id {animal_id}")
+        seen.add(animal_id)
+        for key in ("id", "name", "cost", "feed", "product", "product_name", "days"):
+            if key not in animal:
+                ERRORS.append(f"{path.name}: {animal_id} 缺少字段 {key}")
+        for key in ("cost", "days"):
+            value = animal.get(key)
+            if not isinstance(value, int) or value <= 0:
+                ERRORS.append(f"{path.name}: {animal_id} {key} 必须是正整数")
+        feed = str(animal.get("feed", ""))
+        if feed not in valid_item_ids:
+            ERRORS.append(f"{path.name}: {animal_id} 饲料 '{feed}' 不存在")
+        product = str(animal.get("product", ""))
+        if product not in valid_item_ids:
+            ERRORS.append(f"{path.name}: {animal_id} 产出 '{product}' 不存在")
+
+    print(f"  · {path.name}: {len(animals)} 种牲畜")
+
+
+def validate_mine(path: Path, valid_item_ids) -> None:
+    """矿洞楼层:连续楼层、矿脉权重与守洞怪物数值。"""
+    data = load_json(path)
+    if data is None:
+        return
+
+    max_floor = data.get("max_floor")
+    chance = data.get("base_monster_chance")
+    if not isinstance(max_floor, int) or max_floor <= 0:
+        ERRORS.append(f"{path.name}: max_floor 必须是正整数")
+        max_floor = 0
+    if not isinstance(chance, (int, float)) or not 0.0 <= float(chance) <= 1.0:
+        ERRORS.append(f"{path.name}: base_monster_chance 必须在 [0, 1]")
+
+    floors = data.get("floors", [])
+    floor_numbers = [floor.get("floor") for floor in floors]
+    expected = list(range(1, max_floor + 1))
+    if floor_numbers != expected:
+        ERRORS.append(f"{path.name}: floors 必须从 1 连续排到 {max_floor} -> {floor_numbers}")
+    for floor in floors:
+        floor_no = floor.get("floor", "?")
+        if not str(floor.get("name", "")).strip():
+            ERRORS.append(f"{path.name}: 第 {floor_no} 层缺少 name")
+        ores = floor.get("ores", [])
+        if not ores:
+            ERRORS.append(f"{path.name}: 第 {floor_no} 层没有矿脉")
+        for ore in ores:
+            item_id = str(ore.get("id", ""))
+            if item_id not in valid_item_ids:
+                ERRORS.append(f"{path.name}: 第 {floor_no} 层矿脉 '{item_id}' 不存在")
+            if not isinstance(ore.get("weight"), int) or int(ore.get("weight", 0)) <= 0:
+                ERRORS.append(f"{path.name}: 第 {floor_no} 层矿脉权重非法")
+            low, high = ore.get("min"), ore.get("max")
+            if not isinstance(low, int) or not isinstance(high, int) or low <= 0 or low > high:
+                ERRORS.append(f"{path.name}: 第 {floor_no} 层矿脉 min/max 非法")
+        monster = floor.get("monster", {})
+        if not isinstance(monster, dict):
+            ERRORS.append(f"{path.name}: 第 {floor_no} 层 monster 必须是对象")
+        else:
+            for key in ("id", "name"):
+                if not str(monster.get(key, "")).strip():
+                    ERRORS.append(f"{path.name}: 第 {floor_no} 层怪物缺少 {key}")
+            for key in ("hp", "damage"):
+                if not isinstance(monster.get(key), int) or int(monster.get(key, 0)) <= 0:
+                    ERRORS.append(f"{path.name}: 第 {floor_no} 层怪物 {key} 必须为正整数")
+
+    print(f"  · {path.name}: {len(floors)} 层矿洞")
+
+
+def validate_museum(path: Path, valid_item_ids) -> None:
+    """镇史馆:藏品来源与里程碑奖励。"""
+    data = load_json(path)
+    if data is None:
+        return
+
+    collectibles = data.get("collectibles", [])
+    if not collectibles:
+        ERRORS.append(f"{path.name}: collectibles 列表为空")
+    seen_ids = set()
+    seen_items = set()
+    for collectible in collectibles:
+        collectible_id = str(collectible.get("id", "?"))
+        item_id = str(collectible.get("item_id", ""))
+        if collectible_id in seen_ids:
+            ERRORS.append(f"{path.name}: 重复的藏品 id {collectible_id}")
+        seen_ids.add(collectible_id)
+        if item_id in seen_items:
+            ERRORS.append(f"{path.name}: 道具 '{item_id}' 被重复登记为藏品")
+        seen_items.add(item_id)
+        if item_id not in valid_item_ids:
+            ERRORS.append(f"{path.name}: {collectible_id} 的道具 '{item_id}' 不存在")
+
+    milestones = data.get("milestones", [])
+    last_count = 0
+    for milestone in milestones:
+        count = milestone.get("count")
+        if not isinstance(count, int) or count <= last_count:
+            ERRORS.append(f"{path.name}: 里程碑 count 必须严格递增 -> {count}")
+        else:
+            last_count = count
+        if not isinstance(milestone.get("gold"), int) or int(milestone.get("gold", 0)) < 0:
+            ERRORS.append(f"{path.name}: milestone {count} gold 必须是非负整数")
+        rewards = milestone.get("items", {})
+        if not isinstance(rewards, dict):
+            ERRORS.append(f"{path.name}: milestone {count} items 必须是对象")
+            rewards = {}
+        for item_id, amount in rewards.items():
+            if item_id not in valid_item_ids:
+                ERRORS.append(f"{path.name}: milestone {count} 奖励 '{item_id}' 不存在")
+            if not isinstance(amount, int) or amount <= 0:
+                ERRORS.append(f"{path.name}: milestone {count} 奖励 '{item_id}' 数量非法")
+        if isinstance(count, int) and count > len(collectibles):
+            ERRORS.append(f"{path.name}: milestone {count} 超过藏品总数 {len(collectibles)}")
+
+    print(f"  · {path.name}: {len(collectibles)} 件藏品, {len(milestones)} 档里程碑")
+
+
+def validate_community(path: Path, valid_item_ids) -> None:
+    """公共工程:依赖无环、材料与奖励真实。"""
+    data = load_json(path)
+    if data is None:
+        return
+
+    projects = data.get("projects", [])
+    if not projects:
+        ERRORS.append(f"{path.name}: projects 列表为空")
+    by_id = {str(project.get("id", "?")): project for project in projects}
+    if len(by_id) != len(projects):
+        ERRORS.append(f"{path.name}: 存在重复的工程 id")
+
+    for project_id, project in by_id.items():
+        for key in ("id", "name", "desc", "requires", "requirements", "rewards"):
+            if key not in project:
+                ERRORS.append(f"{path.name}: {project_id} 缺少字段 {key}")
+        for required in project.get("requires", []):
+            if required not in by_id:
+                ERRORS.append(f"{path.name}: {project_id} 依赖不存在的工程 '{required}'")
+            elif required == project_id:
+                ERRORS.append(f"{path.name}: {project_id} 不能依赖自身")
+        requirements = project.get("requirements", {})
+        if not isinstance(requirements, dict) or not requirements:
+            ERRORS.append(f"{path.name}: {project_id} requirements 必须是非空对象")
+        else:
+            for item_id, count in requirements.items():
+                if item_id not in valid_item_ids:
+                    ERRORS.append(f"{path.name}: {project_id} 材料 '{item_id}' 不存在")
+                if not isinstance(count, int) or count <= 0:
+                    ERRORS.append(f"{path.name}: {project_id} 材料 '{item_id}' 数量非法")
+        rewards = project.get("rewards", {})
+        if not isinstance(rewards, dict):
+            ERRORS.append(f"{path.name}: {project_id} rewards 必须是对象")
+            continue
+        if not isinstance(rewards.get("gold", 0), int) or int(rewards.get("gold", 0)) < 0:
+            ERRORS.append(f"{path.name}: {project_id} 奖励金币非法")
+        reward_items = rewards.get("items", {})
+        if not isinstance(reward_items, dict):
+            ERRORS.append(f"{path.name}: {project_id} rewards.items 必须是对象")
+            reward_items = {}
+        for item_id, count in reward_items.items():
+            if item_id not in valid_item_ids:
+                ERRORS.append(f"{path.name}: {project_id} 奖励 '{item_id}' 不存在")
+            if not isinstance(count, int) or count <= 0:
+                ERRORS.append(f"{path.name}: {project_id} 奖励 '{item_id}' 数量非法")
+
+    visiting = set()
+    visited = set()
+
+    def visit(project_id: str, trail: list) -> None:
+        if project_id in visiting:
+            ERRORS.append(f"{path.name}: 工程依赖成环 -> {' -> '.join(trail + [project_id])}")
+            return
+        if project_id in visited:
+            return
+        visiting.add(project_id)
+        for required in by_id.get(project_id, {}).get("requires", []):
+            if required in by_id:
+                visit(required, trail + [project_id])
+        visiting.remove(project_id)
+        visited.add(project_id)
+
+    for project_id in by_id:
+        visit(project_id, [])
+    print(f"  · {path.name}: {len(projects)} 项公共工程")
+
+
+def validate_tool_upgrades(path: Path, valid_item_ids) -> None:
+    """农具升级:工具 id、等级连续性、金币与材料。"""
+    data = load_json(path)
+    if data is None:
+        return
+
+    tools = data.get("tools", [])
+    if not tools:
+        ERRORS.append(f"{path.name}: tools 列表为空")
+    expected_tools = {"hoe", "water", "pickaxe"}
+    seen_tools = {str(tool.get("id", "?")) for tool in tools}
+    if expected_tools - seen_tools:
+        ERRORS.append(f"{path.name}: 缺少农具升级表 {sorted(expected_tools - seen_tools)}")
+    if len(seen_tools) != len(tools):
+        ERRORS.append(f"{path.name}: 存在重复的农具 id")
+
+    for tool in tools:
+        tool_id = str(tool.get("id", "?"))
+        if not str(tool.get("name", "")).strip():
+            ERRORS.append(f"{path.name}: {tool_id} 缺少 name")
+        levels = tool.get("levels", [])
+        level_numbers = [entry.get("level") for entry in levels]
+        expected = list(range(2, 2 + len(levels)))
+        if level_numbers != expected:
+            ERRORS.append(f"{path.name}: {tool_id} 等级必须从 2 连续递增 -> {level_numbers}")
+        for entry in levels:
+            label = f"{tool_id}/Lv.{entry.get('level', '?')}"
+            for key in ("level", "name", "cost", "ingredients", "desc"):
+                if key not in entry:
+                    ERRORS.append(f"{path.name}: {label} 缺少字段 {key}")
+            if not isinstance(entry.get("cost"), int) or int(entry.get("cost", 0)) < 0:
+                ERRORS.append(f"{path.name}: {label} cost 必须是非负整数")
+            ingredients = entry.get("ingredients", {})
+            if not isinstance(ingredients, dict) or not ingredients:
+                ERRORS.append(f"{path.name}: {label} ingredients 必须是非空对象")
+            else:
+                for item_id, count in ingredients.items():
+                    if item_id not in valid_item_ids:
+                        ERRORS.append(f"{path.name}: {label} 材料 '{item_id}' 不存在")
+                    if not isinstance(count, int) or count <= 0:
+                        ERRORS.append(f"{path.name}: {label} 材料 '{item_id}' 数量非法")
+
+    print(f"  · {path.name}: {len(tools)} 类农具")
+
+
+def validate_services(path: Path, valid_item_ids) -> None:
+    """功能 NPC 服务参数与货郎轮换目录。"""
+    data = load_json(path)
+    if data is None:
+        return
+
+    fishmonger = data.get("fishmonger", {})
+    if not isinstance(fishmonger, dict):
+        ERRORS.append(f"{path.name}: fishmonger 必须是对象")
+    else:
+        bait = str(fishmonger.get("bait_item", ""))
+        if bait not in valid_item_ids:
+            ERRORS.append(f"{path.name}: 鱼饵 '{bait}' 不存在")
+        for key in ("bundle", "bundle_price"):
+            if not isinstance(fishmonger.get(key), int) or int(fishmonger.get(key, 0)) <= 0:
+                ERRORS.append(f"{path.name}: fishmonger.{key} 必须是正整数")
+        ratio = fishmonger.get("fish_buy_ratio")
+        if not isinstance(ratio, (int, float)) or not 0.0 < float(ratio) <= 1.0:
+            ERRORS.append(f"{path.name}: fish_buy_ratio 必须在 (0, 1]")
+
+    merchant = data.get("merchant", {})
+    if not isinstance(merchant, dict):
+        ERRORS.append(f"{path.name}: merchant 必须是对象")
+        return
+    pool = merchant.get("pool", [])
+    if not pool:
+        ERRORS.append(f"{path.name}: 货郎 pool 为空")
+    if len(set(pool)) != len(pool):
+        ERRORS.append(f"{path.name}: 货郎 pool 存在重复道具")
+    for item_id in pool:
+        if item_id not in valid_item_ids:
+            ERRORS.append(f"{path.name}: 货郎道具 '{item_id}' 不存在")
+    size = merchant.get("stock_size")
+    if not isinstance(size, int) or size <= 0 or size > len(pool):
+        ERRORS.append(f"{path.name}: stock_size 必须在 1..{len(pool)}")
+    markup = merchant.get("markup")
+    if not isinstance(markup, (int, float)) or float(markup) <= 0:
+        ERRORS.append(f"{path.name}: merchant.markup 必须大于 0")
+
+    print(f"  · {path.name}: 渔具商 + 货郎 {len(pool)} 件轮换商品")
+
+
 def _check_condition(path: Path, did: str, lid: str, condition) -> None:
     """条件字典的键与取值必须合法。"""
     if not isinstance(condition, dict):
@@ -1148,6 +1550,10 @@ def main() -> int:
     item_ids = {
         item.get("id") for item in (items_data or {}).get("items", [])
     }
+    crop_ids = {
+        crop.get("id") for crop in (crops_data or {}).get("crops", [])
+    }
+    craftable_ids = item_ids | crop_ids
     item_names = {
         item.get("name") for item in (items_data or {}).get("items", [])
     }
@@ -1207,6 +1613,31 @@ def main() -> int:
         )),
         ("festivals.json", lambda path: validate_festivals(path, maps_by_id)),
     ):
+        data_path = root / filename
+        if not data_path.exists():
+            ERRORS.append(f"缺少文件: {data_path}")
+            continue
+        validator(data_path)
+        validate_no_real_place_names(data_path, load_json(data_path))
+
+    skills_path = root / "skills.json"
+    skills_data = {}
+    if skills_path.exists():
+        skills_data = validate_skills(skills_path)
+        validate_no_real_place_names(skills_path, load_json(skills_path))
+    else:
+        ERRORS.append(f"缺少文件: {skills_path}")
+
+    life_data = (
+        ("crafting.json", lambda path: validate_crafting(path, craftable_ids, skills_data)),
+        ("livestock.json", lambda path: validate_livestock(path, item_ids)),
+        ("mine.json", lambda path: validate_mine(path, item_ids)),
+        ("museum.json", lambda path: validate_museum(path, item_ids)),
+        ("community.json", lambda path: validate_community(path, item_ids)),
+        ("tool_upgrades.json", lambda path: validate_tool_upgrades(path, item_ids)),
+        ("services.json", lambda path: validate_services(path, item_ids)),
+    )
+    for filename, validator in life_data:
         data_path = root / filename
         if not data_path.exists():
             ERRORS.append(f"缺少文件: {data_path}")

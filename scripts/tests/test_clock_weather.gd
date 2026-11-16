@@ -167,7 +167,9 @@ func test_weather_stamina_usage() -> void:
 	var result := ToolBar.apply_tool(ToolBar.Tool.WATER, state.farm, 0, state.player, "",
 		WeatherSystem.outdoor_stamina_multiplier("blizzard"))
 	check("暴风雪农活仍可执行", bool(result.get("ok", false)), String(result.get("message", "")))
-	check("暴风雪按倍率扣体力", state.player.energy == 96,
+	var expected := 100 - int(ceil(float(StaminaSystem.COST_WATER)
+		* WeatherSystem.outdoor_stamina_multiplier("blizzard")))
+	check("暴风雪按倍率扣体力", state.player.energy == expected,
 		"→ %d" % state.player.energy)
 
 func test_female_sprite_wiring() -> void:

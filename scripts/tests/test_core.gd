@@ -1,13 +1,13 @@
 extends SceneTree
-## headless 核心逻辑自测:验证黑龙江设定的种田核心循环
+## headless 核心逻辑自测:验证麦溪镇设定的种田核心循环
 ## 运行: godot --headless --script res://scripts/tests/test_core.gd
 
 var _passed := 0
 var _failed := 0
 
 func _init() -> void:
-	print("=== 《宾州小镇》核心逻辑自测 (BinzhouTown headless test) ===")
-	print("设定:黑龙江黑土地 · 一年一熟 · 春播秋收 · 冬季休耕")
+	print("=== 《麦溪镇》核心逻辑自测 (BinzhouTown headless test) ===")
+	print("设定:西境田园 · 一年一熟 · 春播秋收 · 冬季休耕")
 	print("--------------------------------------------------")
 
 	test_calendar_seasons()
@@ -54,7 +54,7 @@ func check(label: String, cond: bool, detail: String = "") -> void:
 		_failed += 1
 		print("  ❌ %s %s" % [label, detail])
 
-# --- 四季与黑龙江物候 ---
+# --- 四季与麦溪镇物候 ---
 func test_calendar_seasons() -> void:
 	print("\n[1] 时间与季节系统(真实月份驱动)")
 	var cal := GameCalendar.new()
@@ -96,15 +96,15 @@ func test_crop_database() -> void:
 	check("玉米数据存在", corn != null and corn.name == "玉米")
 	check("玉米春播", corn.sowing_season == "spring")
 	check("玉米秋收", corn.harvest_season == "autumn")
-	check("玉米生长周期对齐真实农时(150-170天)",
-		int(corn.growth_days[0]) >= 140 and int(corn.growth_days[1]) <= 180,
+	check("玉米是短周期作物(4-10天)",
+		int(corn.growth_days[0]) >= 3 and int(corn.growth_days[1]) <= 10,
 		"→ %s" % str(corn.growth_days))
 	check("冬季产出数据存在", CropDatabase.winter_produce().size() >= 4,
 		"%d 项" % CropDatabase.winter_produce().size())
 
 # --- 播种窗口 ---
 func test_sow_windows() -> void:
-	print("\n[3] 播种窗口(黑龙江一年一熟)")
+	print("\n[3] 播种窗口(麦溪镇一年一熟)")
 	var cal := GameCalendar.new()
 	var farm := FarmSystem.new(cal)
 
@@ -124,7 +124,7 @@ func test_sow_windows() -> void:
 		"→ " + str(farm.sowable_crop_ids()))
 
 	cal.advance_to_month(9, 10)
-	check("秋季不可播种(秋霜已下)", farm.sowable_crop_ids().is_empty(),
+	check("秋季不可播种(初霜已下)", farm.sowable_crop_ids().is_empty(),
 		"→ " + str(farm.sowable_crop_ids()))
 
 	cal.advance_to_month(1, 15)
@@ -133,7 +133,7 @@ func test_sow_windows() -> void:
 
 # --- 农时月份窗口 ---
 func test_month_windows() -> void:
-	print("\n[3b] 农时月份窗口(黑龙江 4-5月播种 / 7-10月收获)")
+	print("\n[3b] 农时月份窗口(麦溪镇 4-5月播种 / 7-10月收获)")
 	var corn: Crop = CropDatabase.get_crop("corn")
 	var potato: Crop = CropDatabase.get_crop("potato")
 	var wheat: Crop = CropDatabase.get_crop("spring_wheat")
@@ -152,9 +152,9 @@ func test_month_windows() -> void:
 	check("秋菜 7月可播(抢茬复种)", veg.can_sow_in_month(7))
 	check("秋菜 9月可收", veg.can_harvest_in_month(9))
 
-# --- 秋霜冻死 ---
+# --- 初霜冻死 ---
 func test_frost_kills_late_crop() -> void:
-	print("\n[3c] 秋霜冻死机制(晚收作物压力)")
+	print("\n[3c] 初霜冻死机制(晚收作物压力)")
 	var cal := GameCalendar.new()
 	cal.advance_to_month(4, 10)
 	var farm := FarmSystem.new(cal)
@@ -171,9 +171,9 @@ func test_frost_kills_late_crop() -> void:
 	check("推进到11月(霜后)", cal.get_real_month() == 11, cal.date_string())
 	farm.advance_day()  # 触发霜冻判定
 	var plot := farm.get_plot(5)
-	check("秋霜后未收的晚收作物冻死", plot.state == FarmPlot.State.DEAD,
+	check("初霜后未收的晚收作物冻死", plot.state == FarmPlot.State.DEAD,
 		"→ %s (%s)" % [str(plot.state), plot.dead_reason])
-	check("死因标记为秋霜冻死", plot.dead_reason == "秋霜冻死", plot.dead_reason)
+	check("死因标记为初霜冻死", plot.dead_reason == "初霜冻死", plot.dead_reason)
 
 # --- 越冬储藏 ---
 func test_winter_storage() -> void:
@@ -184,9 +184,9 @@ func test_winter_storage() -> void:
 	check("玉米储藏方式已定义", info.get("method", "") != "", "→ " + str(info.get("method")))
 	check("储藏说明非空", String(info.get("note", "")) != "")
 	check("马铃薯窖藏可越冬", potato.storage == "窖藏")
-	check("冬季产出含冻梨", _winter_has("冻梨"))
-	check("冬季产出含黏豆包", _winter_has("黏豆包"))
-	check("冬季产出含酸菜", _winter_has("酸菜"))
+	check("冬季产出含烤苹果", _winter_has("烤苹果"))
+	check("冬季产出含蜂蜜燕麦面包", _winter_has("蜂蜜燕麦面包"))
+	check("冬季产出含酸渍蔬菜", _winter_has("酸渍蔬菜"))
 	check("冬季产出不少于 6 项", CropDatabase.winter_produce().size() >= 6,
 		"→ %d 项" % CropDatabase.winter_produce().size())
 
@@ -219,7 +219,7 @@ func test_full_growth_cycle() -> void:
 	var plot := farm.get_plot(0)
 	check("作物已成熟(READY)", plot.state == FarmPlot.State.READY,
 		"生长 %.0f 天 / 需要 %d 天" % [plot.days_grown, need])
-	check("成熟时已入秋", cal.get_season() == "autumn", cal.date_string())
+	check("短周期成熟发生在播种当季", cal.get_season() == "spring", cal.date_string())
 
 	var res := farm.harvest_plot(0)
 	check("收获成功", res.has("crop_id") and res.get("crop_id") == "corn", str(res))
@@ -232,7 +232,7 @@ func test_full_growth_cycle() -> void:
 
 # --- 秋翻地增产 ---
 func test_autumn_plough_bonus() -> void:
-	print("\n[5] 秋翻地增产(黑龙江黑土地保护核心农法)")
+	print("\n[5] 秋翻地增产(西境田园保护核心农法)")
 	var cal := GameCalendar.new()
 	cal.advance_to_month(4, 10)
 	var farm := FarmSystem.new(cal)
@@ -269,7 +269,7 @@ func test_autumn_plough_bonus() -> void:
 
 # --- 复种秋菜 ---
 func test_replant_autumn_vegetable() -> void:
-	print("\n[6] 早收腾茬 → 复种秋菜(一年一熟下的唯一例外)")
+	print("\n[6] 短周期轮作 → 腾茬 → 复种秋菜")
 	var cal := GameCalendar.new()
 	cal.advance_to_month(4, 10)
 	var farm := FarmSystem.new(cal)
@@ -282,11 +282,13 @@ func test_replant_autumn_vegetable() -> void:
 		farm.advance_day()
 		cal.advance_day()
 		farm.water_plot(4)
-	check("马铃薯7月成熟(早收腾茬)", cal.get_real_month() == 7, "→ " + cal.date_string())
+	check("马铃薯数日内成熟(短周期反馈)", int(potato.growth_days[0]) <= 6,
+		"→ " + cal.date_string())
 	var res := farm.harvest_plot(4)
 	check("早收作物收获成功", res.has("crop_id"), "→ " + str(res.get("crop_name", "")))
 	check("早收标记为真", bool(res.get("early_harvest", false)))
 	check("收获后翻土成功", farm.till_plot(4))
+	cal.advance_to_month(7, 1)
 	check("7月可复种秋菜", farm.plant_crop(4, "autumn_vegetable"))
 	check("复种后作物正确", farm.get_plot(4).crop_id == "autumn_vegetable")
 
@@ -438,12 +440,12 @@ func test_stamina_system() -> void:
 	st.energy = 2
 	check("体力不足时 has 为假", not st.has(5))
 	st.sleep()
-	check("睡一夜回满", st.energy == StaminaSystem.OVERFLOW_MAX, "→ %d" % st.energy)
+	check("睡一夜回满", st.energy == StaminaSystem.MAX_ENERGY, "→ %d" % st.energy)
 	check("回满后仍可消耗", st.has(6))
 	st.energy = 100
 	st.restore(50)
-	check("恢复不超上限", st.energy == StaminaSystem.OVERFLOW_MAX, "→ %d" % st.energy)
-	check("体力上限为 110", StaminaSystem.OVERFLOW_MAX == 110)
+	check("恢复不超上限", st.energy == StaminaSystem.MAX_ENERGY, "→ %d" % st.energy)
+	check("体力上限为 100", StaminaSystem.MAX_ENERGY == 100)
 	check("体力状态文案非空", st.status_cn() != "")
 	check("体力耗尽文案", StaminaSystem.new(0).status_cn() == "筋疲力尽")
 
@@ -665,7 +667,7 @@ func _load_json(path: String) -> Dictionary:
 	return parsed
 
 func test_scene_router() -> void:
-	print("\n[20] 场景路由(v5 11 地点)")
+	print("\n[20] 场景路由(v5 14 地点)")
 	check("L01 农场路径正确",
 		SceneRouter.scene_path("L01") == "res://scenes/locations/L01.tscn")
 	check("L02 农舍路径正确",
@@ -674,12 +676,13 @@ func test_scene_router() -> void:
 		SceneRouter.scene_path("L03") == "res://scenes/locations/L03.tscn")
 	check("L05 邮局路径正确",
 		SceneRouter.scene_path("L05") == "res://scenes/locations/L05.tscn")
-	check("L11 古戏台已登记", SceneRouter.scene_path("L11") != "")
+	check("L11 月桂剧场已登记", SceneRouter.scene_path("L11") != "")
 	check("未登记地点返回空串", SceneRouter.scene_path("L99") == "")
-	check("地点中文名可取", SceneRouter.location_cn("L01").contains("黑土地"))
-	check("11 个地点全部实装", SceneRouter.implemented_locations().size() == 11)
+	check("地点中文名可取", SceneRouter.location_cn("L01") == "柳溪农场",
+		SceneRouter.location_cn("L01"))
+	check("14 个地点全部实装", SceneRouter.implemented_locations().size() == 14)
 	check("L05 邮局已实装", SceneRouter.is_implemented("L05"))
-	check("L11 古戏台已实装", SceneRouter.is_implemented("L11"))
+	check("L11 月桂剧场已实装", SceneRouter.is_implemented("L11"))
 	# 场景文件必须真实存在
 	for loc in SceneRouter.implemented_locations():
 		var path := SceneRouter.scene_path(loc)
@@ -719,7 +722,7 @@ func test_daily_advance_and_rest() -> void:
 	state.farm.advance_day()
 	state.calendar.advance_day()
 	state.player.stamina.sleep()
-	check("过一天后体力回满", state.player.energy == StaminaSystem.OVERFLOW_MAX,
+	check("过一天后体力回满", state.player.energy == StaminaSystem.MAX_ENERGY,
 		"→ %d" % state.player.energy)
 	check("日期推进到 4月11日", state.calendar.get_real_month() == 4
 		and state.calendar.get_day_of_month() == 11,
@@ -728,13 +731,15 @@ func test_daily_advance_and_rest() -> void:
 	# 体力消耗与回满的闭环
 	state.player.stamina.energy = 100
 	state.player.stamina.consume(StaminaSystem.COST_AUTUMN_PLOUGH)
-	check("秋翻消耗 6 点体力", state.player.energy == 94, "→ %d" % state.player.energy)
+	check("秋翻消耗 %d 点体力" % StaminaSystem.COST_AUTUMN_PLOUGH,
+		state.player.energy == 100 - StaminaSystem.COST_AUTUMN_PLOUGH,
+		"→ %d" % state.player.energy)
 	state.player.stamina.sleep()
-	check("睡醒回满 110", state.player.energy == 110, "→ %d" % state.player.energy)
+	check("睡醒回满 100", state.player.energy == 100, "→ %d" % state.player.energy)
 
-# --- 农时播报:播种窗高亮 / 秋霜倒计时 / 地块倒计时 ---
+# --- 农时播报:播种窗高亮 / 初霜倒计时 / 地块倒计时 ---
 func test_farm_almanac() -> void:
-	print("\n[23] 农时播报(播种窗高亮 + 秋霜倒计时)")
+	print("\n[23] 农时播报(播种窗高亮 + 初霜倒计时)")
 	var cal := GameCalendar.new()
 
 	# 播种窗倒计时:4月1日 → 距 5月30日 还有 59 天
@@ -748,12 +753,12 @@ func test_farm_almanac() -> void:
 	check("6月播种窗已过 1 天(负数)", FarmAlmanac.days_until_sow_end(cal) == -1,
 		"→ %d" % FarmAlmanac.days_until_sow_end(cal))
 
-	# 秋霜倒计时:9月1日 → 距 10月1日 还有 30 天
+	# 初霜倒计时:9月1日 → 距 10月1日 还有 30 天
 	cal.advance_to_month(9, 1)
-	check("9月初距秋霜 30 天", FarmAlmanac.days_until_frost(cal) == 30,
+	check("9月初距初霜 30 天", FarmAlmanac.days_until_frost(cal) == 30,
 		"→ %d" % FarmAlmanac.days_until_frost(cal))
 	cal.advance_to_month(10, 15)
-	check("10月15日秋霜已过(负数)", FarmAlmanac.days_until_frost(cal) == -14,
+	check("10月15日初霜已过(负数)", FarmAlmanac.days_until_frost(cal) == -14,
 		"→ %d" % FarmAlmanac.days_until_frost(cal))
 
 	# 播种提示文案
@@ -771,19 +776,21 @@ func test_farm_almanac() -> void:
 		FarmAlmanac.sow_tip(cal, farm).contains("冬歇"),
 		FarmAlmanac.sow_tip(cal, farm))
 
-	# 地块倒计时:刚种下的玉米还差 150 天成熟
+	# 地块倒计时:刚种下的玉米按新短周期显示
 	cal.advance_to_month(4, 10)
 	var plot := farm.get_plot(0)
 	plot.till()
 	plot.plant("corn", "spring", 4)
-	check("玉米刚下地还差 150 天", FarmAlmanac.days_until_ready(plot) == 150,
+	var corn_need := int(CropDatabase.get_crop("corn").growth_days[0])
+	check("玉米刚下地还差 %d 天" % corn_need,
+		FarmAlmanac.days_until_ready(plot) == corn_need,
 		"→ %d" % FarmAlmanac.days_until_ready(plot))
-	check("地块标签含『还 150 天』",
-		FarmAlmanac.plot_tag(plot, cal).contains("还 150 天"),
+	check("地块标签含剩余天数",
+		FarmAlmanac.plot_tag(plot, cal).contains("还 %d 天" % corn_need),
 		FarmAlmanac.plot_tag(plot, cal))
 
 	# 成熟后倒计时归零
-	plot.days_grown = 150.0
+	plot.days_grown = float(corn_need)
 	plot.state = FarmPlot.State.READY
 	check("熟了倒计时为 0", FarmAlmanac.days_until_ready(plot) == 0)
 	check("熟地标签含『可收获』",
@@ -819,7 +826,7 @@ func test_farm_almanac() -> void:
 	# 顶部完整提示把播种与霜冻两条线都讲清楚
 	cal.advance_to_month(9, 1)
 	var full := FarmAlmanac.full_tip(cal, farm)
-	check("完整提示含秋霜倒计时", full.contains("30 天"), full)
+	check("完整提示含初霜倒计时", full.contains("30 天"), full)
 	check("完整提示含已过播种窗", full.contains("已过播种窗"), full)
 
 	# 播种窗口剩余天数:春播窗口 / 7 月抢茬复种 / 无可播种
@@ -844,7 +851,7 @@ func test_farm_almanac() -> void:
 	plot.state = FarmPlot.State.GROWING
 	plot.days_grown = 0.0
 	var badge := FarmAlmanac.plot_badge(plot, cal)
-	check("角标含『还150天』", badge.contains("还150天"), badge)
+	check("角标含剩余天数", badge.contains("还%d天" % corn_need), badge)
 	plot.state = FarmPlot.State.READY
 	check("熟了角标是『可收获』",
 		FarmAlmanac.plot_badge(plot, cal).contains("可收获"),

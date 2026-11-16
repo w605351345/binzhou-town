@@ -1,7 +1,7 @@
 extends RefCounted
 class_name GameCalendar
 
-## 时间与季节系统(黑龙江真实物候)
+## 时间与季节系统(麦溪镇真实物候)
 ##
 ## 寒温带大陆性气候,一年一熟。按真实月份划分:
 ##   冬(11-3月,5个月)→ 春(4-5月)→ 夏(6-8月)→ 秋(9-10月)
@@ -13,6 +13,9 @@ class_name GameCalendar
 const DAYS_PER_MONTH := 30
 const MONTHS_PER_YEAR := 12
 const DAYS_PER_YEAR := DAYS_PER_MONTH * MONTHS_PER_YEAR  # 360
+## 新游戏从春耕第一天开始:4 月 1 日。旧版从 1 月 1 日开局,
+## 玩家一进游戏就是漫长冬歇,既不能播种也看不到核心循环。
+const START_DAY_OF_YEAR := 3 * DAYS_PER_MONTH  # 90 = 4 月 1 日
 
 ## 真实月份 → 季节(索引 0=1月)
 const MONTH_SEASON: Array = [
@@ -36,7 +39,7 @@ const SEASON_LENGTH: Dictionary = {
 const REAL_SECONDS_PER_GAME_DAY := 60.0 * 12.0
 
 var year: int = 1
-var day_of_year: int = 0   # 0-359
+var day_of_year: int = START_DAY_OF_YEAR   # 0-359
 
 ## 绝对日:从第 1 年 1 月 1 日算起,永不回绕。
 ## 浇水、事件冷却、采集刷新等时间差必须用它,不能再用 day_of_year。
@@ -68,18 +71,28 @@ func get_month_index() -> int:
 func get_day_of_month() -> int:
 	return day_of_year % DAYS_PER_MONTH + 1
 
-## 距当前季结束还有几天
+## 当前是本赛季第几天(从 1 开始)
+func get_season_day() -> int:
+	match get_season():
+		"spring":
+			return day_of_year - SEASON_START["spring"] + 1
+		"summer":
+			return day_of_year - SEASON_START["summer"] + 1
+		"autumn":
+			return day_of_year - SEASON_START["autumn"] + 1
+		_:
+			# 冬季跨年:11-12 月接在 1-3 月之前
+			if day_of_year < 3 * DAYS_PER_MONTH:
+				return 2 * DAYS_PER_MONTH + day_of_year + 1
+			return day_of_year - 10 * DAYS_PER_MONTH + 1
+
+## 本赛季总天数
+func get_season_length() -> int:
+	return int(SEASON_LENGTH.get(get_season(), 90))
+
+## 距当前季结束还有几天(含今天)
 func get_days_left_in_season() -> int:
-	var s := get_season()
-	var start: int = SEASON_START[s]
-	var length: int = SEASON_LENGTH[s]
-	# 冬季从 11 月开始到次年 3 月底,跨年,需特殊处理
-	if s == "winter":
-		var month := get_real_month()
-		if month >= 11:
-			return (12 - month) * DAYS_PER_MONTH + 3 * DAYS_PER_MONTH - get_day_of_month() + 1
-		return (3 * DAYS_PER_MONTH) - day_of_year
-	return start + length - day_of_year
+	return maxi(0, get_season_length() - get_season_day() + 1)
 
 ## 冬季 = 休耕季,禁止播种
 func is_winter() -> bool:
@@ -107,7 +120,7 @@ static func season_cn(season: String) -> String:
 		"winter": return "冬"
 	return season
 
-## 季节描述(黑龙江真实物候)
+## 季节描述(麦溪镇真实物候)
 static func season_desc(season: String) -> String:
 	match season:
 		"spring":
@@ -117,7 +130,7 @@ static func season_desc(season: String) -> String:
 		"autumn":
 			return "秋 · 霜降收秋，场院打粮，囤菜备冬"
 		"winter":
-			return "冬 · 漫长休耕，火炕上守岁，庄稼在土里歇着"
+			return "冬 · 雪落农庄，壁炉边歇口气，为来年留一块好地"
 	return ""
 
 ## 推进一天
@@ -138,6 +151,15 @@ func advance_to_month(month: int, day: int = 1) -> void:
 
 func date_string() -> String:
 	return "第%d年 %d月%d日(%s)" % [year, get_real_month(), get_day_of_month(), season_cn(get_season())]
+
+## HUD 用的稳定日期格式:季节第几天与真实月日同时出现,避免"1月1日(冬)"和
+## "初霜 270 天"这种互相打架的文案。
+func date_short() -> String:
+	return "第%d年 · %s季 · 第%d天" % [year, season_cn(get_season()), get_season_day()]
+
+func date_detail() -> String:
+	return "%d月%d日 · 第%d/%d天" % [get_real_month(), get_day_of_month(),
+		get_season_day(), get_season_length()]
 
 func to_dict() -> Dictionary:
 	return {"year": year, "day_of_year": day_of_year, "absolute_day": abs_day()}

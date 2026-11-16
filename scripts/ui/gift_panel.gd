@@ -10,6 +10,7 @@ var _panel: PanelContainer
 var _title: Label
 var _list: VBoxContainer
 var _result: Label
+var _locks_input := false
 
 func _init() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -62,6 +63,7 @@ func _build_ui() -> void:
 	column.add_child(_result)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.follow_focus = true
 	column.add_child(scroll)
 	_list = VBoxContainer.new()
 	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -72,16 +74,23 @@ func _build_ui() -> void:
 	close.pressed.connect(close_panel)
 	column.add_child(close)
 
-func open_for(npc_data: Dictionary) -> void:
+func open_for(npc_data: Dictionary, lock_input: bool = false) -> void:
 	_npc_data = npc_data.duplicate(true)
+	_locks_input = lock_input
+	if _locks_input:
+		GameStateManager.set_gift_open(true)
 	visible = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_result.text = "挑一件合适的。对方喜欢什么、今天是什么日子，都会影响心意。"
 	_refresh()
+	_focus_first_button.call_deferred()
 
 func close_panel() -> void:
 	visible = false
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if _locks_input:
+		_locks_input = false
+		GameStateManager.set_gift_open(false)
 	closed.emit()
 
 func is_open() -> bool:
@@ -93,6 +102,15 @@ func gift_buttons() -> Array:
 		if child is Button:
 			out.append(child)
 	return out
+
+func _focus_first_button() -> void:
+	if not visible:
+		return
+	for node in find_children("*", "Button", true, false):
+		var button := node as Button
+		if button != null and not button.disabled:
+			button.grab_focus()
+			return
 
 func _refresh() -> void:
 	_title.text = "给%s送点东西" % _npc_data.get("name", "对方")

@@ -9,7 +9,7 @@ func _initialize() -> void:
 	_run()
 
 func _run() -> void:
-	print("=== 《宾州小镇》美术资源自测 (art test) ===")
+	print("=== 《麦溪镇》美术资源自测 (art test) ===")
 	_test_npc_sprites()
 	_test_npc_winter_sprites()
 	_test_portraits()
@@ -55,9 +55,9 @@ func _bytes_hash(path: String) -> int:
 	return hash(FileAccess.get_file_as_bytes(path))
 
 func _test_npc_sprites() -> void:
-	print("\n[1] 六名 NPC 独立精灵")
+	print("\n[1] 十一名 NPC 独立精灵")
 	var npcs := _npc_data()
-	check("NPC 数据为 6 人", npcs.size() == 6, "→ %d" % npcs.size())
+	check("NPC 数据为 11 人", npcs.size() == 11, "→ %d" % npcs.size())
 	var seen := {}
 	for npc in npcs:
 		var path := String(npc.get("sprite_path", ""))
@@ -71,7 +71,7 @@ func _test_npc_sprites() -> void:
 		seen[key] = true
 
 func _test_npc_winter_sprites() -> void:
-	print("\n[1b] 六名 NPC 冬装差分")
+	print("\n[1b] 十一名 NPC 冬装差分")
 	var seen := {}
 	for npc in _npc_data():
 		var path := String(npc.get("winter_sprite_path", ""))
@@ -93,7 +93,7 @@ func _test_npc_winter_sprites() -> void:
 		sample.sprite_path_for("spring") == sample.sprite_path)
 
 func _test_portraits() -> void:
-	print("\n[2] 六名 NPC 立绘")
+	print("\n[2] 十一名 NPC 立绘")
 	for npc in _npc_data():
 		var path := String(npc.get("portrait_path", ""))
 		var npc_name := String(npc.get("name", npc.get("id", "")))
@@ -288,6 +288,9 @@ func _test_dialogue_portrait_wiring() -> void:
 	box.setup(npc, runner)
 	check("立绘框可见", box.portrait_visible())
 	check("立绘纹理不是空", box.portrait_texture() != null)
+	var portrait := box.find_child("Portrait", true, false) as TextureRect
+	check("立绘子节点真的显示出来", portrait != null and portrait.visible,
+		"→ %s" % (portrait.visible if portrait != null else "缺失"))
 	if box.portrait_texture() != null:
 		check("立绘纹理尺寸 256×256",
 			box.portrait_texture().get_size() == Vector2(256, 256),

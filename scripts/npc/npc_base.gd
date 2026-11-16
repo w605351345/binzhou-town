@@ -3,7 +3,7 @@ class_name NpcBase
 
 ## NPC 基类(纯逻辑,可 headless 单测)
 ##
-## 宾州镇的人物。MVP 只有张晓芳一人,先把结构立住,
+## 麦溪镇的人物。MVP 只有张晓芳一人,先把结构立住,
 ## 后续加人物时只继承本类。对话内容统一放在 data/dialogues.json。
 
 var id: String = ""
@@ -35,6 +35,9 @@ var buys_crops: bool = false
 ## 收购价倍率(1.0 = 原价)
 var buy_ratio: float = 1.0
 var affection_max: int = 100
+## 功能 NPC:blacksmith / livestock / fishmonger / museum / merchant
+var service_type: String = ""
+var service_title: String = ""
 
 func _init(p_id: String = "", p_name: String = "") -> void:
 	id = p_id
@@ -100,6 +103,8 @@ static func from_data(data: Dictionary) -> NpcBase:
 	n.buys_crops = bool(data.get("buys_crops", false))
 	n.buy_ratio = float(data.get("buy_ratio", 1.0))
 	n.affection_max = int(data.get("affection_max", 100))
+	n.service_type = String(data.get("service_type", ""))
+	n.service_title = String(data.get("service_title", ""))
 	return n
 
 func to_dict() -> Dictionary:

@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "files": {
+    "assets/art/ai/seasons/spring.png": {
+      "sha256": "df04338cec439c5c73c854960a27eb2ebe7950b677a5897c380910268cfaa1bf",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143825Z"
+    },
+    "assets/art/ai/seasons/summer.png": {
+      "sha256": "7555e478dcc1d0bcf4c5f1ac0a274d2551918012c05ef2bf163bf9bc8ce73b8f",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143825Z"
+    },
+    "assets/art/ai/seasons/autumn.png": {
+      "sha256": "35b03ad70be94807adde0e677f0e970f43337554abdae4da31a51ae899380639",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143825Z"
+    },
+    "assets/art/ai/seasons/winter.png": {
+      "sha256": "4fb6ee83c204798c45193baedd4120c2b2c3ec9fab1fca42f6b093df7424054d",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143826Z"
+    },
+    "assets/art/ai/backgrounds/L01.png": {
+      "sha256": "905908892a76dc966a661da3d558195a1f206dc61675bf00ccc9c96f27505120",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143826Z"
+    },
+    "assets/art/ai/backgrounds/L02.png": {
+      "sha256": "a02a8b9f1b34729fb2cd627b5f516fddd897e219f45bc9d796639f1ea69f745f",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143826Z"
+    },
+    "assets/art/ai/backgrounds/L03.png": {
+      "sha256": "e06ceb432a8c6bd9399b6dcf580e115b591c6cae47a909f3da1e4e1c8362184a",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143826Z"
+    },
+    "assets/art/ai/backgrounds/L04.png": {
+      "sha256": "1940c393181896dc9eec4c769ef42c74a18f53026015c4fdb48273b3d1b75039",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143826Z"
+    },
+    "assets/art/ai/backgrounds/L05.png": {
+      "sha256": "92efcb6cb006844e27665f423be4efbb16dc084244cddec3d8f886094f9d9e0b",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143826Z"
+    },
+    "assets/art/ai/backgrounds/L06.png": {
+      "sha256": "d66288a08d7212b261c66e69730bc5082aaaa78e93e8289c5db68ae609043268",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143827Z"
+    },
+    "assets/art/ai/backgrounds/L07.png": {
+      "sha256": "e545fecd40f4ef0b62ae6f3369af4f9152b0855660de243266205e39f791415e",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143827Z"
+    },
+    "assets/art/ai/backgrounds/L08.png": {
+      "sha256": "b58710fec1190ffb7e686d687baf8e001c8c6d1d9f783aa52d05cd1965649e75",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143827Z"
+    },
+    "assets/art/ai/backgrounds/L09.png": {
+      "sha256": "75c619cd22a7c3cc7f2156841ca0999f8106ae05c2d3876c828718c01df94bcc",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143827Z"
+    },
+    "assets/art/ai/backgrounds/L10.png": {
+      "sha256": "9661e32b8ec61b52fcacfdf5f1711d3b57a989489d74b6061e017e453d96c172",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143827Z"
+    },
+    "assets/art/ai/backgrounds/L11.png": {
+      "sha256": "6bb64b8dcdd5acc0d16a5dc9d48248e3bf33576c4980d42478731c271d793a69",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143828Z"
+    },
+    "assets/art/ai/backgrounds/L12.png": {
+      "sha256": "22c1800a4f84cb850608a1f1c91e8257fdba71edfab67fc054bc8e26eb95158a",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143828Z"
+    },
+    "assets/art/ai/backgrounds/L13.png": {
+      "sha256": "875bf9afff8bfdba46e900dd4ae6655e762d1386377ef3eefa178ae90b8463e4",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143828Z"
+    },
+    "assets/art/ai/backgrounds/L14.png": {
+      "sha256": "0fa1d1c8726c70778cae35cc72eeae39267b3d7cf7ce974f6d0bde3b93a857d1",
+      "width": 1920,
+      "height": 1080,
+      "postprocess": {
+        "border_crop_x": 208,
+        "border_crop_y": 117,
+        "width": 1920,
+        "height": 1080
+      },
+      "finalized_at": "20261114T143828Z"
+    }
+  }
+}

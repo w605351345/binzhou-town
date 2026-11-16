@@ -12,7 +12,7 @@
       "seasons": ["spring", "autumn"], "time_from": "19:00", "time_to": "21:00",
       "priority": 10,
       "lines": [
-        {"id": "open", "text": "镇中心早没人了，粮站的秤却还在响。张晓芳蹲在秤台边，一格一格校着空秤。她听见脚步，先把算盘往围裙里塞。", "options": [
+        {"id": "open", "text": "镇中心早没人了，集市的秤却还在响。张晓芳蹲在秤台边，一格一格校着空秤。她听见脚步，先把算盘往围裙里塞。", "options": [
           {"text": "这么晚还校秤？", "next": "why"},
           {"text": "我帮你扶秤杆。", "next": "help"},
           {"text": "不打扰了，你忙。", "next": "leave"}
@@ -42,7 +42,7 @@
       "seasons": ["autumn"], "time_from": "18:00", "time_to": "22:00",
       "requires_events": ["zhang_e1"], "priority": 20,
       "lines": [
-        {"id": "open", "text": "秋霜还有几天。粮站本该关门，仓门却开着一道缝。张晓芳站在灯下，面前排着几户没预约的粮车。“机器热着，顺手。”她说得很轻。", "options": [
+        {"id": "open", "text": "初霜还有几天。集市本该关门，仓门却开着一道缝。张晓芳站在灯下，面前排着几户没预约的粮车。“机器热着，顺手。”她说得很轻。", "options": [
           {"text": "你是在替大家抢霜前。", "next": "truth"},
           {"text": "这不合规矩。", "next": "rule"},
           {"text": "我帮你记账。", "next": "ledger"}
@@ -88,7 +88,7 @@
         {"id": "later", "text": "她把信贴身收好，转身去扫邮局门口的雪。扫到一半停下，说：“谢谢你没替我拆。”", "options": [
           {"text": "这是你的信。", "next": "after", "action": "set_flag", "data": {"flag": "zhang_e3_wait", "value": true}}
         ]},
-        {"id": "after", "text": "第二天，粮站墙上多了一张旧照片。照片里的秤还是那杆秤，人却都年轻。张晓芳从那天起不再连夜校空秤，但每次收粮，仍会复秤。", "options": [{"text": "这样就好。", "next": null}]}
+        {"id": "after", "text": "第二天，集市墙上多了一张旧照片。照片里的秤还是那杆秤，人却都年轻。张晓芳从那天起不再连夜校空秤，但每次收粮，仍会复秤。", "options": [{"text": "这样就好。", "next": null}]}
       ]
     },
     {
@@ -168,7 +168,7 @@
         {"id": "self", "text": "他拆得很慢，读完把信放在柜台上，又拿起来读第二遍。最后说：“这小子，还是不会写信。”声音却轻得像怕把纸吹破。", "options": [
           {"text": "照片给我看看。", "next": "after"}
         ]},
-        {"id": "reply", "text": "他抽出一张明信片，正面是雪后的戏台。“我字不好看，你给我写。”你写一句，他念一句。最后他坚持添上：“家里都好。”", "options": [
+        {"id": "reply", "text": "他抽出一张明信片，正面是雪后的剧场。“我字不好看，你给我写。”你写一句，他念一句。最后他坚持添上：“家里都好。”", "options": [
           {"text": "这句是实话吗？", "next": "after", "action": "set_flag", "data": {"flag": "han_e3_replied", "value": true}}
         ]},
         {"id": "after", "text": "第二天，韩守义把“退休申请”压在柜台玻璃下，又在死信盒上贴了一张新纸：待寄。他开始每天问玩家有没有信要寄，像在练习什么。", "options": [{"text": "慢慢来。", "next": null}]}
@@ -205,7 +205,7 @@
       "seasons": ["summer", "autumn"], "time_from": "18:00", "time_to": "21:00",
       "requires_events": ["sun_e1"], "priority": 20,
       "lines": [
-        {"id": "open", "text": "刘川打电话来说今年不回来了。孙玉梅挂了电话，照常开门，做了六个菜，摆满一桌。没有一个客人点这些。她站在灶台前，右手一直没离开过菜刀。", "options": [
+        {"id": "open", "text": "刘川打电话来说今年不回来了。孙玉梅挂了电话，照常开门，做了六个菜，摆满一桌。没有一个客人点这些。她站在铸铁灶前，右手一直没离开过菜刀。", "options": [
           {"text": "我陪你吃。", "next": "eat"},
           {"text": "手腕还疼吗？", "next": "wrist"},
           {"text": "为什么不关门？", "next": "why"}
@@ -312,7 +312,7 @@
       "seasons": ["autumn"], "time_from": "14:00", "time_to": "18:00",
       "requires_events": ["zhao_e2"], "priority": 30,
       "lines": [
-        {"id": "open", "text": "戏台台板换了一半。赵长河说最后一块必须有人上去踩一踩。第二版打谷机就停在台下，盖布掀开一角，铁件擦得发亮。周德顺在旁边不说话。", "options": [
+        {"id": "open", "text": "剧场台板换了一半。赵长河说最后一块必须有人上去踩一踩。第二版打谷机就停在台下，盖布掀开一角，铁件擦得发亮。周德顺在旁边不说话。", "options": [
           {"text": "我先上台走一圈。", "next": "player_test"},
           {"text": "让周叔慢慢走一遍。", "next": "zhou_test"},
           {"text": "赵师傅，你自己上去。", "next": "zhao_test"}
@@ -326,7 +326,7 @@
         {"id": "zhao_test", "text": "他推了两次，最后还是上了台。只站了三秒就下来，耳朵通红。可第二天，木工房门口第一次挂出了写着他名字的木牌。", "options": [
           {"text": "三秒也是上台。", "next": "after", "action": "set_flag", "data": {"flag": "zhao_e3_self", "value": true}}
         ]},
-        {"id": "after", "text": "当晚，第二版打谷机被推到院子里晒太阳。赵长河说还没成，但不再盖油布。戏台支撑成了他公开的作品，木工房招牌重做，底下多了一行小字：修，也造。", "options": [{"text": "等它转起来。", "next": null}]}
+        {"id": "after", "text": "当晚，第二版打谷机被推到院子里晒太阳。赵长河说还没成，但不再盖油布。剧场支撑成了他公开的作品，木工房招牌重做，底下多了一行小字：修，也造。", "options": [{"text": "等它转起来。", "next": null}]}
       ]
     },
     {
@@ -415,7 +415,7 @@
       "seasons": ["spring"], "time_from": "14:30", "time_to": "18:00",
       "priority": 10,
       "lines": [
-        {"id": "open", "text": "古戏台空着，周德顺一个人扫地。扫到台口，他冲台下喊：“能听见我说话不？”你还没答，他就笑起来：“试回声，试回声。”", "options": [
+        {"id": "open", "text": "月桂剧场空着，周德顺一个人扫地。扫到台口，他冲台下喊：“能听见我说话不？”你还没答，他就笑起来：“试回声，试回声。”", "options": [
           {"text": "能听见，很清楚。", "next": "clear"},
           {"text": "您是不是听不清？", "next": "ears"},
           {"text": "我上台帮您扫。", "next": "sweep"}
@@ -428,7 +428,7 @@
           {"text": "让林小满看看耳朵吧。", "next": "song"},
           {"text": "您可以教孩子，不必自己上场。", "next": "quiet"}
         ]},
-        {"id": "sweep", "text": "你们一人扫一半。扫到后台，他掀开一块旧布，下面是一摞唱本和一把缺弦的二胡。“都是老东西。”他说，手却没停。", "options": [
+        {"id": "sweep", "text": "你们一人扫一半。扫到后台，他掀开一块旧布，下面是一摞剧本和一把缺弦的二胡。“都是老东西。”他说，手却没停。", "options": [
           {"text": "老东西还能唱。", "next": "song"},
           {"text": "我帮您把弦换上。", "next": "song", "action": "set_flag", "data": {"flag": "zhou_e1_helped", "value": true}}
         ]},
@@ -460,7 +460,7 @@
         {"id": "doctor", "text": "他先发火：“我还没聋到那个份上！”第二天却自己去了卫生所。林小满给他测听力时，他一直看着窗外，测完说：“别告诉台上那些人。”", "options": [
           {"text": "他们会等您。", "next": "after", "action": "set_flag", "data": {"flag": "zhou_e2_doctor", "value": true}}
         ]},
-        {"id": "adapt", "text": "你们把曲牌改成慢板，锣鼓点写在纸上贴到台口。周德顺一边看口型一边拉，第三遍终于合上了。乐队的人没鼓掌，只把下一段又放慢一点。", "options": [
+        {"id": "adapt", "text": "你们把曲牌改成慢板，剧场铃点写在纸上贴到台口。周德顺一边看口型一边拉，第三遍终于合上了。乐队的人没鼓掌，只把下一段又放慢一点。", "options": [
           {"text": "慢一点也能满场。", "next": "after", "action": "set_flag", "data": {"flag": "zhou_e2_adapt", "value": true}}
         ]},
         {"id": "after", "text": "排练散场，周德顺没有说“最后一次”。他把二胡盒扣好，对你说：“下次早点来，给我占第一排。”", "options": [{"text": "一定。", "next": null}]}
@@ -486,10 +486,249 @@
         {"id": "wait", "text": "你走到台口，对观众说稍等。台下安静下来，周德顺闭眼数了三拍，睁眼时弓已经落下去。开场锣跟着响，像等了他很久。", "options": [
           {"text": "现在开始。", "next": "finale", "action": "set_flag", "data": {"flag": "zhou_e3_wait", "value": true}}
         ]},
-        {"id": "finale", "text": "演出结束，周德顺没有立刻下台。他把二胡盒里那首给亡妻的曲子完整拉完，台下没有掌声，只有风吹幕布。然后他把手抄唱本交给孩子，又递给你一本。", "options": [
+        {"id": "finale", "text": "演出结束，周德顺没有立刻下台。他把二胡盒里那首给亡妻的曲子完整拉完，台下没有掌声，只有风吹幕布。然后他把手抄剧本交给孩子，又递给你一本。", "options": [
           {"text": "下次还来听。", "next": "after", "action": "set_flag", "data": {"flag": "zhou_e3_full", "value": true}}
         ]},
-        {"id": "after", "text": "第二天，戏台门口出现“学唱段”的告示。周德顺不再把“最后一次”挂在嘴上，改成“下一次”。韩守义在后台给他留了一把写着“老韩”的椅子。", "options": [{"text": "下一次。", "next": null}]}
+        {"id": "after", "text": "第二天，剧场门口出现“学唱段”的告示。周德顺不再把“最后一次”挂在嘴上，改成“下一次”。韩守义在后台给他留了一把写着“老韩”的椅子。", "options": [{"text": "下一次。", "next": null}]}
+      ]
+    },
+    {
+      "id": "shi_e1", "npc_id": "shi_tieshan", "title": "卷刃",
+      "affection_min": 20, "location_id": "L08",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "18:00",
+      "priority": 10,
+      "lines": [
+        {"id": "open", "text": "炉边扔着一把卷了刃的旧锄头。石铁山看了一眼：“这锄头跟了你家两辈人。扔了可惜，接回去还能使。”", "options": [
+          {"text": "能修好吗？", "next": "repair"}, {"text": "换把新的更省事。", "next": "replace"}
+        ]},
+        {"id": "repair", "text": "他把锄头夹进台钳，锤子落得很轻。刃口一点点展平，火星落在黑围裙上。“东西有旧情分，人也一样。”", "options": [
+          {"text": "我记住这句话。", "next": "end", "action": "set_flag", "data": {"flag": "shi_e1_repaired", "value": true}}
+        ]},
+        {"id": "replace", "text": "石铁山没抬头：“新的也会卷刃。你要是只会换，就永远不知道哪儿出了毛病。”", "options": [{"text": "那我学着看。", "next": "end"}]},
+        {"id": "end", "text": "锄头修好递回来，握柄被重新磨过，边角圆润。他说：“明早再下地，别急着使蛮劲。”", "options": [{"text": "多谢。", "next": null}]}
+      ]
+    },
+    {
+      "id": "shi_e2", "npc_id": "shi_tieshan", "title": "炉火",
+      "affection_min": 50, "location_id": "L08",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "18:00",
+      "requires_events": ["shi_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "风箱坏了半扇，炉温上不去。石铁山把最后一炉铁坯退出来，坐在门槛上喘气。“老了，拉不动了。”", "options": [
+          {"text": "我替你拉风箱。", "next": "bellows"}, {"text": "歇一天吧。", "next": "rest"}
+        ]},
+        {"id": "bellows", "text": "你一下一下拉着，火色从暗红转亮。他重新站起来，锤声比刚才稳。打完最后一个钉，他说：“手借我一天，我记你一年。”", "options": [
+          {"text": "明天还来。", "next": "end", "action": "set_flag", "data": {"flag": "shi_e2_bellows", "value": true}}
+        ]},
+        {"id": "rest", "text": "他没接话，只把炉门合上。铁慢慢冷下去，屋里只剩下风从门缝钻进来的声音。", "options": [{"text": "陪你坐一会儿。", "next": "end"}]},
+        {"id": "end", "text": "临走时他塞给你一枚新打的铁钉：“小东西，拿回去补个箱子。用得住。”", "options": [{"text": "收下了。", "next": null}]}
+      ]
+    },
+    {
+      "id": "shi_e3", "npc_id": "shi_tieshan", "title": "淬火",
+      "affection_min": 80, "location_id": "L08",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "18:00",
+      "requires_events": ["shi_e2"], "priority": 30,
+      "lines": [
+        {"id": "open", "text": "石铁山让你替他把一块烧红的铁放进水里。水汽腾起来，他忽然说：“我师父临走前也只让我做这一下。淬早了脆，晚了软。”", "options": [
+          {"text": "那什么时候正好？", "next": "when"}, {"text": "您现在还在找吗？", "next": "still"}
+        ]},
+        {"id": "when", "text": "“看颜色，听声，也看你要拿它做什么。”他把钳子交给你，“这块铁归你。打成什么，你自己定。”", "options": [
+          {"text": "我想打一把小刀。", "next": "end", "action": "set_flag", "data": {"flag": "shi_e3_quenched", "value": true}}
+        ]},
+        {"id": "still", "text": "他笑了一下：“找了一辈子。可每块铁都不一样，所以这活才没完。”", "options": [{"text": "那就接着找。", "next": "end", "action": "set_flag", "data": {"flag": "shi_e3_still", "value": true}}]},
+        {"id": "end", "text": "那天以后，铁匠铺门口多了一块小木牌：可修旧物。镇上人拿来的坏锁、断锄、裂锅，一件件又有了声响。", "options": [{"text": "炉火不灭。", "next": null}]}
+      ]
+    },
+    {
+      "id": "jiang_e1", "npc_id": "jiang_muyun", "title": "认人",
+      "affection_min": 20, "location_id": "L13",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "09:00", "time_to": "17:00",
+      "priority": 10,
+      "lines": [
+        {"id": "open", "text": "一只芦花鸡追着你的鞋带跑。姜牧云抱臂看着：“它认人。你要常来，它就不啄你了。”", "options": [
+          {"text": "那我多来几趟。", "next": "stay"}, {"text": "它怎么认？", "next": "how"}
+        ]},
+        {"id": "how", "text": "“看走路的架势。”她弯腰撒了一把料，鸡围过来，“人也一样，嘴上说不准，脚往哪儿走骗不了人。”", "options": [{"text": "我往这儿走。", "next": "stay"}]},
+        {"id": "stay", "text": "她给你一只小木盆：“帮我把水槽添满。别嫌脏，牲口喝的水比人讲究。”", "options": [
+          {"text": "我来。", "next": "end", "action": "set_flag", "data": {"flag": "jiang_e1_water", "value": true}}
+        ]},
+        {"id": "end", "text": "水槽见底时鸡不追你了，只站在一边歪头看。姜牧云说：“行，它认下了。”", "options": [{"text": "明天见。", "next": null}]}
+      ]
+    },
+    {
+      "id": "jiang_e2", "npc_id": "jiang_muyun", "title": "夜草",
+      "affection_min": 50, "location_id": "L13",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "09:00", "time_to": "17:00",
+      "requires_events": ["jiang_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "草料棚漏了雨，半垛干草发了霉。姜牧云站在雨里，把好的那一部分一捆捆往外搬。", "options": [
+          {"text": "我帮你搬。", "next": "help"}, {"text": "先等雨停吧。", "next": "wait"}
+        ]},
+        {"id": "help", "text": "两个人搬到大半夜。她抹了把脸上的水：“这些东西不会说话，可少了谁的草，我听得出来。”", "options": [
+          {"text": "它们也认得你。", "next": "end", "action": "set_flag", "data": {"flag": "jiang_e2_help", "value": true}}
+        ]},
+        {"id": "wait", "text": "她没有停手：“雨停了，草也霉透了。它们今晚就得吃。”你跟着弯下腰，第一捆比想象中沉。", "options": [{"text": "那一起搬。", "next": "end"}]},
+        {"id": "end", "text": "第二天，草料棚顶上多了一块新油布。姜牧云说不是她一个人的主意，却把最大的一块留给你系。", "options": [{"text": "系紧一点。", "next": null}]}
+      ]
+    },
+    {
+      "id": "jiang_e3", "npc_id": "jiang_muyun", "title": "开棚",
+      "affection_min": 80, "location_id": "L13",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "09:00", "time_to": "17:00",
+      "requires_events": ["jiang_e2"], "priority": 30,
+      "lines": [
+        {"id": "open", "text": "姜牧云把牧场登记簿推给你。上面记着每只牲口进棚的日子，最后一页空着。“以后你买下的，也记在这儿。”", "options": [
+          {"text": "为什么让我记？", "next": "why"}, {"text": "我担得起吗？", "next": "doubt"}
+        ]},
+        {"id": "why", "text": "“会算账的人多，肯给它们添夜草的人少。”她顿了顿，“这页空着，不是等你买多少，是等你愿意照看。”", "options": [
+          {"text": "我记。", "next": "end", "action": "set_flag", "data": {"flag": "jiang_e3_registry", "value": true}}
+        ]},
+        {"id": "doubt", "text": "“没人一开始就担得起。先学会听它们夜里咳不咳，再说以后。”", "options": [{"text": "我学。", "next": "end"}]},
+        {"id": "end", "text": "从那天起，牧场的账页上多了你的字。风把棚门吹得轻响，牲口在里头安稳地嚼草。", "options": [{"text": "明天再来。", "next": null}]}
+      ]
+    },
+    {
+      "id": "he_e1", "npc_id": "he_shuigen", "title": "空钩",
+      "affection_min": 20, "location_id": "L09",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "18:00",
+      "priority": 10,
+      "lines": [
+        {"id": "open", "text": "何水根的鱼篓空着，人却盯着河心不动。你问他今天怎么不钓，他说：“等一条老的。它认得钩。”", "options": [
+          {"text": "鱼还能认得钩？", "next": "fish"}, {"text": "等不到怎么办？", "next": "wait"}
+        ]},
+        {"id": "fish", "text": "“河里活久了，什么都认得。”他把一粒饵捏碎，“人也一样，被伤过就躲。可躲久了，也会饿。”", "options": [{"text": "那还下钩吗？", "next": "wait"}]},
+        {"id": "wait", "text": "他提竿换了个水层：“等不到就明儿再等。河不会跑。”", "options": [
+          {"text": "我陪你等。", "next": "end", "action": "set_flag", "data": {"flag": "he_e1_waited", "value": true}}
+        ]},
+        {"id": "end", "text": "日头偏西，浮漂终于沉了一下。他没收线，只看着涟漪散开：“今天算它赢。”", "options": [{"text": "明天再来。", "next": null}]}
+      ]
+    },
+    {
+      "id": "he_e2", "npc_id": "he_shuigen", "title": "旧网",
+      "affection_min": 50, "location_id": "L09",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "18:00",
+      "requires_events": ["he_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "一张旧网摊在岸边，网眼被水草塞得发硬。何水根说要拿它换酒钱，手里却没动剪子。", "options": [
+          {"text": "这网有故事？", "next": "story"}, {"text": "卖了就轻省了。", "next": "sell"}
+        ]},
+        {"id": "story", "text": "“我爹织的。那会儿河里的鱼多得能撞船。”他摸了摸网结，“后来鱼少了，网也老了。我留着它，像留着一句没说完的话。”", "options": [
+          {"text": "那就补起来。", "next": "mend", "action": "set_flag", "data": {"flag": "he_e2_mend", "value": true}}
+        ]},
+        {"id": "sell", "text": "他把剪子放下：“酒喝了就没了。网补好了，还能下一回水。”", "options": [{"text": "我帮你补。", "next": "mend"}]},
+        {"id": "mend", "text": "你们坐在岸边补网。他教你怎么收结，说网眼不能太密，小鱼得放回去。", "options": [{"text": "留个种。", "next": "end"}]},
+        {"id": "end", "text": "补好的网晾在木架上，风吹过来，旧线新线一起颤。何水根说，等开河那天，用它下一网。", "options": [{"text": "我来看。", "next": null}]}
+      ]
+    },
+    {
+      "id": "he_e3", "npc_id": "he_shuigen", "title": "开河",
+      "affection_min": 80, "location_id": "L09",
+      "seasons": ["spring"], "time_from": "13:00", "time_to": "18:00",
+      "requires_events": ["he_e2"], "priority": 30,
+      "lines": [
+        {"id": "open", "text": "开河第一天，何水根把补好的网交给年轻渔户。他自己只拿一根竿，站在浅水边。", "options": [
+          {"text": "您不下网？", "next": "rod"}, {"text": "把网给他们，舍得吗？", "next": "give"}
+        ]},
+        {"id": "rod", "text": "“下了一辈子，今天想钓一条小的。”他甩竿很稳，“河得有人接着守，也得有人接着吃。”", "options": [
+          {"text": "那今天钓什么？", "next": "end", "action": "set_flag", "data": {"flag": "he_e3_open_river", "value": true}}
+        ]},
+        {"id": "give", "text": "“网留在岸上才是死的。”他看着年轻人把网撑开，“鱼还会来。人得先学会等。”", "options": [{"text": "我陪您等。", "next": "end"}]},
+        {"id": "end", "text": "太阳落下去时，竿梢弯了。何水根收上来一条不大的鲫鱼，看了很久，又放回水里。", "options": [{"text": "明年还来。", "next": null}]}
+      ]
+    },
+    {
+      "id": "su_e1", "npc_id": "su_wenbo", "title": "无名石",
+      "affection_min": 20, "location_id": "L14",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "17:00",
+      "priority": 10,
+      "lines": [
+        {"id": "open", "text": "苏文博对着展柜里一块无名石头犯难：“它能证明这镇子比县里记载的更早，可我不知道该写谁的名字。”", "options": [
+          {"text": "写发现它的人。", "next": "finder"}, {"text": "写这镇子。", "next": "town"}
+        ]},
+        {"id": "finder", "text": "“发现它的是个孩子，在河滩上捡的。写孩子名字，县里未必认。”他苦笑，“可历史本来就不只写大人。”", "options": [
+          {"text": "那就写孩子。", "next": "end", "action": "set_flag", "data": {"flag": "su_e1_child", "value": true}}
+        ]},
+        {"id": "town", "text": "他停下笔：“写镇子好。可镇子是什么？是这些石头，还是拿石头的人？”", "options": [{"text": "都是。", "next": "end"}]},
+        {"id": "end", "text": "最后，标签上写着“河滩拾得，一九九七年，无名”。苏文博说，有时候无名比名字更大。", "options": [{"text": "这块石头有家了。", "next": null}]}
+      ]
+    },
+    {
+      "id": "su_e2", "npc_id": "su_wenbo", "title": "缺页",
+      "affection_min": 50, "location_id": "L14",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "17:00",
+      "requires_events": ["su_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "镇史馆的旧账本少了一页，恰好是闹饥荒那几年。苏文博翻了三遍，合上书：“有人不想让这儿的人记住。”", "options": [
+          {"text": "能补回来吗？", "next": "restore"}, {"text": "也许忘了更好。", "next": "forget"}
+        ]},
+        {"id": "restore", "text": "“补不回原页，能补回名字。”他摊开采访本，“还有老人记得。你陪我去问，别让他们觉得是在翻旧账。”", "options": [
+          {"text": "我去。", "next": "end", "action": "set_flag", "data": {"flag": "su_e2_interview", "value": true}}
+        ]},
+        {"id": "forget", "text": "“忘了的人能过日子，没忘的人呢？”他把账本合上，“他们一直在等有人问。”", "options": [{"text": "那我们一起问。", "next": "end"}]},
+        {"id": "end", "text": "你们跑了三户人家。新补的纸页不够旧，却写满了名字。苏文博把它夹回账本，没有用胶水。", "options": [{"text": "这样能翻到。", "next": null}]}
+      ]
+    },
+    {
+      "id": "su_e3", "npc_id": "su_wenbo", "title": "留馆",
+      "affection_min": 80, "location_id": "L14",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "17:00",
+      "requires_events": ["su_e2"], "priority": 30,
+      "lines": [
+        {"id": "open", "text": "县里来了调令，让苏文博下个月回去。他把调令压在镇史年表下面，不看你。", "options": [
+          {"text": "您想回去吗？", "next": "want"}, {"text": "馆里还没整理完。", "next": "unfinished"}
+        ]},
+        {"id": "want", "text": "“在县里，我有编制、有宿舍，写的东西有人看。”他停了停，“在这里，我写一块无名石，也有孩子围着听。”", "options": [
+          {"text": "那就留下。", "next": "end", "action": "set_flag", "data": {"flag": "su_e3_stay", "value": true}}
+        ]},
+        {"id": "unfinished", "text": "他笑了：“哪有整理完的时候。”然后拿起笔，在调令背面写了四个字：申请延期。", "options": [{"text": "再延一年。", "next": "end"}]},
+        {"id": "end", "text": "第二年，镇史馆门口多了一块新牌子：欢迎带孩子来。苏文博的调令还压在年表下面，已经落了灰。", "options": [{"text": "馆还在。", "next": null}]}
+      ]
+    },
+    {
+      "id": "lang_e1", "npc_id": "lang_sanshun", "title": "多出来的一件",
+      "affection_min": 20, "location_id": "L03",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "20:00",
+      "priority": 10,
+      "lines": [
+        {"id": "open", "text": "你买完东西，郎三顺又从担底摸出一包盐：“多出来的，拿着。”你问多少钱，他摆手：“下次再说。”", "options": [
+          {"text": "下次一定给。", "next": "pay"}, {"text": "为什么给我？", "next": "why"}
+        ]},
+        {"id": "pay", "text": "“行，我记账。”他真从怀里摸出一个小本，写下你的名字，后面画了个圈。", "options": [{"text": "这圈是什么意思？", "next": "circle"}]},
+        {"id": "why", "text": "“走货的，到一个地方总得留个人情。不图你买多少，图下次来还有人应门。”", "options": [{"text": "我应。", "next": "circle"}]},
+        {"id": "circle", "text": "“圈是还没还。”他把本子收好，“有人欠着，我就知道自己还会回来。”", "options": [{"text": "那我不急着还。", "next": null, "action": "set_flag", "data": {"flag": "lang_e1_credit", "value": true}}]}
+      ]
+    },
+    {
+      "id": "lang_e2", "npc_id": "lang_sanshun", "title": "坏车",
+      "affection_min": 50, "location_id": "L03",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "20:00",
+      "requires_events": ["lang_e1"], "priority": 20,
+      "lines": [
+        {"id": "open", "text": "郎三顺的独轮车歪在路边，车轴裂了。他蹲着看了半天：“货能等，轴不能。可这镇上没现成的。”", "options": [
+          {"text": "找赵长河。", "next": "zhao"}, {"text": "我帮你推。", "next": "push"}
+        ]},
+        {"id": "zhao", "text": "赵长河看了一眼，没问价钱，回屋拿了块硬木。两人一个削，一个扶，车轴换到天黑才装上。", "options": [
+          {"text": "镇上人靠得住。", "next": "end", "action": "set_flag", "data": {"flag": "lang_e2_axle", "value": true}}
+        ]},
+        {"id": "push", "text": "你们推了半里地，车轮一路吱呀。到了木工房门口，郎三顺突然说：“我走南闯北，还是头回有人在半路搭手。”", "options": [{"text": "以后常来。", "next": "end"}]},
+        {"id": "end", "text": "修好的车能再走上百里。他把一包外地点心塞给你：“路上换的，甜得很。这回不算账。”", "options": [{"text": "收下。", "next": null}]}
+      ]
+    },
+    {
+      "id": "lang_e3", "npc_id": "lang_sanshun", "title": "留下",
+      "affection_min": 80, "location_id": "L03",
+      "seasons": ["spring", "summer", "autumn", "winter"], "time_from": "13:00", "time_to": "20:00",
+      "requires_events": ["lang_e2"], "priority": 30,
+      "lines": [
+        {"id": "open", "text": "郎三顺把空担子靠在墙边，说这次走完就不回来了。他问你：“你说，一个走货的，真要留一个地方，能干什么？”", "options": [
+          {"text": "开个铺子。", "next": "shop"}, {"text": "继续走，记得回来。", "next": "return"}
+        ]},
+        {"id": "shop", "text": "“铺子得有人守。”他笑了笑，“可这镇上已经有一个卖种子、一个修农具、一个收鱼的了。我留下，得卖点别人不卖的。”", "options": [
+          {"text": "卖远方的消息。", "next": "end", "action": "set_flag", "data": {"flag": "lang_e3_shop", "value": true}}
+        ]},
+        {"id": "return", "text": "“那也行。走货的人有个能回来的地方，就不算漂着。”他把旧担子擦了一遍，没再说走。", "options": [{"text": "我们给你留灯。", "next": "end"}]},
+        {"id": "end", "text": "春天再开集时，郎三顺的担子边多了一块小桌。他卖外地小玩意，也替人捎信。有人问他从哪来，他说：“从麦溪来。”", "options": [{"text": "这回是到家了。", "next": null}]}
       ]
     }
   ]

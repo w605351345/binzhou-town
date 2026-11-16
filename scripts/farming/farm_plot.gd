@@ -2,8 +2,8 @@ extends RefCounted
 class_name FarmPlot
 
 ## 农场地块状态机
-## 黑龙江设定:一年一熟。春播秋收,冬季休耕(冬季可做加工/休整,不能播种)。
-## 秋霜(10月)后未收的作物冻死在地里 —— 这是本作秋收节奏压力的来源。
+## 麦溪镇设定:一年一熟。春播秋收,冬季休耕(冬季可做加工/休整,不能播种)。
+## 初霜(10月)后未收的作物冻死在地里 —— 这是本作秋收节奏压力的来源。
 
 enum State {
 	UNTILLED,   # 未开垦
@@ -15,7 +15,7 @@ enum State {
 	FALLOW,      # 休耕(冬季/已收割待翻耕)
 }
 
-## 秋霜月(10月)之后,晚收作物若未收完将冻死
+## 初霜月(10月)之后,晚收作物若未收完将冻死
 const FROST_MONTH := 10
 
 var index: int = 0
@@ -29,7 +29,7 @@ var last_watered_abs_day: int = -1
 var dead_reason: String = ""
 ## 播种时的真实月份(用于农时校验)
 var sown_month: int = 0
-## 是否已秋翻地(黑龙江黑土地保护核心技术:秋翻杀虫保墒,来年增产)
+## 是否已秋翻地(西境田园保护核心技术:秋翻杀虫保墒,来年增产)
 var autumn_plowed: bool = false
 
 func _init(p_index: int = 0) -> void:
@@ -96,10 +96,10 @@ func advance_day(current_day: int, month: int = 0) -> void:
 		state = State.DEAD
 		dead_reason = "缺水"
 		return
-	# 秋霜判定:过了 10 月仍未收 → 冻死在地里
+	# 初霜判定:过了 10 月仍未收 → 冻死在地里
 	if month >= FROST_MONTH and not crop.can_harvest_in_month(month):
 		state = State.DEAD
-		dead_reason = "秋霜冻死"
+		dead_reason = "初霜冻死"
 		return
 	days_grown += 1.0
 	if crop.is_ready(days_grown):

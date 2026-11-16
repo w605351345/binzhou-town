@@ -14,8 +14,8 @@ func _initialize() -> void:
 	_run()
 
 func _run() -> void:
-	print("=== 《宾州小镇》对话接线自测 (dialogue wiring test) ===")
-	print("设定:黑龙江的黑土地上,张晓芳的话是玩家学会种地的主要途径")
+	print("=== 《麦溪镇》对话接线自测 (dialogue wiring test) ===")
+	print("设定:麦溪镇的麦溪沃土上,张晓芳的话是玩家学会种地的主要途径")
 	print("--------------------------------------------------")
 	await _test_dialogue_opens()
 	await _test_option_navigation()
@@ -46,6 +46,9 @@ func check(label: String, cond: bool, detail: String = "") -> void:
 		_failed += 1
 		print("  ❌ %s %s" % [label, detail])
 
+func _panel(panel_name: String) -> Node:
+	return _game.find_child(panel_name, true, false)
+
 ## 造一个游戏外壳并走进镇大街
 func _boot_to_town() -> void:
 	var packed: PackedScene = load("res://scenes/game.tscn")
@@ -63,10 +66,10 @@ func _town() -> Node:
 ## 刻意不写类型标注:在 --script 主脚本里引用这些 class 会让它们在 autoload
 ## 注册之前被编译(那时 GameStateManager 还不是全局标识符)。
 func _dialogue_box() -> Node:
-	return _game.get_node_or_null("DialogueBox")
+	return _panel("DialogueBox")
 
 func _shop_panel() -> Node:
-	return _game.get_node_or_null("ShopPanel")
+	return _panel("ShopPanel")
 
 ## 把玩家挪到张晓芳正上方(默认朝下 = 面朝她)
 func _stand_next_to_npc() -> void:
@@ -106,14 +109,35 @@ func _test_dialogue_opens() -> void:
 	check("按 E 后对话框打开", box.is_open())
 	check("说话人是张晓芳", box.speaker_name() == "张晓芳", "→ %s" % box.speaker_name())
 	check("有台词", box.body_text() != "", "→ " + box.body_text().substr(0, 18) + "…")
-	# 1 月是猫冬季,台词必须对得上农时
-	check("台词跟着农时走(1 月说猫冬)", box.body_text().contains("猫冬"),
+	# 新游戏从 4 月春耕开局,台词必须对得上农时
+	check("台词跟着农时走(4 月说化冻)", box.body_text().contains("化冻"),
 		"→ " + box.body_text().substr(0, 24) + "…")
 	var texts: Array = box.option_texts()
 	check("有选项", texts.size() >= 7, "→ %d 个" % texts.size())
 	check("有卖粮选项", texts.has("卖粮"))
 	check("有收尾选项", texts.has("没别的了,走了"))
 	check("对话时标记为打开", _mgr().dialogue_open)
+	var panel := box.get_node_or_null("Panel") as Control
+	var viewport_rect: Rect2 = box.get_viewport_rect()
+	check("对话框完整落在视口内",
+		panel != null and panel.get_global_rect().end.y <= viewport_rect.end.y + 1.0,
+		"→ %s / %s" % [panel.get_global_rect() if panel != null else "缺失", viewport_rect])
+	check("选项多时由滚动区兜底",
+		box.find_child("OptionScroll", true, false) is ScrollContainer)
+	box._focus_first_option()
+	var focused := box.get_viewport().gui_get_focus_owner()
+	check("对话选项自动获得焦点", focused is Button, "→ %s" % focused)
+	for i in 11:
+		box._focus_relative(1)
+	await process_frame
+	focused = box.get_viewport().gui_get_focus_owner()
+	check("方向键能走到最后一个选项",
+		focused is Button and String(focused.text).replace("· ", "") == "没别的了,走了",
+		"→ %s" % (focused.text if focused is Button else focused))
+	var option_scroll := box.find_child("OptionScroll", true, false) as ScrollContainer
+	check("焦点下移会自动滚动选项区",
+		option_scroll != null and option_scroll.scroll_vertical > 0,
+		"→ %d" % (option_scroll.scroll_vertical if option_scroll != null else -1))
 
 # --- [2] 选项推进 ---
 func _test_option_navigation() -> void:
@@ -124,7 +148,7 @@ func _test_option_navigation() -> void:
 	check("答的是秋翻地", box.body_text().contains("秋翻地"),
 		"→ " + box.body_text().substr(0, 20) + "…")
 	check("话题里能回到开场白", await _press("今年我也翻"))
-	check("回到开场白", box.body_text().contains("猫冬"),
+	check("回到开场白", box.body_text().contains("化冻"),
 		"→ " + box.body_text().substr(0, 18) + "…")
 	check("点了『没别的了,走了』", await _press("没别的了,走了"))
 	check("对话结束,对话框关闭", not box.is_open())
@@ -155,6 +179,7 @@ func _test_shop_wiring() -> void:
 	print("\n[4] 商店接线(卖粮)")
 	var player_state: PlayerProfile = _mgr().state.player
 	player_state.gold = 500
+	player_state.inventory.erase("seed_corn")
 	player_state.inventory["corn"] = 4
 	await _talk()
 	check("点了『卖粮』", await _press("卖粮"))

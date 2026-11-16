@@ -17,6 +17,9 @@ const SCENE_WORKSHOP := "res://scenes/locations/L08.tscn"
 const SCENE_RIVER := "res://scenes/locations/L09.tscn"
 const SCENE_FOREST := "res://scenes/locations/L10.tscn"
 const SCENE_THEATER := "res://scenes/locations/L11.tscn"
+const SCENE_MINE := "res://scenes/locations/L12.tscn"
+const SCENE_RANCH := "res://scenes/locations/L13.tscn"
+const SCENE_MUSEUM := "res://scenes/locations/L14.tscn"
 
 ## 地点编号 -> 场景路径
 const LOCATIONS := {
@@ -31,21 +34,27 @@ const LOCATIONS := {
 	"L09": SCENE_RIVER,
 	"L10": SCENE_FOREST,
 	"L11": SCENE_THEATER,
+	"L12": SCENE_MINE,
+	"L13": SCENE_RANCH,
+	"L14": SCENE_MUSEUM,
 }
 
 ## 地点中文名
 const LOCATION_CN := {
-	"L01": "自家农场 · 黑土地",
-	"L02": "农舍室内",
-	"L03": "宾州镇中心",
+	"L01": "柳溪农场",
+	"L02": "农舍",
+	"L03": "麦溪镇中心",
 	"L04": "杂货店",
 	"L05": "老邮局",
-	"L06": "玉梅饭馆",
-	"L07": "镇卫生所",
-	"L08": "赵家木工房",
-	"L09": "河岸",
-	"L10": "桦树林",
-	"L11": "古戏台",
+	"L06": "玉梅旅店",
+	"L07": "麦溪诊所",
+	"L08": "赵氏木工坊",
+	"L09": "河湾",
+	"L10": "柳溪林",
+	"L11": "月桂剧场",
+	"L12": "北岭矿洞",
+	"L13": "牧云牧场",
+	"L14": "麦溪镇史馆",
 }
 
 ## 取地点的场景路径。未登记返回空串。

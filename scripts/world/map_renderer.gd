@@ -13,6 +13,7 @@ const OUTDOOR_DETAIL_TERRAIN := [
 	"grass", "grass_dark", "moss", "dirt", "soil", "road", "plaza", "sand",
 ]
 const TILED_PROPS := ["fence"]
+const SIGNED_PROP_TYPES := ["house", "building", "barn", "stage", "backstage", "stall", "well"]
 const COLORS := {
 	"grass": Color(0.34, 0.39, 0.20),
 	"grass_dark": Color(0.22, 0.29, 0.17),
@@ -32,10 +33,10 @@ const COLORS := {
 
 var map: Dictionary = {}
 var season: String = DEFAULT_SEASON
-
 var _terrain_cache: Dictionary = {}
 var _prop_cache: Dictionary = {}
 var _prop_region_cache: Dictionary = {}
+var _focus_marker: FocusMarker = null
 
 ## 等比放进目标矩形：以内容真实宽高为准，底部贴地、水平居中。
 ## 地图数据只需要给出占地范围，不再让长椅/树/建筑被任意拉伸。
@@ -70,7 +71,15 @@ static func prop_texture_path(prop_type: String) -> String:
 func setup(p_map: Dictionary, p_season: String = DEFAULT_SEASON) -> void:
 	map = p_map
 	season = p_season if p_season in SEASONS else DEFAULT_SEASON
+	_ensure_focus_marker()
 	queue_redraw()
+
+func _ensure_focus_marker() -> void:
+	if _focus_marker != null:
+		return
+	_focus_marker = FocusMarker.new()
+	_focus_marker.name = "FocusMarker"
+	add_child(_focus_marker)
 
 ## 换季时只换材质，不重建玩家、NPC 或地图碰撞。
 func set_season(p_season: String) -> void:
@@ -86,9 +95,10 @@ func _draw() -> void:
 	if map.is_empty():
 		return
 	var size := MapDatabase.map_size(map)
-	draw_rect(Rect2(Vector2.ZERO, Vector2(size)), Color(0.12, 0.14, 0.10))
+	draw_rect(Rect2(Vector2.ZERO, Vector2(size)), Color(0.18, 0.20, 0.15))
 	for layer in map.get("terrain", []):
 		_draw_terrain(layer)
+	_draw_walkable_guidance()
 	_draw_ground_details()
 	_draw_texture_lines(size)
 	var props: Array = map.get("props", []).duplicate()
@@ -97,10 +107,42 @@ func _draw() -> void:
 		_draw_prop(prop)
 	for door in map.get("doors", []):
 		_draw_door(door)
-	for item in map.get("interactables", []):
-		_draw_interactable(item)
 	if map.has("farm_area"):
 		_draw_farm_area(map["farm_area"])
+## 由地点场景每帧同步最近可交互目标；无目标时传 Vector2.INF 清除。
+func set_focus_target(position: Vector2, kind: String = "") -> void:
+	_ensure_focus_marker()
+	_focus_marker.set_target(position, kind)
+
+## 用断续的浅色碎石和路缘草标出可通行区域。
+## 不再沿矩形描一整圈硬边，避免道路与广场叠出“表格线”。
+func _draw_walkable_guidance() -> void:
+	for layer in map.get("terrain", []):
+		var kind := String(layer.get("type", ""))
+		if kind not in ["road", "plaza", "dirt"]:
+			continue
+		var rect := MapDatabase.rect_from_array(layer.get("rect", []))
+		if rect.size.x < 80.0 or rect.size.y < 80.0:
+			continue
+		var rng := RandomNumberGenerator.new()
+		rng.seed = int(rect.position.x) * 31 ^ int(rect.position.y) * 17 ^ 0x51A7
+		var step := 34.0
+		for x in range(int(rect.position.x), int(rect.end.x), int(step)):
+			_edge_speck(Vector2(x + rng.randf_range(-7.0, 7.0), rect.position.y),
+				rng, Color(0.96, 0.88, 0.67, 0.30))
+			_edge_speck(Vector2(x + rng.randf_range(-7.0, 7.0), rect.end.y),
+				rng, Color(0.96, 0.88, 0.67, 0.30))
+		for y in range(int(rect.position.y), int(rect.end.y), int(step)):
+			_edge_speck(Vector2(rect.position.x, y + rng.randf_range(-7.0, 7.0)),
+				rng, Color(0.96, 0.88, 0.67, 0.26))
+			_edge_speck(Vector2(rect.end.x, y + rng.randf_range(-7.0, 7.0)),
+				rng, Color(0.96, 0.88, 0.67, 0.26))
+
+func _edge_speck(pos: Vector2, rng: RandomNumberGenerator, color: Color) -> void:
+	draw_set_transform(pos, rng.randf_range(-0.4, 0.4),
+		Vector2(rng.randf_range(1.0, 1.9), rng.randf_range(0.42, 0.68)))
+	draw_circle(Vector2.ZERO, rng.randf_range(2.8, 5.2), color)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 ## 可复现的地面细节层。地图数据负责大结构，这里负责草叶、碎石、落叶、雪堆等
 ## 低尺度笔触，避免大片贴图重复后显得空。测试也直接检查这一份规格。
@@ -110,7 +152,7 @@ func ground_detail_specs() -> Array:
 	var size := MapDatabase.map_size(map)
 	var indoor := bool(map.get("indoor", false))
 	var area := maxi(1, size.x * size.y)
-	var count := clampi(int(area / (7000 if indoor else 18000)), 24, 320)
+	var count := clampi(int(area / (7000 if indoor else 10500)), 24, 680)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(String(map.get("id", "")).hash()) ^ int(season.hash()) ^ 0x5A17
 	var out: Array = []
@@ -189,15 +231,22 @@ func _draw_ground_detail(spec: Dictionary) -> void:
 					hi, 1.0 * scale)
 		"flower":
 			var stem := Color(0.27, 0.37, 0.19, 0.76)
-			var petal := Color(0.92, 0.83, 0.47, 0.88) if variant % 3 else \
-				Color(0.82, 0.62, 0.66, 0.88)
-			var top := pos + Vector2(0, -9.0 * scale)
-			draw_line(pos, top, stem, 1.4 * scale)
-			for i in 5:
-				var angle := TAU * float(i) / 5.0 + float(variant % 17) * 0.1
-				draw_circle(top + Vector2(cos(angle), sin(angle)) * 2.1 * scale,
-					1.4 * scale, petal)
-			draw_circle(top, 1.2 * scale, Color(0.64, 0.38, 0.17, 0.9))
+			var petals := [
+				Color(0.95, 0.84, 0.39, 0.92), Color(0.86, 0.56, 0.68, 0.92),
+				Color(0.75, 0.84, 0.96, 0.92), Color(0.97, 0.70, 0.38, 0.92),
+			]
+			var bloom_count := 2 if variant % 4 else 3
+			for bloom in bloom_count:
+				var base := pos + Vector2(float(bloom - 1) * 4.4 * scale,
+					float((variant + bloom * 7) % 5) * 0.7)
+				var top := base + Vector2(0, -9.0 * scale - float(bloom % 2) * 2.0)
+				draw_line(base, top, stem, 1.3 * scale)
+				var petal: Color = petals[(variant + bloom) % petals.size()]
+				for i in 5:
+					var angle := TAU * float(i) / 5.0 + float(variant % 17) * 0.1
+					draw_circle(top + Vector2(cos(angle), sin(angle)) * 2.35 * scale,
+						1.35 * scale, petal)
+				draw_circle(top, 1.15 * scale, Color(0.64, 0.38, 0.17, 0.94))
 		"leaf":
 			var leaf_color := Color(0.74, 0.38, 0.15, 0.76) if variant % 2 else \
 				Color(0.56, 0.29, 0.14, 0.74)
@@ -258,13 +307,40 @@ func _draw_terrain(layer: Dictionary) -> void:
 	else:
 		_draw_terrain_fringe(rect, kind)
 	if kind == "water":
-		var y := rect.position.y + 24.0
-		while y < rect.end.y:
-			draw_line(Vector2(rect.position.x, y), Vector2(rect.end.x, y),
-				Color(0.76, 0.90, 0.92, 0.28), 2.0)
-			y += 34.0
+		_draw_water_ripples(rect)
 	elif kind in ["grass", "grass_dark", "moss"]:
+		_draw_terrain_blotches(rect, kind)
 		_draw_grass_marks(rect)
+
+## 草地与苔地的低对比大色斑，打散可平铺贴图的重复感。
+func _draw_terrain_blotches(rect: Rect2, kind: String) -> void:
+	if rect.size.x < 120.0 or rect.size.y < 120.0:
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(String(map.get("id", "")).hash()) ^ int(kind.hash()) \
+		^ int(rect.position.x) * 13 ^ int(rect.position.y) * 29 ^ 0xA771
+	var count := clampi(int(rect.get_area() / 260000.0), 3, 24)
+	for i in count:
+		var p := Vector2(rng.randf_range(rect.position.x, rect.end.x),
+			rng.randf_range(rect.position.y, rect.end.y))
+		var tone := Color(0.82, 0.90, 0.54, 0.055) if i % 3 else \
+			Color(0.18, 0.36, 0.20, 0.050)
+		draw_set_transform(p, rng.randf_range(-0.3, 0.3),
+			Vector2(rng.randf_range(1.4, 2.4), rng.randf_range(0.65, 1.1)))
+		draw_circle(Vector2.ZERO, rng.randf_range(36.0, 92.0), tone)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+func _draw_water_ripples(rect: Rect2) -> void:
+	var y := rect.position.y + 24.0
+	while y < rect.end.y:
+		var points := PackedVector2Array()
+		var x := rect.position.x
+		while x <= rect.end.x:
+			points.append(Vector2(x, y + sin((x + y) * 0.016) * 2.2))
+			x += 58.0
+		if points.size() >= 2:
+			draw_polyline(points, Color(0.76, 0.90, 0.92, 0.30), 2.0)
+		y += 38.0
 
 ## 用沿边散布的扁圆把整块地形“啃”出有机边缘。确定性种子保证读档/截图稳定。
 func _draw_terrain_fringe(rect: Rect2, kind: String) -> void:
@@ -333,8 +409,7 @@ func _draw_prop(prop: Dictionary) -> void:
 			draw_texture_rect_region(texture, fitted, region, tint)
 			if needs_winter_roof_cap(kind, season):
 				_draw_winter_roof_cap(fitted)
-		if String(prop.get("label", "")) != "":
-			_draw_label(String(prop["label"]), rect.position + Vector2(0, -18), 22)
+			_draw_prop_identity(prop, kind, fitted)
 		return
 	# 缺图回退：旧版程序化剪影仍可保证地图完整可玩。
 	var body := Color(0.48, 0.36, 0.22)
@@ -382,8 +457,100 @@ func _draw_prop(prop: Dictionary) -> void:
 			Color(0.12, 0.16, 0.18))
 		draw_arc(rect.get_center(), minf(rect.size.x, rect.size.y) * 0.43,
 			0, TAU, 28, INK, 8.0)
-	if String(prop.get("label", "")) != "":
-		_draw_label(String(prop["label"]), rect.position + Vector2(0, -18), 22)
+	_draw_prop_identity(prop, kind, rect)
+
+func _draw_prop_identity(prop: Dictionary, kind: String, fitted: Rect2) -> void:
+	var label := String(prop.get("label", "")).strip_edges()
+	if label == "" or kind not in SIGNED_PROP_TYPES:
+		return
+	var badge_text := _building_badge_text(label)
+	var accent := _building_accent_color(label)
+	var badge_size := clampf(minf(fitted.size.x, fitted.size.y) * 0.16, 22.0, 34.0)
+	var badge_center := Vector2(fitted.get_center().x,
+		fitted.position.y + fitted.size.y * 0.53)
+	draw_circle(badge_center + Vector2(0, 2), badge_size * 0.58,
+		Color(0.12, 0.08, 0.04, 0.34))
+	draw_circle(badge_center, badge_size * 0.56, accent)
+	draw_arc(badge_center, badge_size * 0.56, 0, TAU, 24,
+		Color(0.25, 0.15, 0.07, 0.82), 2.0)
+	var font := ThemeDB.fallback_font
+	if font != null and badge_text != "":
+		var font_size := maxi(12, int(badge_size * 0.62))
+		var text_size := font.get_string_size(badge_text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
+		draw_string(font, badge_center + Vector2(-text_size.x * 0.5, text_size.y * 0.32),
+			badge_text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size,
+			Color(1.0, 0.94, 0.78))
+	_draw_building_awning(fitted, accent)
+	_draw_building_sign(label, fitted)
+
+func _building_badge_text(label: String) -> String:
+	if label.contains("杂货") or label.contains("种子"):
+		return "杂"
+	if label.contains("邮"):
+		return "邮"
+	if label.contains("饭") or label.contains("旅") or label.contains("食"):
+		return "食"
+	if label.contains("医") or label.contains("诊") or label.contains("卫生"):
+		return "医"
+	if label.contains("木") or label.contains("铁") or label.contains("工坊"):
+		return "工"
+	if label.contains("剧场") or label.contains("后台"):
+		return "戏"
+	if label.contains("史") or label.contains("展"):
+		return "史"
+	if label.contains("畜") or label.contains("谷仓"):
+		return "畜"
+	if label.contains("集市") or label.contains("摊"):
+		return "市"
+	if label.contains("井"):
+		return "井"
+	return "家"
+
+func _building_accent_color(label: String) -> Color:
+	if label.contains("杂货") or label.contains("种子"):
+		return Color(0.33, 0.49, 0.25, 0.96)
+	if label.contains("邮"):
+		return Color(0.25, 0.43, 0.58, 0.96)
+	if label.contains("饭") or label.contains("旅") or label.contains("食"):
+		return Color(0.67, 0.34, 0.20, 0.96)
+	if label.contains("医") or label.contains("诊") or label.contains("卫生"):
+		return Color(0.32, 0.57, 0.53, 0.96)
+	if label.contains("木") or label.contains("铁") or label.contains("工坊"):
+		return Color(0.66, 0.46, 0.20, 0.96)
+	if label.contains("剧场") or label.contains("后台"):
+		return Color(0.48, 0.25, 0.39, 0.96)
+	if label.contains("井"):
+		return Color(0.30, 0.38, 0.42, 0.96)
+	return Color(0.55, 0.39, 0.22, 0.96)
+
+func _draw_building_awning(fitted: Rect2, accent: Color) -> void:
+	if fitted.size.x < 90.0 or fitted.size.y < 90.0:
+		return
+	var awning_width := minf(fitted.size.x * 0.46, 150.0)
+	var awning := Rect2(Vector2(fitted.get_center().x - awning_width * 0.5,
+		fitted.position.y + fitted.size.y * 0.63), Vector2(awning_width, 9.0))
+	var stripes := maxi(3, int(awning_width / 14.0))
+	for i in stripes:
+		var stripe := Color(accent.lightened(0.22) if i % 2 == 0 else accent.darkened(0.12))
+		draw_rect(Rect2(awning.position.x + awning_width * float(i) / stripes,
+			awning.position.y, awning_width / stripes + 0.5, awning.size.y), stripe)
+	draw_rect(awning, Color(0.22, 0.13, 0.07, 0.46), false, 1.0)
+
+func _draw_building_sign(label: String, fitted: Rect2) -> void:
+	var font := ThemeDB.fallback_font
+	if font == null or fitted.size.x < 90.0:
+		return
+	var font_size := clampi(int(fitted.size.y * 0.045), 12, 17)
+	var text_size := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
+	var sign_width := minf(fitted.size.x * 0.78, text_size.x + 24.0)
+	var sign_height := float(font_size + 10)
+	var sign_rect := Rect2(Vector2(fitted.get_center().x - sign_width * 0.5,
+		fitted.end.y - sign_height - 7.0), Vector2(sign_width, sign_height))
+	draw_rect(sign_rect, Color(0.33, 0.21, 0.11, 0.92))
+	draw_rect(sign_rect, Color(0.78, 0.61, 0.34, 0.9), false, 1.5)
+	draw_string(font, Vector2(sign_rect.position.x + (sign_width - text_size.x) * 0.5,
+		sign_rect.position.y + font_size + 1.0), label, HORIZONTAL_ALIGNMENT_LEFT,
+		-1, font_size, Color(1.0, 0.92, 0.72))
 
 func _draw_tiled_prop(texture: Texture2D, rect: Rect2, region: Rect2,
 		tint: Color) -> void:
@@ -402,19 +569,37 @@ func _draw_tiled_prop(texture: Texture2D, rect: Rect2, region: Rect2,
 
 func _draw_door(door: Dictionary) -> void:
 	var rect := MapDatabase.door_rect(door)
-	draw_rect(rect, Color(0.08, 0.07, 0.06, 0.66))
-	draw_rect(rect, Color(0.78, 0.65, 0.39), false, 4.0)
-	_draw_label(String(door.get("label", "门")), rect.position + Vector2(0, -8), 18)
+	# 只用四角括线与一道门槛标出出口，避免把门框画成一整块遮住场景。
+	var color := Color(1.0, 0.88, 0.56, 0.68)
+	var corner := minf(28.0, minf(rect.size.x, rect.size.y) * 0.24)
+	for point in [rect.position, Vector2(rect.end.x, rect.position.y),
+			Vector2(rect.position.x, rect.end.y), rect.end]:
+		var sx := 1.0 if point.x <= rect.get_center().x else -1.0
+		var sy := 1.0 if point.y <= rect.get_center().y else -1.0
+		draw_line(point, point + Vector2(corner * sx, 0), color, 3.0)
+		draw_line(point, point + Vector2(0, corner * sy), color, 3.0)
+	var threshold := Rect2(rect.position + Vector2(12, 10), Vector2(rect.size.x - 24, 8))
+	draw_rect(threshold, Color(1.0, 0.86, 0.54, 0.45), true)
+	var size := MapDatabase.map_size(map)
+	var center := rect.get_center()
+	var arrow := PackedVector2Array()
+	if center.y > size.y * 0.72:
+		arrow = PackedVector2Array([center + Vector2(-8, -3), center + Vector2(8, -3),
+			center + Vector2(0, 8)])
+	elif center.y < size.y * 0.18:
+		arrow = PackedVector2Array([center + Vector2(-8, 3), center + Vector2(8, 3),
+			center + Vector2(0, -8)])
+	elif center.x < size.x * 0.18:
+		arrow = PackedVector2Array([center + Vector2(3, -8), center + Vector2(3, 8),
+			center + Vector2(-8, 0)])
+	else:
+		arrow = PackedVector2Array([center + Vector2(-3, -8), center + Vector2(-3, 8),
+			center + Vector2(8, 0)])
+	draw_colored_polygon(arrow, Color(1.0, 0.93, 0.63, 0.94))
 
 func _draw_interactable(item: Dictionary) -> void:
-	var raw: Array = item.get("pos", [0, 0])
-	var pos := Vector2(float(raw[0]), float(raw[1]))
-	var radius := float(item.get("radius", 90.0))
-	draw_circle(pos, 12.0, Color(0.96, 0.80, 0.36, 0.82))
-	draw_arc(pos, 12.0, 0, TAU, 24, INK, 3.0)
-	draw_arc(pos, minf(radius * 0.52, 48.0), 0, TAU, 40,
-		Color(0.96, 0.80, 0.36, 0.30), 2.0)
-	_draw_label(String(item.get("label", "互动")), pos + Vector2(-50, -24), 17)
+	# 互动物本身由 props 画出；这里不再叠加金色圆点与文字。
+	pass
 
 func _draw_farm_area(area: Dictionary) -> void:
 	var origin_raw: Array = area.get("origin", [0, 0])
@@ -486,8 +671,8 @@ func _prop_season_tint(kind: String) -> Color:
 	return Color(0.92, 1.0, 0.88, 1.0)
 
 func _draw_grass_marks(rect: Rect2) -> void:
-	var cols := maxi(1, int(rect.size.x / 150.0))
-	var rows := maxi(1, int(rect.size.y / 150.0))
+	var cols := maxi(1, int(rect.size.x / 118.0))
+	var rows := maxi(1, int(rect.size.y / 118.0))
 	for row in rows:
 		for col in cols:
 			var x := rect.position.x + (col + 0.5) * rect.size.x / cols

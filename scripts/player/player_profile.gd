@@ -9,13 +9,16 @@ enum Gender { MALE, FEMALE }
 var gender: int = Gender.MALE
 var given_name: String = ""
 var age: int = 32
-var hometown: String = "哈尔滨"
+var hometown: String = "麦溪城"
 var from_city: String = "北京"
-## 体力(黑龙江农活是重体力活,见 StaminaSystem)
+## 体力(麦溪谷农活是重体力活,见 StaminaSystem)
 var stamina: StaminaSystem = null
 var gold: int = 500
 var inventory: Dictionary = {}
 var skills: Dictionary = {"farming": 1, "handcraft": 1, "social": 1}
+## 技能经验与工具等级(v5.1 生活技能闭环)
+var skill_xp: Dictionary = {}
+var tool_levels: Dictionary = {"hoe": 1, "water": 1, "pickaxe": 1}
 
 func _init() -> void:
 	stamina = StaminaSystem.new()
@@ -27,7 +30,7 @@ var energy: int:
 	set(value):
 		if stamina == null:
 			stamina = StaminaSystem.new()
-		stamina.energy = clampi(value, 0, StaminaSystem.OVERFLOW_MAX)
+		stamina.energy = clampi(value, 0, StaminaSystem.MAX_ENERGY)
 
 var max_energy: int:
 	get:
@@ -52,7 +55,8 @@ func to_dict() -> Dictionary:
 		"gender": gender, "given_name": given_name, "age": age,
 		"hometown": hometown, "from_city": from_city,
 		"energy": energy, "max_energy": max_energy, "gold": gold,
-		"inventory": inventory, "skills": skills,
+		"inventory": inventory, "skills": skills, "skill_xp": skill_xp,
+		"tool_levels": tool_levels,
 	}
 
 static func from_dict(d: Dictionary) -> PlayerProfile:
@@ -61,9 +65,12 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 	p.gender = int(d.get("gender", 0))
 	p.given_name = String(d.get("given_name", ""))
 	p.age = int(d.get("age", 32))
-	p.hometown = String(d.get("hometown", "哈尔滨"))
+	p.hometown = String(d.get("hometown", "麦溪城"))
 	p.from_city = String(d.get("from_city", "北京"))
 	p.gold = int(d.get("gold", 500))
 	p.inventory = d.get("inventory", {})
 	p.skills = d.get("skills", p.skills)
+	p.skill_xp = d.get("skill_xp", {})
+	p.tool_levels = d.get("tool_levels", p.tool_levels)
+	SkillSystem.ensure_player(p)
 	return p

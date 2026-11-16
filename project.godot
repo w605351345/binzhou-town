@@ -1,13 +1,13 @@
-; 《宾州小镇》Binzhou Town — Godot 4.3 项目配置
-; 设定:黑龙江黑土地 · 一年一熟 · 春播秋收 · 冬季休耕
+; 《麦溪镇》Meadowbrook — Godot 4.3 项目配置
+; 设定:西境田园 · 一年一熟 · 春播秋收 · 冬季休耕
 
 config_version=5
 
 [application]
 
-config/name="Binzhou Town"
-config/description="《宾州小镇》—— 黑龙江黑土地治愈系种田游戏"
-config/version="0.1.0-mvp"
+config/name="Meadowbrook"
+config/description="《麦溪镇》—— 西式田园生活 RPG"
+config/version="0.1.2"
 run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://assets/sprites/icon.svg"
@@ -100,4 +100,5 @@ ui_inventory={
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/canvas_textures/default_texture_filter=1
+textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.42, 0.31, 0.18, 1)

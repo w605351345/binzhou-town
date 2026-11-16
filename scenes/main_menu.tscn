@@ -57,13 +57,13 @@ alignment = 1
 [node name="Title" type="Label" parent="Center/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
-text = "宾 州 小 镇"
+text = "麦 溪 镇"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Center/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
-text = "黑龙江黑土地 · 一年一熟 · 春播秋收"
+text = "Meadowbrook · 种田、来信与月桂剧场"
 horizontal_alignment = 1
 
 [node name="SeasonLabel" type="Label" parent="Center/VBox"]

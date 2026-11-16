@@ -1,0 +1,9 @@
+{
+  "_meta": {"version": "v1.0", "scope": "功能 NPC 服务参数与旅行货郎轮换目录"},
+  "fishmonger": {"bait_item": "bait_worm", "bundle": 5, "bundle_price": 12, "fish_buy_ratio": 0.82},
+  "merchant": {
+    "stock_size": 3,
+    "markup": 1.25,
+    "pool": ["seed_corn", "seed_potato", "seed_autumn_vegetable", "material_fertilizer", "feed_hay", "bait_worm", "material_salt", "material_sugar", "gift_hot_tea", "gift_clean_towel", "gem_amber"]
+  }
+}

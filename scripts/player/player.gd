@@ -9,6 +9,8 @@ const SPRITE_FEMALE := "res://assets/sprites/player_female.png"
 const FRAME_SIZE := Vector2i(48, 72)
 ## 精灵表行数(下/上/侧)
 const SHEET_ROWS := 3
+const ACCELERATION := 1800.0
+const DECELERATION := 2400.0
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 @onready var shadow: Sprite2D = $Shadow
@@ -18,8 +20,10 @@ var controller: PlayerController = null
 var world: WorldMap = null
 ## 性别 -> 精灵表
 var _female := false
+var _move_velocity := Vector2.ZERO
 
 func _ready() -> void:
+	add_to_group("player")
 	controller = PlayerController.new()
 	var female := false
 	if GameStateManager.state != null and GameStateManager.state.player != null:
@@ -27,6 +31,13 @@ func _ready() -> void:
 	_apply_sprite(female)
 	if world == null:
 		world = WorldMap.new(Rect2(Vector2.ZERO, get_parent_area_size()))
+
+## 柔和脚底阴影让角色与地面分开；根节点先绘制，精灵仍压在上面。
+func _draw() -> void:
+	draw_set_transform(Vector2(0, 1), 0.0, Vector2(1.0, 0.38))
+	draw_circle(Vector2.ZERO, 19.0, Color(0.08, 0.10, 0.06, 0.25))
+	draw_circle(Vector2(-2, -2), 12.0, Color(0.08, 0.10, 0.06, 0.16))
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 func _apply_sprite(female: bool) -> void:
 	_female = female
@@ -62,11 +73,16 @@ func _physics_process(delta: float) -> void:
 	# 界面占着输入时不挪窝 —— 边看台词边乱走会错过张晓芳的话
 	if GameStateManager.input_locked:
 		velocity = Vector2.ZERO
+		_move_velocity = Vector2.ZERO
 		return
 	var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	controller.set_input(dir)
-	velocity = controller.velocity()
+	var desired := controller.velocity()
+	var rate := ACCELERATION if desired.length_squared() > 0.0 else DECELERATION
+	_move_velocity = _move_velocity.move_toward(desired, rate * delta)
+	velocity = _move_velocity
 	move_and_slide()
+	_move_velocity = velocity
 
 	# 边界裁剪(Week 2 验收点:不出地图)
 	if world != null:

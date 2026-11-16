@@ -1,7 +1,7 @@
 extends RefCounted
 class_name WeatherSystem
 
-## 东北四季天气:季节权重 + 存档种子 + 绝对日共同决定。
+## 西境四季天气:季节权重 + 存档种子 + 绝对日共同决定。
 ## 同一天读档天气不变；次日天气可提前看，但不额外制造随机失真。
 
 const DEFAULT_TODAY := "sunny"
@@ -144,7 +144,7 @@ static func hint_for(weather_id: String) -> String:
 		"frost_morning":
 			return "霜晨，晚收作物要抓紧"
 		"smog":
-			return "烟霾，能见度低，火炕边最舒坦"
+			return "烟霾，能见度低，壁炉边最舒坦"
 		"humid":
 			return "闷热，庄稼长得快，人也容易乏"
 		"wind":

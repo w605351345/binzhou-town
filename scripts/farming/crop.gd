@@ -2,11 +2,11 @@ extends RefCounted
 class_name Crop
 
 ## 作物数据模型(对应 data/crops.json)
-## 黑龙江设定:一年一熟,全部为春播-秋收型,无越冬作物、无秋播作物。
+## 麦溪镇设定:一年一熟,全部为春播-秋收型,无越冬作物、无秋播作物。
 ##
 ## 关键区分(用户 D14 要求):
 ##   · 春播 —— 4月下旬至5月上旬下种,夏季生长,秋收
-##   · 秋收 —— 分早收(7-8月,腾茬早可复种) 与 晚收(9-10月,抢在秋霜前)
+##   · 秋收 —— 分早收(7-8月,腾茬早可复种) 与 晚收(9-10月,抢在初霜前)
 ##   · 越冬 —— 收获后按 storage 方式储藏(窖藏 / 晾晒),决定冬季加工玩法
 
 var id: String = ""
@@ -38,7 +38,7 @@ var storage: String = "窖藏"
 var storage_note: String = ""
 ## 是否为早收作物(7-8月收获,腾茬早)
 var early_harvest: bool = false
-## 是否为晚收作物(10月收获,紧贴秋霜)
+## 是否为晚收作物(10月收获,紧贴初霜)
 var late_harvest: bool = false
 
 static func from_dict(d: Dictionary) -> Crop:
@@ -76,7 +76,7 @@ func can_sow_in(season: String) -> bool:
 		return false
 	return plant_days.has(season)
 
-## 是否可在指定真实月份播种(黑龙江农时:4-5月,plant_window 为连续区间 [起, 止])
+## 是否可在指定真实月份播种(麦溪镇农时:4-5月,plant_window 为连续区间 [起, 止])
 func can_sow_in_month(month: int) -> bool:
 	if plant_window.is_empty():
 		return true
@@ -122,7 +122,7 @@ func growth_stage(days_grown: float) -> int:
 func is_ready(days_grown: float) -> bool:
 	return days_grown >= float(growth_days[0])
 
-## 秋翻地产量加成(黑龙江黑土地保护:秋翻杀虫保墒,增产)
+## 秋翻地产量加成(西境田园保护:秋翻杀虫保墒,增产)
 const AUTUMN_PLOUGH_BONUS := 0.15
 
 ## 收获产量:秋翻地有加成
@@ -135,7 +135,7 @@ func roll_yield(days_grown: float, autumn_plowed: bool = false) -> int:
 	var base := yield_min + int(round((yield_max - yield_min) * ratio))
 	if autumn_plowed:
 		# 秋翻必须看得见收益:低产作物(如玉米最低产 3 个)按 15% 取整会被抹平成同一个数,
-		# 玩家翻了地却没多打粮,黑土地保护这条核心农法就白设计了。所以保底多打 1 个。
+		# 玩家翻了地却没多打粮,麦溪沃土保护这条核心农法就白设计了。所以保底多打 1 个。
 		base = maxi(base + 1, int(round(float(base) * (1.0 + AUTUMN_PLOUGH_BONUS))))
 	return base
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""《宾州小镇》AI 生图工具 —— 基于 MiniMax image-01
+"""《麦溪镇》AI 生图工具 —— 基于 MiniMax image-01
 
 用途:生成美术风格样板 / 概念图 / 背景参考,供美术管线参考与风格统一。
 
@@ -7,7 +7,7 @@
 
 用法:
     # 单张
-    python3 tools/ai_imagegen.py --prompt "黑土地上的木屋" --out assets/art/house.jpg
+    python3 tools/ai_imagegen.py --prompt "西式田园山谷里的奶油石农舍" --out assets/art/house.jpg
 
     # 批量(多候选图,便于挑风格)
     python3 tools/ai_imagegen.py --prompt "..." --out assets/art/house_ --n 3 --aspect-ratio 16:9
@@ -20,7 +20,9 @@
 
 鉴权(按优先级):
     1. 环境变量 MINIMAX_API_KEY
-    2. ~/.codex/config.toml 里的 experimental_bearer_token
+    2. --config 指定的 Codex TOML
+    3. ~/.codex/minimax.config.toml
+    4. ~/.codex/config.toml
 """
 import argparse
 import base64
@@ -43,8 +45,29 @@ from typing import Optional
 API_URL = "https://api.minimax.cn/v1/image_generation"
 MODEL = "image-01"
 
-# --- 风格预设:统一《饥荒》式手绘像素美术方向 ---
+# --- 风格预设:以西式田园、明亮可爱的故事书手绘为主 ---
 STYLES = {
+    "western_scene": (
+        "cozy hand-painted 2D western farming RPG scene, bright storybook illustration, "
+        "soft clean outlines, cheerful pastoral palette of emerald grass, cream stone, "
+        "honey wood and wildflowers, warm sunlight, whimsical small-town charm, "
+        "high detail, layered depth, game background, no characters"
+    ),
+    "western_portrait": (
+        "polished cozy western farming RPG character portrait, warm expressive storybook face, "
+        "clear friendly eyes, refined soft ink outlines, luminous pastoral color palette, "
+        "gentle golden rim light, head and shoulders, warm cream and sage painted backdrop, "
+        "high detail, wholesome small-town charm, designed for a dialogue portrait frame"
+    ),
+    "western_character": (
+        "cute chibi full-body western farming RPG character, readable silhouette, "
+        "large expressive head, tidy costume, soft clean outlines, bright pastoral colors, "
+        "front three-quarter view, centered, isolated on flat pure green background, no shadow"
+    ),
+    "western_tile": (
+        "seamless top-down western farming RPG ground texture, hand-painted storybook style, "
+        "soft painterly detail, bright natural colors, even lighting, no objects, no text"
+    ),
     "dinner_scene": (
         "Don't Starve inspired hand-painted 2D game art, dark whimsical storybook style, "
         "thick ink outlines, muted desaturated palette of browns olive and dusty blue, "
@@ -77,24 +100,34 @@ FORBIDDEN = ("binxian", "bin county", "heilongjiang", "harbin", "黑龙江", "�
 # 通用负面描述(避免 AI 生成的现代/西式元素)
 NEGATIVE = (
     "no text, no watermark, no signature, no ui, no modern objects, no cars, no electricity, "
-    "no anime style, no photorealistic 3d render, no glossy vector art"
+    "no anime style, no photorealistic 3d render, no glossy vector art, "
+    "no northeast Asian architecture, no Chinese courtyard, no kang bed, no paper window, "
+    "no dark horror palette, no muddy colors, no gloomy mood"
 )
 
 
-def resolve_key() -> str:
-    """按优先级拿 API key:环境变量 > ~/.codex/config.toml。"""
+def resolve_key(config_path: Optional[str] = None) -> str:
+    """按优先级拿 API key:环境变量 > 显式配置 > minimax 配置 > 默认配置。"""
     key = os.environ.get("MINIMAX_API_KEY", "").strip()
     if key:
         return key
-    cfg = Path.home() / ".codex" / "config.toml"
-    if cfg.exists():
+    candidates = []
+    if config_path:
+        candidates.append(Path(config_path).expanduser())
+    candidates.extend([
+        Path.home() / ".codex" / "minimax.config.toml",
+        Path.home() / ".codex" / "config.toml",
+    ])
+    for cfg in candidates:
+        if not cfg.exists():
+            continue
         m = re.search(r'experimental_bearer_token\s*=\s*"([^"]+)"', cfg.read_text())
         if m:
             return m.group(1)
     raise SystemExit(
         "❌ 找不到 API key。请设置环境变量:\n"
         "   export MINIMAX_API_KEY='你的 key'\n"
-        "或在 ~/.codex/config.toml 里配置 experimental_bearer_token。"
+        "或通过 --config 指定含 experimental_bearer_token 的 Codex TOML。"
     )
 
 
@@ -180,9 +213,10 @@ def save_images(data: dict, out: Path, prefix: str, as_png: bool, size: Optional
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="《宾州小镇》AI 生图工具(MiniMax image-01)")
+    ap = argparse.ArgumentParser(description="《麦溪镇》AI 生图工具(MiniMax image-01)")
     ap.add_argument("--prompt", help="图片描述")
     ap.add_argument("--prompt-file", help="从文件读 prompt(每行一条)")
+    ap.add_argument("--config", help="Codex TOML 配置路径(默认优先 ~/.codex/minimax.config.toml)")
     ap.add_argument("--style", choices=sorted(STYLES.keys()), help="内置风格预设")
     ap.add_argument("--out", help="输出文件路径(多图时自动加序号)")
     ap.add_argument("--out-dir", default="assets/art", help="批量输出目录(配合 --prompt-file)")
@@ -205,8 +239,8 @@ def main() -> int:
     else:
         prompts = [args.prompt]
 
-    key = resolve_key()
-    print(f"🔑 已加载 key({key[:6]}…),模型 {MODEL},共 {len(prompts)} 组 prompt × {args.n} 张")
+    key = resolve_key(args.config)
+    print(f"🔑 已加载 MiniMax key(长度 {len(key)}),模型 {MODEL},共 {len(prompts)} 组 prompt × {args.n} 张")
 
     all_files = []
     for idx, p in enumerate(prompts, 1):

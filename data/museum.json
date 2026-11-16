@@ -1,0 +1,22 @@
+{
+  "_meta": {"version": "v1.0", "scope": "镇史馆藏品目录与捐赠里程碑"},
+  "milestones": [
+    {"count": 4, "gold": 120, "items": {"material_fertilizer": 4}, "message": "苏文博把第一只展柜擦亮，给你记了一功。"},
+    {"count": 8, "gold": 280, "items": {"bait_worm": 10}, "message": "镇史馆挂上了新的说明牌，孩子们围着看了一下午。"},
+    {"count": 12, "gold": 600, "items": {"sprinkler_basic": 1}, "message": "十二件藏品凑齐，苏文博把省下来的喷灌器交给你。"}
+  ],
+  "collectibles": [
+    {"id": "collect_copper_ore", "name": "铜矿石样本", "item_id": "ore_copper", "desc": "北山浅层矿脉的断面，带一点孔雀绿的锈色。"},
+    {"id": "collect_iron_ore", "name": "铁矿石样本", "item_id": "ore_iron", "desc": "旧煤巷深处的硬铁，敲起来声音发闷。"},
+    {"id": "collect_coal", "name": "老煤块", "item_id": "material_coal", "desc": "煤巷里留下的一块，断面还看得到树皮纹。"},
+    {"id": "collect_amber", "name": "北山琥珀", "item_id": "gem_amber", "desc": "冻土里埋了太久，像一小块暖灯。"},
+    {"id": "collect_gold", "name": "河金砂", "item_id": "ore_gold", "desc": "暗河冲下来的金砂，粒小，却亮得扎眼。"},
+    {"id": "collect_mushroom", "name": "桦林野蘑菇", "item_id": "forage_mushroom", "desc": "晒干的野蘑菇，闻着有雨后木头的味。"},
+    {"id": "collect_hazelnut", "name": "野生榛子", "item_id": "forage_hazelnut", "desc": "壳薄仁满，是桦树林秋天最早的零嘴。"},
+    {"id": "collect_sturgeon", "name": "鲟鱼鳞片", "item_id": "fish_sturgeon", "desc": "河湾老渔民说，见过这么大的鱼，得算运气。"},
+    {"id": "collect_opera_script", "name": "旧古戏剧本", "item_id": "gift_opera_script", "desc": "纸页发黄，边角有周德顺年轻时的批注。"},
+    {"id": "collect_old_record", "name": "老唱片", "item_id": "gift_old_record", "desc": "唱片套上还印着早已停办的县剧团名字。"},
+    {"id": "collect_ledger", "name": "老集市账本", "item_id": "gift_ledger", "desc": "一本旧账，记录着镇上几十年的收成。"},
+    {"id": "collect_sunflower", "name": "烤葵花籽", "item_id": "gift_sunflower_seeds", "desc": "张晓芳说，这东西摆进玻璃柜里，日子就有了香气。"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "_meta": {"version": "v1.0", "scope": "麦溪镇牧场动物、饲料与产出"},
+  "animals": [
+    {"id": "chicken", "name": "芦花鸡", "cost": 180, "feed": "feed_hay", "product": "animal_egg",
+     "product_name": "芦花鸡蛋", "days": 1, "desc": "院里撒开跑，天一亮就在门口等食。"},
+    {"id": "goat", "name": "奶山羊", "cost": 460, "feed": "feed_hay", "product": "animal_milk",
+     "product_name": "羊奶", "days": 2, "desc": "性子倔，认人之后会拿脑袋蹭你的手。"},
+    {"id": "rabbit", "name": "长毛兔", "cost": 320, "feed": "feed_hay", "product": "animal_wool",
+     "product_name": "兔毛", "days": 2, "desc": "耐寒，冬天剪下的毛能絮一双厚手套。"}
+  ],
+  "feed_item": "feed_hay",
+  "feed_price": 8,
+  "barn_capacity": 8
+}

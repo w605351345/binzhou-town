@@ -24,3 +24,6 @@ __pycache__/
 
 # 截图工具的临时帧序列
 docs/screenshots/*/_tmp_*/
+
+# AI 概念图的原始候选可能含生成器签名，不入库
+assets/art/ai/raw/

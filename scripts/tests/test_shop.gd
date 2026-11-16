@@ -4,13 +4,13 @@ extends SceneTree
 ## 运行: godot --headless --script res://scripts/tests/test_shop.gd
 ##
 ## 这组测试守住一条底线:**张晓芳的收购账必须算得清**。
-## 黑龙江一年一熟,一季的收成全靠卖给张晓芳换成钱,钱算错了整个循环就断了。
+## 麦溪镇一年一熟,一季的收成全靠卖给张晓芳换成钱,钱算错了整个循环就断了。
 
 var _passed := 0
 var _failed := 0
 
 func _init() -> void:
-	print("=== 《宾州小镇》商店自测 (shop test) ===")
+	print("=== 《麦溪镇》商店自测 (shop test) ===")
 	print("设定:张晓芳是收购商,收购价 = 作物售价 × buy_ratio,好感度还能加成")
 	print("--------------------------------------------------")
 
@@ -59,7 +59,7 @@ func test_item_database() -> void:
 	check("按作物找种子", ItemDatabase.seed_for_crop("corn") == "seed_corn",
 		"→ " + ItemDatabase.seed_for_crop("corn"))
 	check("没有的作物找种子返回空", ItemDatabase.seed_for_crop("不存在的作物") == "")
-	check("按分类取道具", ItemDatabase.items_of_category("tool").size() == 3,
+	check("按分类取工具与设施", ItemDatabase.items_of_category("tool").size() == 6,
 		"→ %d 件" % ItemDatabase.items_of_category("tool").size())
 	# 种子的进价必须跟 crops.json 的 seed_price 对得上,否则播种成本会前后不一
 	var crop := CropDatabase.get_crop("corn")

@@ -2,14 +2,14 @@
   "_meta": {
     "version": "v2.0",
     "updated": "2026-11-13",
-    "scope": "宾州镇六名常住 NPC：档案、喜恶、生日与四季日程",
+    "scope": "麦溪镇六名常住 NPC：档案、喜恶、生日与四季日程",
     "note": "日程由 NpcScheduleSystem 解析。weather 中的 rain 覆盖所有降雨，snow 覆盖所有降雪；seasons 为空表示四季通用。位置坐标必须落在地图边界内。"
   },
   "npcs": [
     {
       "id": "zhang_xiaofang",
       "name": "张晓芳",
-      "title": "镇中心粮站收购员",
+      "title": "镇中心集市收购员",
       "gender": "female",
       "age": 44,
       "birthday_month": 9,
@@ -22,7 +22,7 @@
       "buys_crops": true,
       "buy_ratio": 0.9,
       "affection_max": 100,
-      "likes": ["烤葵花籽", "黏豆包", "豆腐脑", "耐用账本", "好钢笔"],
+      "likes": ["烤葵花籽", "蜂蜜燕麦面包", "南瓜浓汤", "耐用账本", "好钢笔"],
       "dislikes": ["花束", "香水", "华而不实的摆件", "来路不明的便宜货"],
       "flavor": "镇上最不肯欠人情的人，偏偏一辈子在替父亲还一笔没人说清的账。",
       "schedules": [
@@ -33,9 +33,10 @@
         {"time_from": "06:00", "time_to": "11:30", "location_id": "L03", "position": [2070, 1100], "activity": "盘账，偶尔抬头看门外", "seasons": ["winter"], "day_modulo": 3, "day_remainder": 1},
         {"time_from": "06:00", "time_to": "11:30", "location_id": "L03", "position": [2300, 990], "activity": "盘账，偶尔抬头看门外", "seasons": ["winter"], "day_modulo": 3, "day_remainder": 2},
         {"time_from": "11:30", "time_to": "13:00", "location_id": "L06", "position": [430, 380], "activity": "在固定靠窗位吃饭", "available": true},
+        {"time_from": "11:30", "time_to": "13:00", "location_id": "L03", "position": [2120, 1080], "activity": "在集市长凳上吃午饭，顺便看摊", "priority": 1},
         {"time_from": "13:00", "time_to": "18:00", "location_id": "L03", "position": [2460, 1180], "activity": "验粮、对账", "seasons": ["spring", "summer", "autumn"]},
         {"time_from": "13:00", "time_to": "18:00", "location_id": "L03", "position": [2700, 1400], "activity": "在仓库里对账，嘴上说雨不碍事", "weather": ["rain"]},
-        {"time_from": "13:00", "time_to": "18:00", "location_id": "L08", "position": [940, 300], "activity": "盯赵长河修整粮站设备", "seasons": ["winter"]},
+        {"time_from": "13:00", "time_to": "18:00", "location_id": "L08", "position": [940, 300], "activity": "盯赵长河修整集市设备", "seasons": ["winter"]},
         {"time_from": "18:00", "time_to": "21:30", "location_id": "L03", "position": [2180, 1040], "activity": "收尾，反复复秤", "seasons": ["spring", "summer", "autumn"]},
         {"time_from": "18:00", "time_to": "21:30", "location_id": "L05", "position": [850, 330], "activity": "去邮局寄一个不写寄件人的包裹", "seasons": ["winter"]}
       ]
@@ -71,7 +72,7 @@
     {
       "id": "sun_yumei",
       "name": "孙玉梅",
-      "title": "玉梅饭馆老板",
+  "title": "玉梅旅店老板",
       "gender": "female",
       "age": 49,
       "birthday_month": 5,
@@ -81,7 +82,7 @@
       "sprite_path": "res://assets/sprites/npcs/npc_sun_yumei.png",
       "winter_sprite_path": "res://assets/sprites/npcs/npc_sun_yumei_winter.png",
       "portrait_path": "res://assets/art/portraits/sun_yumei.png",
-      "likes": ["榛蘑", "鲫鱼", "山楂", "粗陶碗", "好用菜刀"],
+      "likes": ["野蘑菇", "鲫鱼", "山楂", "粗陶碗", "好用菜刀"],
       "dislikes": ["包装精致但不好吃的点心", "减肥食品", "空口夸她年轻"],
       "flavor": "她把整条街喂饱了，却一直留着那张没人坐的桌子。",
       "schedules": [
@@ -89,9 +90,9 @@
         {"time_from": "08:00", "time_to": "11:00", "location_id": "L06", "position": [760, 280], "activity": "晚起，备午市", "seasons": ["winter"]},
         {"time_from": "10:30", "time_to": "14:00", "location_id": "L06", "position": [760, 280], "activity": "午市，前厅后厨两头跑"},
         {"time_from": "14:00", "time_to": "16:00", "location_id": "L06", "position": [330, 590], "activity": "歇晌、择菜、听广播", "seasons": ["spring", "summer", "autumn"]},
-        {"time_from": "14:00", "time_to": "16:00", "location_id": "L06", "position": [1180, 720], "activity": "火炕边包饺子", "seasons": ["winter"]},
+        {"time_from": "14:00", "time_to": "16:00", "location_id": "L06", "position": [1180, 720], "activity": "壁炉边烤苹果派", "seasons": ["winter"]},
         {"time_from": "16:00", "time_to": "21:30", "location_id": "L06", "position": [880, 330], "activity": "晚市，给熟人留菜", "seasons": ["spring", "summer", "autumn"]},
-        {"time_from": "16:00", "time_to": "19:00", "location_id": "L11", "position": [960, 600], "activity": "去戏台串门", "seasons": ["winter"]},
+        {"time_from": "16:00", "time_to": "19:00", "location_id": "L11", "position": [960, 600], "activity": "去剧场串门", "seasons": ["winter"]},
         {"time_from": "19:00", "time_to": "21:30", "location_id": "L06", "position": [1180, 720], "activity": "早收，数着明天的菜钱", "seasons": ["winter"]}
       ]
     },
@@ -117,14 +118,14 @@
         {"time_from": "11:30", "time_to": "13:00", "location_id": "L06", "position": [930, 390], "activity": "吃面，不多说话"},
         {"time_from": "13:00", "time_to": "18:00", "location_id": "L08", "position": [940, 300], "activity": "木工房接活、农场扩建"},
         {"time_from": "13:00", "time_to": "18:00", "location_id": "L08", "position": [600, 500], "activity": "室内修家具，听着雨声量尺寸", "weather": ["rain"]},
-        {"time_from": "18:00", "time_to": "21:00", "location_id": "L11", "position": [1360, 600], "activity": "检查戏台木结构", "seasons": ["spring", "summer", "autumn"]},
+        {"time_from": "18:00", "time_to": "21:00", "location_id": "L11", "position": [1360, 600], "activity": "检查剧场木结构", "seasons": ["spring", "summer", "autumn"]},
         {"time_from": "18:00", "time_to": "21:00", "location_id": "L08", "position": [940, 300], "activity": "早回家，偷偷改打谷机", "seasons": ["winter"]}
       ]
     },
     {
       "id": "lin_xiaoman",
       "name": "林小满",
-      "title": "镇卫生所护士",
+  "title": "麦溪诊所护士",
       "gender": "female",
       "age": 26,
       "birthday_month": 8,
@@ -144,14 +145,14 @@
         {"time_from": "06:00", "time_to": "22:00", "location_id": "L07", "position": [920, 600], "activity": "顶风出诊，回来时睫毛都是霜", "weather": ["blizzard"]},
         {"time_from": "12:00", "time_to": "13:00", "location_id": "L06", "position": [1080, 420], "activity": "快速吃饭，顺手记两笔病例"},
         {"time_from": "13:00", "time_to": "17:30", "location_id": "L07", "position": [920, 600], "activity": "巡诊、上门看老人"},
-        {"time_from": "17:30", "time_to": "21:00", "location_id": "L11", "position": [800, 700], "activity": "偶尔去戏台坐一会儿", "seasons": ["spring", "summer", "autumn"]},
-        {"time_from": "17:30", "time_to": "21:00", "location_id": "L07", "position": [920, 600], "activity": "火炕边看书，杯子一直没拧开", "seasons": ["winter"]}
+        {"time_from": "17:30", "time_to": "21:00", "location_id": "L11", "position": [800, 700], "activity": "偶尔去剧场坐一会儿", "seasons": ["spring", "summer", "autumn"]},
+        {"time_from": "17:30", "time_to": "21:00", "location_id": "L07", "position": [920, 600], "activity": "壁炉边看书，杯子一直没拧开", "seasons": ["winter"]}
       ]
     },
     {
       "id": "zhou_deshun",
       "name": "周德顺",
-      "title": "古戏台守台人",
+      "title": "月桂剧场守台人",
       "gender": "male",
       "age": 72,
       "birthday_month": 10,
@@ -161,7 +162,7 @@
       "sprite_path": "res://assets/sprites/npcs/npc_zhou_deshun.png",
       "winter_sprite_path": "res://assets/sprites/npcs/npc_zhou_deshun_winter.png",
       "portrait_path": "res://assets/art/portraits/zhou_deshun.png",
-      "likes": ["二人转唱本", "冻梨", "旧唱片", "琴弦", "热茶"],
+      "likes": ["古戏剧本", "烤苹果", "旧唱片", "琴弦", "热茶"],
       "dislikes": ["昂贵助听器当面送", "同情式礼物", "说他该歇着"],
       "flavor": "台上的人一个个散了，他还想再听一次满场。",
       "schedules": [
@@ -170,10 +171,167 @@
         {"time_from": "10:30", "time_to": "12:00", "location_id": "L03", "position": [1770, 880], "activity": "去镇中心、邮局转一圈", "seasons": ["spring", "summer", "autumn"]},
         {"time_from": "10:30", "time_to": "12:00", "location_id": "L06", "position": [1200, 390], "activity": "提前去饭馆占座", "seasons": ["winter"]},
         {"time_from": "12:00", "time_to": "14:00", "location_id": "L06", "position": [1200, 390], "activity": "吃面，给孙玉梅讲旧戏"},
+        {"time_from": "12:00", "time_to": "13:20", "location_id": "L03", "position": [1810, 930], "activity": "在井边歇脚，跟过路人聊戏", "priority": 1},
         {"time_from": "14:00", "time_to": "18:00", "location_id": "L11", "position": [1420, 360], "activity": "排练、教孩子唱段", "seasons": ["spring", "summer", "autumn"]},
-        {"time_from": "14:00", "time_to": "18:00", "location_id": "L11", "position": [1420, 720], "activity": "整理唱本、等人来", "seasons": ["winter"]},
+        {"time_from": "14:00", "time_to": "18:00", "location_id": "L11", "position": [1420, 720], "activity": "整理剧本、等人来", "seasons": ["winter"]},
         {"time_from": "18:00", "time_to": "18:30", "location_id": "L11", "position": [1420, 720], "activity": "后台吃一口热饭"},
         {"time_from": "18:30", "time_to": "21:30", "location_id": "L11", "position": [1420, 360], "activity": "听广播、讲古", "seasons": ["spring", "summer", "autumn"]}
+      ]
+    },
+    {
+      "id": "shi_tieshan",
+      "name": "石铁山",
+      "title": "北街铁匠",
+      "gender": "male",
+      "age": 51,
+      "birthday_month": 3,
+      "birthday_day": 12,
+      "home_location": "L08",
+      "home_position": [1080, 650],
+      "sprite_path": "res://assets/sprites/npcs/npc_shi_tieshan.png",
+      "winter_sprite_path": "res://assets/sprites/npcs/npc_shi_tieshan_winter.png",
+      "portrait_path": "res://assets/art/portraits/shi_tieshan.png",
+      "likes": ["烈性茶", "结实手套", "铁钉", "旧工具", "煤块"],
+      "dislikes": ["花束", "香水", "轻飘飘的摆件"],
+      "flavor": "他打了一辈子铁，最听不得锄头卷刃的声音。",
+      "daily_lines": {
+        "spring": "化冻的农具最容易卷刃，拿来我看看，别硬撬石头。",
+        "summer": "晌午炉火不熄，铁烧透了才吃得住锤。你那边活顺不顺？",
+        "autumn": "秋收前先把刃口回了，霜一落，地里不等人。",
+        "winter": "冬天炉火旺，人也愿意多说两句。你那镐头该上油了。"
+      },
+      "service_type": "blacksmith",
+      "service_title": "石铁山 · 农具升级",
+      "schedules": [
+        {"time_from": "06:00", "time_to": "08:00", "location_id": "L08", "position": [960, 520], "activity": "生起炉火，把昨夜回的锤头装好"},
+        {"time_from": "08:00", "time_to": "12:00", "location_id": "L08", "position": [1040, 300], "activity": "打铁，火星溅到围裙上"},
+        {"time_from": "12:00", "time_to": "13:00", "location_id": "L06", "position": [680, 420], "activity": "吃一碗面，手还黑着"},
+        {"time_from": "13:00", "time_to": "18:00", "location_id": "L08", "position": [1040, 300], "activity": "给镇上人修农具"},
+        {"time_from": "18:00", "time_to": "21:00", "location_id": "L08", "position": [960, 520], "activity": "收炉，慢慢把工具摆回架上"}
+      ]
+    },
+    {
+      "id": "jiang_muyun",
+      "name": "姜牧云",
+      "title": "牧云牧场主",
+      "gender": "female",
+      "age": 38,
+      "birthday_month": 5,
+      "birthday_day": 21,
+      "home_location": "L13",
+      "home_position": [1120, 820],
+      "sprite_path": "res://assets/sprites/npcs/npc_jiang_muyun.png",
+      "winter_sprite_path": "res://assets/sprites/npcs/npc_jiang_muyun_winter.png",
+      "portrait_path": "res://assets/art/portraits/jiang_muyun.png",
+      "likes": ["羊奶", "热汤", "结实手套", "干净毛巾", "茶叶"],
+      "dislikes": ["花束", "昂贵礼物", "嫌牲口脏的人"],
+      "flavor": "她把牧场当成一大家子，谁少嚼一口草都听得出来。",
+      "daily_lines": {
+        "spring": "开春牲口掉毛，棚里得勤扫。草料别断，水要温热。",
+        "summer": "日头毒，牲口也烦躁。清早喂完，晌午让它们在阴凉里歇着。",
+        "autumn": "秋膘最要紧，今年草料晒得不错，能多留几捆过冬。",
+        "winter": "雪封门也得先添草。它们不挑你穷富，只认你来得早不早。"
+      },
+      "service_type": "livestock",
+      "service_title": "姜牧云 · 牧云牧场",
+      "schedules": [
+        {"time_from": "06:00", "time_to": "09:00", "location_id": "L13", "position": [900, 700], "activity": "开棚、添草、查看水槽"},
+        {"time_from": "09:00", "time_to": "17:00", "location_id": "L13", "position": [1120, 560], "activity": "修围栏，和牲口说话"},
+        {"time_from": "17:00", "time_to": "18:30", "location_id": "L06", "position": [900, 500], "activity": "去饭馆端一碗热汤"},
+        {"time_from": "18:30", "time_to": "21:00", "location_id": "L13", "position": [1000, 820], "activity": "关棚，最后清一遍草槽"}
+      ]
+    },
+    {
+      "id": "he_shuigen",
+      "name": "何水根",
+      "title": "河湾渔具商",
+      "gender": "male",
+      "age": 63,
+      "birthday_month": 6,
+      "birthday_day": 7,
+      "home_location": "L09",
+      "home_position": [460, 820],
+      "sprite_path": "res://assets/sprites/npcs/npc_he_shuigen.png",
+      "winter_sprite_path": "res://assets/sprites/npcs/npc_he_shuigen_winter.png",
+      "portrait_path": "res://assets/art/portraits/he_shuigen.png",
+      "likes": ["鱼饵", "热茶", "旧报纸", "好木料", "烈性茶"],
+      "dislikes": ["花束", "香水", "说河湾没鱼的人"],
+      "flavor": "他知道哪段河湾水底下有石头，也知道哪块石头下面有鱼。",
+      "daily_lines": {
+        "spring": "开河鱼最肥，水还凉，下钩要稳，别急着收线。",
+        "summer": "傍晚鱼浮头，饵别挂太大。河风一起，鱼就知道躲。",
+        "autumn": "鱼要攒膘过冬，这几日咬钩凶。你篓子空着来，装满了走。",
+        "winter": "冰眼得凿在回流处。钓鱼跟过日子一样，心急看不见漂。"
+      },
+      "service_type": "fishmonger",
+      "service_title": "何水根 · 渔具与收鱼",
+      "schedules": [
+        {"time_from": "06:00", "time_to": "11:30", "location_id": "L09", "position": [520, 760], "activity": "补网、切饵、看水色"},
+        {"time_from": "11:30", "time_to": "13:00", "location_id": "L06", "position": [760, 460], "activity": "吃鱼杂，喝一小盅"},
+        {"time_from": "13:00", "time_to": "18:00", "location_id": "L09", "position": [520, 760], "activity": "守摊，顺手把鱼篓过秤"},
+        {"time_from": "18:00", "time_to": "20:30", "location_id": "L09", "position": [1120, 690], "activity": "沿河收夜网"}
+      ]
+    },
+    {
+      "id": "su_wenbo",
+      "name": "苏文博",
+      "title": "镇史馆管理员",
+      "gender": "male",
+      "age": 34,
+      "birthday_month": 11,
+      "birthday_day": 2,
+      "home_location": "L14",
+      "home_position": [420, 720],
+      "sprite_path": "res://assets/sprites/npcs/npc_su_wenbo.png",
+      "winter_sprite_path": "res://assets/sprites/npcs/npc_su_wenbo_winter.png",
+      "portrait_path": "res://assets/art/portraits/su_wenbo.png",
+      "likes": ["旧报纸", "旧唱片", "医学书", "好钢笔", "茶叶"],
+      "dislikes": ["花束", "现代工艺摆件", "说这里只是旧东西的人"],
+      "flavor": "他从县里调来，本来说待半年，却开始给每块旧石头写说明。",
+      "daily_lines": {
+        "spring": "开春修渠翻出不少旧物，谁家地里捡到稀奇东西都能送来。",
+        "summer": "孩子放暑假，天天趴柜台上问东问西。镇史不是死物，是有人接着讲。",
+        "autumn": "秋收账本最能看出一个镇子的筋骨。你捐的东西，我会认真写说明。",
+        "winter": "屋里冷，展柜却不敢生炉火。你要是带了旧纸旧信，先拿给我看看。"
+      },
+      "service_type": "museum",
+      "service_title": "苏文博 · 镇史馆捐赠",
+      "schedules": [
+        {"time_from": "07:00", "time_to": "12:00", "location_id": "L14", "position": [620, 420], "activity": "整理展柜、抄写藏品卡"},
+        {"time_from": "12:00", "time_to": "13:00", "location_id": "L06", "position": [520, 500], "activity": "边吃边记笔记"},
+        {"time_from": "13:00", "time_to": "17:30", "location_id": "L14", "position": [620, 420], "activity": "给来参观的孩子讲镇史"},
+        {"time_from": "17:30", "time_to": "20:30", "location_id": "L14", "position": [620, 420], "activity": "关灯前再看一眼新收的藏品"}
+      ]
+    },
+    {
+      "id": "lang_sanshun",
+      "name": "郎三顺",
+      "title": "旅行货郎",
+      "gender": "male",
+      "age": 29,
+      "birthday_month": 7,
+      "birthday_day": 19,
+      "home_location": "L03",
+      "home_position": [1550, 1120],
+      "sprite_path": "res://assets/sprites/npcs/npc_lang_sanshun.png",
+      "winter_sprite_path": "res://assets/sprites/npcs/npc_lang_sanshun_winter.png",
+      "portrait_path": "res://assets/art/portraits/lang_sanshun.png",
+      "likes": ["热茶", "蜂蜜燕麦面包", "烤苹果", "旧唱片", "好木料"],
+      "dislikes": ["高价保健品", "旧账本", "问他什么时候走的人"],
+      "flavor": "他的担子里永远缺一件你正好需要的东西。",
+      "daily_lines": {
+        "spring": "开春风大，针线、鱼饵、盐都得备着。路上跑一趟，货就这些。",
+        "summer": "日头长，走村串屯能多赶两个集。今天这批货卖完就收担。",
+        "autumn": "秋收后家家要添零碎，我这担子也跟着沉。来晚可只剩挑剩的。",
+        "winter": "雪路难走，能到镇上就算运气。热茶先喝一口，再谈买卖。"
+      },
+      "service_type": "merchant",
+      "service_title": "郎三顺 · 今日货担",
+      "schedules": [
+        {"time_from": "08:00", "time_to": "12:00", "location_id": "L03", "position": [1660, 980], "activity": "支起货担，和熟人打招呼"},
+        {"time_from": "12:00", "time_to": "13:00", "location_id": "L06", "position": [460, 560], "activity": "蹭一碗热汤面"},
+        {"time_from": "13:00", "time_to": "20:00", "location_id": "L03", "position": [1660, 980], "activity": "卖货，讲一路听来的新鲜事"},
+        {"time_from": "20:00", "time_to": "21:00", "location_id": "L03", "position": [1550, 1120], "activity": "收担，蹲在路边数零钱"}
       ]
     }
   ]

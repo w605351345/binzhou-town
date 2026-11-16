@@ -46,7 +46,7 @@ func _build_ui() -> void:
 	column.add_theme_constant_override("separation", 12)
 	margin.add_child(column)
 	var title := Label.new()
-	title.text = "灶台 · 家常菜"
+	title.text = "铸铁灶 · 家常菜"
 	title.add_theme_font_size_override("font_size", 26)
 	title.add_theme_color_override("font_color", Color(0.98, 0.82, 0.48))
 	column.add_child(title)
@@ -58,13 +58,14 @@ func _build_ui() -> void:
 	column.add_child(_status)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.follow_focus = true
 	column.add_child(scroll)
 	_list = VBoxContainer.new()
 	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_list.add_theme_constant_override("separation", 8)
 	scroll.add_child(_list)
 	var close := Button.new()
-	close.text = "离开灶台（ESC）"
+	close.text = "离开铸铁灶（ESC）"
 	close.pressed.connect(close_panel)
 	column.add_child(close)
 
@@ -74,6 +75,7 @@ func open_panel() -> void:
 	GameStateManager.set_cooking_open(true)
 	_status.text = "看看家里有什么，能下锅的就做一口热的。"
 	_refresh()
+	_focus_first_button.call_deferred()
 
 func close_panel() -> void:
 	visible = false
@@ -90,6 +92,15 @@ func recipe_buttons() -> Array:
 		if child is Button:
 			out.append(child)
 	return out
+
+func _focus_first_button() -> void:
+	if not visible:
+		return
+	for node in find_children("*", "Button", true, false):
+		var button := node as Button
+		if button != null and not button.disabled:
+			button.grab_focus()
+			return
 
 func _refresh() -> void:
 	for child in _list.get_children():

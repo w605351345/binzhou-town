@@ -14,7 +14,7 @@ func _initialize() -> void:
 	_run()
 
 func _run() -> void:
-	print("=== 《宾州小镇》明信片自测 (postcard test) ===")
+	print("=== 《麦溪镇》明信片自测 (postcard test) ===")
 	print("设定:一封信走一天,邮差把远方的回信捎回来")
 	print("--------------------------------------------------")
 	_test_data()
@@ -39,6 +39,9 @@ func check(label: String, cond: bool, detail: String = "") -> void:
 	else:
 		_failed += 1
 		print("  ❌ %s %s" % [label, detail])
+
+func _panel(panel_name: String) -> Node:
+	return _game.find_child(panel_name, true, false)
 
 func _mgr() -> Node:
 	return root.get_node("GameStateManager")
@@ -83,7 +86,7 @@ func _test_send_and_delivery() -> void:
 	check("错误地址寄不出去", not bool(bad.get("ok", true)))
 
 	var sent := PostcardSystem.send(state, cal, "aunt_inland")
-	check("寄给关内表姑成功", bool(sent.get("ok", false)),
+	check("寄给远方姑妈成功", bool(sent.get("ok", false)),
 		"→ " + String(sent.get("message", "")))
 	check("信进入在途队列", PostcardSystem.pending_count(state) == 1)
 	check("在途时还没收到明信片", PostcardSystem.collected_postcards(state).is_empty())
@@ -201,11 +204,11 @@ func _test_post_office_wiring() -> void:
 	await create_timer(0.3).timeout
 	check("已进入老邮局", String(world.get_child(0).name) == "PostOffice",
 		"→ %s" % String(world.get_child(0).name))
-	var key_hint: Label = _game.get_node_or_null("KeyHint")
+	var key_hint: Label = _game.get_node_or_null("HUD/BottomBox/KeyHint")
 	check("邮局按键提示写明寄信", key_hint != null and key_hint.text.contains("寄信"),
 		"→ " + (key_hint.text if key_hint != null else "无"))
 
-	var panel = _game.get_node_or_null("PostcardPanel")
+	var panel = _panel("PostcardPanel")
 	check("游戏外壳里有邮册面板", panel != null)
 	check("邮册一开始是关的", panel != null and not panel.is_open())
 	world.get_child(0)._open_postbox()

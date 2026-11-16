@@ -9,7 +9,7 @@ func _initialize() -> void:
 	_run()
 
 func _run() -> void:
-	print("=== 《宾州小镇》全量生活闭环验收 (acceptance test) ===")
+	print("=== 《麦溪镇》全量生活闭环验收 (acceptance test) ===")
 	await process_frame
 	_test_new_game_start()
 	_test_three_day_loop()
@@ -35,16 +35,19 @@ func _mgr() -> Node:
 	return root.get_node("GameStateManager")
 
 func _test_new_game_start() -> void:
-	print("\n[1] 新游戏从农舍醒来")
+	print("\n[1] 新游戏从自家农场开始春播")
 	var state := GameState.new()
-	check("新档地点是农舍 L02", String(state.world.get("location_id", "")) == "L02",
+	check("新档地点是自家农场 L01", String(state.world.get("location_id", "")) == "L01",
 		"→ %s" % state.world.get("location_id", ""))
+	check("新档从春季第 1 天开始", state.calendar.get_season() == "spring"
+		and state.calendar.get_season_day() == 1,
+		"→ %s" % state.calendar.date_string())
 	check("新档时间是清晨 06:00", state.clock.minute_of_day == GameClock.DAY_START_MINUTE,
 		"→ %s" % state.clock.time_string())
-	var house := MapDatabase.get_map("L02")
-	check("农舍有出门与睡觉互动",
-		Array(house.get("doors", [])).size() >= 1
-		and Array(house.get("interactables", [])).size() >= 2)
+	check("开局背包有玉米与土豆种子",
+		int(state.player.inventory.get("seed_corn", 0)) >= 6
+		and int(state.player.inventory.get("seed_potato", 0)) >= 4,
+		"→ %s" % str(state.player.inventory))
 
 func _test_three_day_loop() -> void:
 	print("\n[2] 三天生活闭环")
@@ -57,14 +60,18 @@ func _test_three_day_loop() -> void:
 	state.weather.tomorrow = "cloudy"
 	state.world["location_id"] = "L01"
 
-	# 起床后去杂货店买一袋玉米种。
+	# 起床后去杂货店再补一袋玉米种。
 	var gold_before_buy := state.player.gold
+	var seeds_before_buy := int(state.player.inventory.get("seed_corn", 0))
 	var bought := Shop.buy_item(state.player, "seed_corn", 1)
 	check("第一天在杂货店买到玉米种", bool(bought.get("ok", false)),
 		String(bought.get("message", "")))
 	check("买种扣钱", state.player.gold == gold_before_buy - int(bought.get("price", 0)),
 		"→ %d" % state.player.gold)
-	check("种子进入背包", int(state.player.inventory.get("seed_corn", 0)) == 1)
+	check("种子进入背包",
+		int(state.player.inventory.get("seed_corn", 0)) == seeds_before_buy + 1,
+		"→ %d → %d" % [seeds_before_buy,
+			int(state.player.inventory.get("seed_corn", 0))])
 
 	# 农场：翻土 → 播种 → 浇水。
 	var farm := state.farm
@@ -75,7 +82,7 @@ func _test_three_day_loop() -> void:
 	check("用背包种子播种成功", bool(plant.get("ok", false)),
 		String(plant.get("message", "")))
 	check("播种消耗背包种子",
-		int(state.player.inventory.get("seed_corn", 0)) == 0)
+		int(state.player.inventory.get("seed_corn", 0)) == seeds_before_buy)
 	check("已有种子时不再重复扣钱", state.player.gold == gold_before_plant,
 		"→ %d / %d" % [state.player.gold, gold_before_plant])
 	check("地块进入生长状态", farm.get_plot(0).crop_id == "corn"
@@ -177,9 +184,9 @@ func _test_three_day_loop() -> void:
 	DirAccess.remove_absolute("user://saves/slot_96.json")
 
 func _test_event_catalog() -> void:
-	print("\n[3] 六名 NPC 与十八段故事")
+	print("\n[3] 十一名 NPC 与三十三段故事")
 	var events := EventSystem.all_events()
-	check("事件总数为 18", events.size() == 18, "→ %d" % events.size())
+	check("事件总数为 33", events.size() == 33, "→ %d" % events.size())
 	var per_npc := {}
 	for event in events:
 		var npc_id := String(event.get("npc_id", ""))

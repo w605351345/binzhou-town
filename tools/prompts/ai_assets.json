@@ -1,0 +1,267 @@
+{
+  "version": 2,
+  "model": "image-01",
+  "jobs": [
+    {
+      "category": "seasons",
+      "name": "spring",
+      "output": "assets/art/ai/seasons/spring.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "bright spring morning in Meadowbrook, a cozy western farming valley, rolling emerald meadows, blossoming apple trees, cream stone cottage with honey wooden beams and red tile roof, vegetable garden, daisies and wildflowers, winding cream cobblestone lane, clear blue sky and soft white clouds, inviting storybook farming RPG background, 3/4 elevated view, sparkling clean light"
+    },
+    {
+      "category": "seasons",
+      "name": "summer",
+      "output": "assets/art/ai/seasons/summer.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "warm summer afternoon in Meadowbrook, a lush western farming valley, golden wheat field, willow trees beside a clear blue river, wooden water mill, cream stone farmhouse with terracotta roof, flower boxes, market cart, bright cheerful pastoral storybook RPG background, 3/4 elevated view, sunlit and airy"
+    },
+    {
+      "category": "seasons",
+      "name": "autumn",
+      "output": "assets/art/ai/seasons/autumn.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "golden autumn harvest in Meadowbrook, a cozy western farming valley, orange and amber orchard trees, pumpkin patch, hay bales, apple crates, cream stone cottage with red tile roof, warm honey light, winding stone path, charming storybook farming RPG background, 3/4 elevated view, colorful but gentle"
+    },
+    {
+      "category": "seasons",
+      "name": "winter",
+      "output": "assets/art/ai/seasons/winter.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "peaceful winter twilight in Meadowbrook, a cozy western farming valley, soft snow on cream stone cottages, glowing golden windows, evergreen trees, snow-covered stone bridge, smoke curling from chimneys, deep blue sky with pink clouds, warm and inviting storybook farming RPG background, 3/4 elevated view"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L01",
+      "output": "assets/art/ai/backgrounds/L01.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "Willow Creek Farm, a charming western homestead in spring, cream stone farmhouse with honey wooden beams and red tile roof, neat vegetable beds, wooden fence with an open south gate, old stone well, apple trees, barn, flower borders, broad sunlit walking path, cozy storybook farming RPG location concept, elevated 3/4 view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L02",
+      "output": "assets/art/ai/backgrounds/L02.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "cozy western farmhouse interior, cream plaster walls, honey wooden floor, stone fireplace, soft bed with patchwork quilt, round dining table, kitchen counter, copper pots, potted herbs, warm morning light through a window, cheerful storybook farming RPG room concept, 3/4 top-down view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L03",
+      "output": "assets/art/ai/backgrounds/L03.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "Meadowbrook town square, cheerful western village, cream stone buildings with honey timber frames and red tile roofs, central stone well, flower market stalls, notice board, bakery, post office, clinic, cobblestone plaza, flower boxes, bright blue sky, cozy storybook farming RPG location concept, elevated 3/4 view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L04",
+      "output": "assets/art/ai/backgrounds/L04.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "bright western general store interior, honey wooden shelves full of seed packets, ceramic jars and farm tools, cream stone walls, wooden counter with brass scale, baskets of apples and carrots, warm daylight through a large window, charming storybook farming RPG shop concept, 3/4 top-down view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L05",
+      "output": "assets/art/ai/backgrounds/L05.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "cozy western post office interior, honey wooden mail sorting cubbies, cream plaster walls, wooden counter, stacked letters and parcels, brass bell, potted fern, warm lantern light, small window showing a green valley, storybook farming RPG location concept, 3/4 top-down view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L06",
+      "output": "assets/art/ai/backgrounds/L06.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "welcoming western countryside inn and bakery, cream stone walls, honey wooden tables, blue and yellow ceramic plates, freshly baked bread, apple pie, flower vases, stone fireplace, warm sunlight, cheerful storybook farming RPG location concept, 3/4 top-down view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L07",
+      "output": "assets/art/ai/backgrounds/L07.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "friendly western village clinic interior, cream plaster walls, pale green cabinets, wooden examination bed with clean linen, herb jars, medicine scale, desk with paper and pen, potted lavender, soft daylight, calm storybook farming RPG location concept, 3/4 top-down view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L08",
+      "output": "assets/art/ai/backgrounds/L08.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "warm western carpentry workshop interior, honey wooden workbench, sawdust curls, stacked lumber, hand tools on pegboard, half-finished window frame, cream stone wall, warm sunlight through dusty window, charming storybook farming RPG workshop concept, 3/4 top-down view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L09",
+      "output": "assets/art/ai/backgrounds/L09.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "clear blue river bend in Meadowbrook, western pastoral valley, gently flowing water, willow trees and riverbank wildflowers, small wooden dock and rowboat, stepping stones, distant cream stone mill, bright cheerful storybook farming RPG location concept, elevated 3/4 view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L10",
+      "output": "assets/art/ai/backgrounds/L10.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "sun-dappled willow grove in a western farming valley, bright green trees, soft mossy path, wild mushrooms and ferns, tiny wooden bridge over a brook, birds and butterflies, warm light beams through leaves, inviting storybook farming RPG forest location, elevated 3/4 view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L11",
+      "output": "assets/art/ai/backgrounds/L11.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "charming small western theatre in a garden, cream stone facade with honey wooden columns, deep teal curtains, warm lanterns, wooden stage, red velvet seats and benches, climbing roses, moonlit evening sky, elegant storybook farming RPG theatre location concept, front three-quarter view, no people, no lettering"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L12",
+      "output": "assets/art/ai/backgrounds/L12.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "friendly western mine entrance interior, honey wooden support beams, warm lanterns, copper and iron ore veins, mine cart, wooden ladder, sparkling crystals, soft colorful light instead of horror darkness, adventurous storybook farming RPG mine concept, 3/4 top-down view, no characters"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L13",
+      "output": "assets/art/ai/backgrounds/L13.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "sunny western meadow ranch, white and honey wooden barn with red roof, green pastures, sheep and chickens in the distance, hay bales, wooden trough, wildflowers, winding dirt path, rolling hills, cozy storybook farming RPG ranch location concept, elevated 3/4 view, no people"
+    },
+    {
+      "category": "backgrounds",
+      "name": "L14",
+      "output": "assets/art/ai/backgrounds/L14.png",
+      "style": "western_scene",
+      "aspect_ratio": "16:9",
+      "size": "1920x1080",
+      "prompt": "charming western town museum interior, cream stone walls, honey wooden display cases, old farm tools, pressed flowers, maps, pottery and antique books, warm sunlight, potted plants, welcoming storybook farming RPG museum concept, 3/4 top-down view, no characters"
+    },
+    {
+      "category": "portraits",
+      "name": "zhang_xiaofang",
+      "output": "assets/art/ai/portraits/zhang_xiaofang.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "Zhang Xiaofang, a warm 48-year-old western market accountant and stall keeper, soft oval face, kind hazel eyes with visible highlights, gentle smile lines, chestnut hair in a neat bun, rose-red blouse, cream apron, holding a small ledger, clearly readable cute storybook face, head and shoulders, centered"
+    },
+    {
+      "category": "portraits",
+      "name": "han_shouyi",
+      "output": "assets/art/ai/portraits/han_shouyi.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "Han Shouyi, a kindly 62-year-old western village postman, lean friendly face, clear dark eyes, short silver beard, blue postal cap and coat, leather satchel strap, gentle dependable smile, big readable storybook features, head and shoulders, centered"
+    },
+    {
+      "category": "portraits",
+      "name": "sun_yumei",
+      "output": "assets/art/ai/portraits/sun_yumei.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "Sun Yumei, a cheerful 50-year-old western innkeeper and baker, round rosy face, bright warm brown eyes, chestnut curls under a mustard headscarf, cream apron over a rust-orange dress, flour on her hands, welcoming smile, cute clear storybook features, head and shoulders, centered"
+    },
+    {
+      "category": "portraits",
+      "name": "zhao_changhe",
+      "output": "assets/art/ai/portraits/zhao_changhe.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "Zhao Changhe, a friendly 41-year-old western carpenter, square friendly face, clear dark eyes, short brown hair, blue work shirt, leather tool apron, pencil behind one ear, sawdust on his shoulder, confident kind grin, clear cute storybook features, head and shoulders, centered"
+    },
+    {
+      "category": "portraits",
+      "name": "lin_xiaoman",
+      "output": "assets/art/ai/portraits/lin_xiaoman.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "Lin Xiaoman, a gentle 29-year-old western village nurse, soft oval face, large clear green eyes, short dark bob, pale mint nurse apron over a cream blouse, small herb satchel, calm reassuring smile, bright readable storybook features, head and shoulders, centered"
+    },
+    {
+      "category": "portraits",
+      "name": "zhou_deshun",
+      "output": "assets/art/ai/portraits/zhou_deshun.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "Zhou Deshun, a dignified 70-year-old western theatre keeper, expressive wrinkled face, bright knowing eyes, tidy white beard, dark teal velvet jacket, cream cravat, old brass stage key, proud yet tender smile, crisp cute storybook features, head and shoulders, centered"
+    },
+    {
+      "category": "portraits",
+      "name": "shi_tieshan",
+      "output": "assets/art/ai/portraits/shi_tieshan.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "Shi Tieshan, a strong 51-year-old western blacksmith, broad friendly face, clear dark eyes, short silver hair and thick salt-and-pepper beard, dark leather apron over an olive shirt, small burn scar on one forearm, warm gruff smile, bold readable storybook features, head and shoulders, centered"
+    },
+    {
+      "category": "portraits",
+      "name": "jiang_muyun",
+      "output": "assets/art/ai/portraits/jiang_muyun.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "Jiang Muyun, a capable 38-year-old western ranch owner, sturdy kind face, clear brown eyes, dark hair under a forest-green kerchief, mustard work shirt, worn leather vest, freckles and sun-kissed cheeks, confident warm smile, clear cute storybook features, head and shoulders, centered"
+    },
+    {
+      "category": "portraits",
+      "name": "he_shuigen",
+      "output": "assets/art/ai/portraits/he_shuigen.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "He Shuigen, a cheerful 64-year-old western river fisherman and tackle seller, weathered friendly face, bright blue eyes, white beard, navy knit cap, teal raincoat, rope and fishing lure over one shoulder, knowing smile, clear cute storybook features, head and shoulders, centered"
+    },
+    {
+      "category": "portraits",
+      "name": "su_wenbo",
+      "output": "assets/art/ai/portraits/su_wenbo.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "Su Wenbo, a thoughtful 56-year-old western town museum curator, slim gentle face, clear dark eyes behind round brass glasses, neat grey hair, brown tweed jacket, cream shirt, fountain pen in pocket, curious warm smile, crisp cute storybook features, head and shoulders, centered"
+    },
+    {
+      "category": "portraits",
+      "name": "lang_sanshun",
+      "output": "assets/art/ai/portraits/lang_sanshun.png",
+      "style": "western_portrait",
+      "aspect_ratio": "1:1",
+      "size": "512x512",
+      "prompt": "Lang Sanshun, a lively 43-year-old western traveling peddler, lean friendly face, bright amber eyes, tousled brown hair under a patched cap, rust-red scarf, green canvas coat, leather satchel and small lantern, mischievous kind grin, clear cute storybook features, head and shoulders, centered"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 extends CanvasLayer
 ## 暂停菜单(ESC):存档 / 读档 / 回主菜单 / 退出。
 ##
-## 黑龙江小镇的节奏是慢的,暂停菜单给玩家"歇口气"的正当理由。
+## 麦溪镇小镇的节奏是慢的,暂停菜单给玩家"歇口气"的正当理由。
 
 signal resume_requested
 signal menu_requested
@@ -22,11 +22,16 @@ func _ready() -> void:
 	save_button.pressed.connect(_on_save)
 	load_button.pressed.connect(_on_load)
 	voice_button.pressed.connect(_on_toggle_voice)
+	voice_button.visible = false
 	menu_button.pressed.connect(_on_menu)
 	quit_button.pressed.connect(_on_quit)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_pause"):
+		# 对话/服务/古戏面板占用输入时，ESC 必须先交给面板关闭；
+		# 否则两层模态同时压栈，画面会像“静止”一样卡住。
+		if not visible and GameStateManager.input_locked:
+			return
 		if visible:
 			close()
 		else:
@@ -38,6 +43,7 @@ func open() -> void:
 	GameStateManager.set_paused(true)
 	get_tree().paused = true
 	_refresh()
+	save_button.grab_focus.call_deferred()
 
 func close() -> void:
 	visible = false
@@ -69,6 +75,8 @@ func _refresh_voice_label() -> void:
 func _on_save() -> void:
 	if GameStateManager.save_game(0):
 		status_label.text = "已存档"
+		# 当前这次暂停里立刻就能读档，不必退出去再开一次菜单。
+		load_button.disabled = false
 	else:
 		status_label.text = "存档失败"
 

@@ -1,14 +1,15 @@
 extends SceneTree
-## 存档 v2 自测:新字段往返、v1 迁移、农场扩建、原子写入。
+## 存档 v3 自测:新字段往返、v1 迁移、农场扩建、原子写入。
 ## 运行: godot --headless --script res://scripts/tests/test_save_v2.gd
 
 var _passed := 0
 var _failed := 0
 
 func _init() -> void:
-	print("=== 存档 v2 与农场扩建自测 ===")
+	print("=== 存档 v3 与农场扩建自测 ===")
 	test_v2_roundtrip()
 	test_v1_migration()
+	test_legacy_winter_start_migration()
 	test_farm_expand()
 	test_atomic_write()
 	print("--------------------------------------------------")
@@ -24,7 +25,7 @@ func check(label: String, cond: bool, detail: String = "") -> void:
 		print("  ❌ %s %s" % [label, detail])
 
 func test_v2_roundtrip() -> void:
-	print("\n[1] v2 全字段往返")
+	print("\n[1] v3 全字段往返")
 	var state := GameState.new()
 	state.clock.advance_minutes(150)
 	state.weather.today = "rain"
@@ -42,7 +43,7 @@ func test_v2_roundtrip() -> void:
 	state.farm.plots[16].plant("corn", "spring", 4)
 
 	var data := state.to_dict()
-	check("存档带 schema_version=2", int(data.get("schema_version", 0)) == 2,
+	check("存档带 schema_version=3", int(data.get("schema_version", 0)) == 3,
 		"→ %s" % data.get("schema_version", "缺"))
 	check("时钟单独入档", data.has("clock"))
 	check("天气入档", data.has("weather"))
@@ -103,6 +104,39 @@ func test_v1_migration() -> void:
 		and loaded.relationships["zhang_xiaofang"].has("events_done"))
 	check("旧明信片与语音开关不丢", loaded.postcards_collected.has("p_dawn")
 		and not loaded.voice_enabled and bool(loaded.flags.get("old_flag", false)))
+
+func test_legacy_winter_start_migration() -> void:
+	print("\n[2b] 旧版冬季空档自动迁到春播起点")
+	var legacy := {
+		"schema_version": 2,
+		"player": {"gold": 500, "inventory": {}, "energy": 100},
+		"calendar": {"year": 1, "day_of_year": 0},
+		"clock": {"minute_of_day": GameClock.DAY_START_MINUTE},
+		"farm": {"width": 3, "height": 3, "plots": []},
+		"world": {"location_id": "L02", "player_x": 640, "player_y": 760},
+		"quests": {"active": [], "completed": []},
+		"events": {"done": [], "flags": {}, "done_days": {}},
+		"relationships": {},
+		"postcards_collected": [],
+		"postcards_pending": [],
+	}
+	var loaded := GameState.from_dict(legacy)
+	check("旧空档迁到春季第 1 天", loaded.calendar.get_season() == "spring"
+		and loaded.calendar.get_season_day() == 1,
+		"→ %s" % loaded.calendar.date_string())
+	check("旧空档迁到自家农场", String(loaded.world.get("location_id", "")) == "L01",
+		"→ %s" % loaded.world.get("location_id", ""))
+	check("旧空档补发开局种子",
+		int(loaded.player.inventory.get("seed_corn", 0)) >= 6,
+		"→ %s" % str(loaded.player.inventory))
+
+	var progressed := legacy.duplicate(true)
+	progressed["calendar"] = {"year": 1, "day_of_year": 0}
+	progressed["relationships"] = {"zhang_xiaofang": {"affection": 12}}
+	var kept := GameState.from_dict(progressed)
+	check("已有进度的冬季旧档不被重开",
+		kept.calendar.get_season() == "winter" and kept.calendar.abs_day() == 0,
+		"→ %s" % kept.calendar.date_string())
 
 func test_farm_expand() -> void:
 	print("\n[3] 农场扩建保留旧地块")

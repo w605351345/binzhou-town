@@ -1,4 +1,4 @@
-; 《宾州小镇》Steam Input 手柄模板
+; 《麦溪镇》Steam Input 手柄模板
 ;
 ; 作用:让 Steam Deck / Steam 手柄玩家在 Steam 界面里也能操作到游戏内动作
 ; (Steam 的大屏模式默认只把 A/B 当作 ui_accept/ui_cancel)。

@@ -52,13 +52,20 @@ func _build_ui() -> void:
 	title.add_theme_color_override("font_color", TITLE_COLOR)
 	column.add_child(title)
 
+	var scroll := ScrollContainer.new()
+	scroll.name = "BodyScroll"
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.follow_focus = true
+	column.add_child(scroll)
+
 	_body_label = Label.new()
 	_body_label.name = "Body"
 	_body_label.add_theme_font_size_override("font_size", 18)
 	_body_label.add_theme_color_override("font_color", TEXT_COLOR)
 	_body_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_body_label.custom_minimum_size = Vector2(0, 320)
-	column.add_child(_body_label)
+	_body_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(_body_label)
 
 func _make_panel_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()

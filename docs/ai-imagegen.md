@@ -13,6 +13,7 @@
 - `https://api.minimax.cn/v1/image_generation` 鉴权通过、路由正常
 - `model: image-01`,`response_format` 支持 `base64` 与 `url`
 - 1024×1024 单张约 15–20 秒
+- 当前项目已生成 **22 张概念母版**:4 张四季场景板、11 张地点背景、1 张对话框 UI、6 张 NPC 立绘
 
 > 若将来拿到 `OPENAI_API_KEY`,可直接改用官方 imagegen skill 的 CLI 回退路径
 > (`~/.codex/skills/.system/imagegen/scripts/image_gen.py`),产线更稳。
@@ -50,8 +51,25 @@ python3 tools/ai_imagegen.py --prompt-file tools/prompts/style_board.txt \
 ### 鉴权优先级
 
 1. 环境变量 `MINIMAX_API_KEY`
-2. `~/.codex/config.toml` 的 `experimental_bearer_token`
-3. 都没有则报错并提示 `export MINIMAX_API_KEY='...'`
+2. `--config` 指定的 Codex TOML
+3. `~/.codex/minimax.config.toml` 的 `experimental_bearer_token`
+4. `~/.codex/config.toml` 的 `experimental_bearer_token`
+
+都没有则报错并提示 `export MINIMAX_API_KEY='...'`。
+
+### 批量清单与可复验资产
+
+| 文件 / 命令 | 用途 |
+|---|---|
+| `tools/prompts/ai_assets.json` | 22 个概念图任务的 prompt、尺寸与分类 |
+| `python3 tools/generate_ai_assets.py` | 按清单断点续跑;已有图自动跳过,单张失败不终止整批 |
+| `python3 tools/generate_ai_assets.py --refresh` | 不调用 API,只刷新 manifest、回执与最终化状态 |
+| `python3 tools/finalize_ai_assets.py` | 横版场景对称裁边 208×117,再回到 1920×1080;幂等 |
+| `python3 tools/validate_ai_assets.py` | 校验禁词、输出路径、PNG 尺寸、SHA-256、后处理与 raw 忽略 |
+
+生成结果写入 `assets/art/ai/manifest.json` 与 `assets/art/ai/receipts/all.json`。
+`assets/art/ai/raw/` 可能含生成器签名或未选候选,已由 `.gitignore` 排除。
+裁边后的场景四角已人工巡检;L11 为正面平视戏台,不是 3/4 俯视。
 
 ## 三、内置 prompt 模板库
 
@@ -76,6 +94,7 @@ python3 tools/ai_imagegen.py --prompt-file tools/prompts/style_board.txt \
 3. **需求 4 的约束已内置:** 脚本检测 prompt 中的真实行政区划/专名
    (黑龙江、宾县、哈尔滨等)并剔除,保证游戏素材不出现真实地名。
 4. **版权与授权:** 生成图建议仅作**风格参考与描摹底稿**,入库前需确认商用授权条款。
+5. **AI 图不接入运行时:** 当前 22 张图只用于风格与构图参照;`data/npcs.json` 与场景仍使用确定性管线产出的运行时资源。
 
 ## 五、在 Codex 会话里直接用
 

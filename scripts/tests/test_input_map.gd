@@ -42,7 +42,7 @@ const EXPECTED_JOYPAD_BUTTONS := {
 }
 
 func _init() -> void:
-	print("=== 《宾州小镇》输入映射自测 (手柄 / 键鼠) ===")
+	print("=== 《麦溪镇》输入映射自测 (手柄 / 键鼠) ===")
 	print("--------------------------------------------------")
 	_test_actions_exist()
 	_test_joypad_covered()

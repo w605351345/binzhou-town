@@ -26,6 +26,13 @@ var _door_cooldown := 0.8
 var _npc_nodes: Array = []
 var _npc_signature := ""
 var _nearby_interactable: Dictionary = {}
+var _collision_root: StaticBody2D = null
+var _standalone_hud := true
+var _last_message := ""
+var _last_prompt := ""
+var _last_plot_info := ""
+var _highlighted_plot := -1
+var _seed_crop_id := ""
 
 func setup(p_location_id: String, p_spawn: Vector2 = Vector2(-1, -1)) -> void:
 	location_id = p_location_id
@@ -43,11 +50,13 @@ func _ready() -> void:
 	_maybe_trigger_event.call_deferred()
 	if map.has("farm_area"):
 		_build_farm_plots()
+		_seed_crop_id = ToolBar.default_seed_crop(GameStateManager.state.farm)
+		_selected_crop = _seed_crop_id
 	GameStateManager.day_started.connect(_on_day_started)
 	GameStateManager.clock_changed.connect(_on_clock_changed)
 	GameStateManager.season_changed.connect(_on_season_changed)
-	_show_message("%s · %s" % [map.get("name", location_id),
-		GameCalendar.season_desc(GameStateManager.state.calendar.get_season())])
+	# 地点名和季节已经在常驻 HUD 里,这里只留交互/事件消息,避免重复占屏。
+	_show_message("")
 
 func _build_scene() -> void:
 	var size := MapDatabase.map_size(map)
@@ -55,6 +64,7 @@ func _build_scene() -> void:
 	map_renderer.name = "MapRenderer"
 	map_renderer.setup(map, GameStateManager.state.calendar.get_season())
 	add_child(map_renderer)
+	_build_collision()
 
 	npc_container = Node2D.new()
 	npc_container.name = "NpcContainer"
@@ -68,7 +78,7 @@ func _build_scene() -> void:
 	var packed: PackedScene = load(PLAYER_SCENE)
 	player = packed.instantiate()
 	player.name = "Player"
-	player.world = WorldMap.new(Rect2(Vector2.ZERO, Vector2(size)))
+	player.set("world", WorldMap.new(Rect2(Vector2.ZERO, Vector2(size))))
 	var spawn := MapDatabase.spawn_point(map)
 	if _entry_spawn.x >= 0.0 and _entry_spawn.y >= 0.0:
 		spawn = _entry_spawn
@@ -98,33 +108,68 @@ func _build_scene() -> void:
 	GameStateManager.state.world["player_y"] = player.position.y
 
 func _build_hud() -> void:
+	_standalone_hud = not _has_shell_hud()
 	var layer := CanvasLayer.new()
 	layer.name = "HUD"
+	layer.visible = _standalone_hud
 	add_child(layer)
 	message_label = Label.new()
 	message_label.name = "MessageLabel"
-	message_label.position = Vector2(40, 1080)
-	message_label.size = Vector2(1840, 60)
+	message_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	message_label.offset_left = 40
+	message_label.offset_top = -194
+	message_label.offset_right = -40
+	message_label.offset_bottom = -140
 	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	message_label.add_theme_font_size_override("font_size", 24)
+	message_label.add_theme_font_size_override("font_size", 22)
 	message_label.add_theme_color_override("font_color", Color(0.96, 0.91, 0.76))
 	layer.add_child(message_label)
 	prompt_label = Label.new()
 	prompt_label.name = "PromptLabel"
-	prompt_label.position = Vector2(40, 980)
-	prompt_label.size = Vector2(1840, 45)
+	prompt_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	prompt_label.offset_left = 40
+	prompt_label.offset_top = -112
+	prompt_label.offset_right = -40
+	prompt_label.offset_bottom = -64
 	prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	prompt_label.add_theme_font_size_override("font_size", 22)
 	prompt_label.add_theme_color_override("font_color", Color(0.98, 0.79, 0.32))
 	layer.add_child(prompt_label)
 	plot_info_label = Label.new()
 	plot_info_label.name = "PlotInfoLabel"
-	plot_info_label.position = Vector2(40, 150)
-	plot_info_label.size = Vector2(1840, 45)
+	plot_info_label.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	plot_info_label.offset_left = 40
+	plot_info_label.offset_top = 112
+	plot_info_label.offset_right = -40
+	plot_info_label.offset_bottom = 157
 	plot_info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	plot_info_label.add_theme_font_size_override("font_size", 21)
 	plot_info_label.add_theme_color_override("font_color", Color(0.88, 0.84, 0.70))
 	layer.add_child(plot_info_label)
+
+## 给实体道具和墙体加碰撞,避免人物穿过房屋、柜台、树干和水面。
+## 门框已经从 MapDatabase.solid_rects() 里挖掉,不会把入口封死。
+func _build_collision() -> void:
+	_collision_root = StaticBody2D.new()
+	_collision_root.name = "WorldCollision"
+	_collision_root.collision_layer = 1
+	_collision_root.collision_mask = 5
+	add_child(_collision_root)
+	for rect in MapDatabase.solid_rects(map):
+		var shape := CollisionShape2D.new()
+		var box := RectangleShape2D.new()
+		box.size = rect.size
+		shape.shape = box
+		shape.position = rect.position + rect.size * 0.5
+		_collision_root.add_child(shape)
+
+func _has_shell_hud() -> bool:
+	var cursor: Node = get_parent()
+	while cursor != null:
+		if cursor.name == "Game" and cursor.get_node_or_null("HUD") != null:
+			return true
+		cursor = cursor.get_parent()
+	return false
 
 func _spawn_npcs() -> void:
 	_refresh_npcs(true)
@@ -204,6 +249,7 @@ func _physics_process(delta: float) -> void:
 func _process(_delta: float) -> void:
 	_refresh_prompt()
 	_refresh_plot_info()
+	_refresh_plot_highlight()
 
 func door_at(point: Vector2) -> Dictionary:
 	return MapDatabase.door_at(map, point)
@@ -224,25 +270,60 @@ func _refresh_prompt() -> void:
 		return
 	var npc := _nearest_npc()
 	if not npc.is_empty():
-		prompt_label.text = "E / A · 和%s说话" % npc.get("label", "人")
+		map_renderer.set_focus_target(npc["node"].npc.today_position(), "npc")
+		_set_prompt("E / A · 和%s说话" % npc.get("label", "人"))
+		return
+	if location_id == "L01":
+		var plot_idx := _plot_near_player()
+		if plot_idx >= 0:
+			var context := _plot_context(plot_idx)
+			map_renderer.set_focus_target((_views[plot_idx] as FarmPlotView).global_position, "plot")
+			# 地块状态和倒计时由 PlotInfo 单独显示，动作提示不再重复“几号地”。
+			_set_prompt("E / A · %s" % context.get("label", "耕作"))
+			return
+	var door := _nearest_door()
+	if not door.is_empty():
+		map_renderer.set_focus_target(MapDatabase.door_rect(door).get_center(), "door")
+		_set_prompt("走进门 · %s" % door.get("label", "离开"))
 		return
 	_nearby_interactable = MapDatabase.nearest_interactable(map, player.global_position)
 	if _nearby_interactable.is_empty():
-		prompt_label.text = ""
+		map_renderer.set_focus_target(Vector2.INF)
+		_set_prompt("")
 	else:
-		prompt_label.text = "E / A · %s" % _nearby_interactable.get("label", "互动")
+		var raw: Array = _nearby_interactable.get("pos", [0, 0])
+		map_renderer.set_focus_target(Vector2(float(raw[0]), float(raw[1])), "interact")
+		_set_prompt("E / A · %s" % _nearby_interactable.get("label", "互动"))
+
+## 门提示的感知范围略大于门框本身，让玩家在门口就知道这里能出去。
+func _nearest_door() -> Dictionary:
+	if player == null:
+		return {}
+	var best: Dictionary = {}
+	var best_dist := 150.0
+	for door in map.get("doors", []):
+		if typeof(door) != TYPE_DICTIONARY:
+			continue
+		var rect := MapDatabase.door_rect(door)
+		var dist := player.global_position.distance_to(rect.get_center())
+		if rect.grow(36.0).has_point(player.global_position):
+			dist = 0.0
+		if dist < best_dist:
+			best_dist = dist
+			best = door
+	return best
 
 func _nearest_npc() -> Dictionary:
 	if player == null:
 		return {}
-	var facing: Vector2 = player.facing_vector() if player.has_method("facing_vector") else Vector2.DOWN
 	var candidates: Array = []
 	for node in _npc_nodes:
 		if node == null or node.npc == null:
 			continue
 		candidates.append({"node": node, "position": node.npc.today_position(),
 			"label": node.npc.name})
-	var idx := InteractionSystem.find_target(player.global_position, facing, candidates)
+	# 小镇交互以"靠近"为准。朝向只影响角色动画,不能成为 E/A 失效的门槛。
+	var idx := InteractionSystem.find_nearest(player.global_position, candidates, 132.0)
 	return {} if idx < 0 else candidates[idx]
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -274,6 +355,12 @@ func _interact() -> void:
 	if not npc.is_empty():
 		GameStateManager.dialogue_requested.emit(npc["node"].npc)
 		return
+	if location_id == "L01":
+		var plot_idx := _plot_near_player()
+		if plot_idx >= 0:
+			var context := _plot_context(plot_idx)
+			_use_tool(int(context.get("tool", ToolBar.Tool.TILL)))
+			return
 	var item := MapDatabase.nearest_interactable(map, player.global_position)
 	if item.is_empty():
 		_show_message("这附近没有能搭手的东西")
@@ -318,13 +405,16 @@ func _handle_interactable(item: Dictionary) -> void:
 			var expanded := FarmExpansionSystem.expand(GameStateManager.state)
 			_show_message(String(expanded.get("message", "")))
 		"theater":
-			_watch_theater(label)
+			GameStateManager.drama_requested.emit()
+			_show_message("《月桂谣》的戏页摊在台口。选一幕，和周德顺把这场戏排下去。")
 		"fishing":
 			GameStateManager.activity_requested.emit("fishing")
 		"forage":
 			_collect_forage(item)
 		"quest_board":
 			GameStateManager.quest_board_requested.emit()
+		"crafting", "blacksmith", "livestock", "fishmonger", "museum", "merchant", "shipping", "mine", "community":
+			GameStateManager.service_requested.emit(action)
 		_:
 			_show_message("%s:%s" % [label, _placeholder_hint(action)])
 
@@ -332,20 +422,20 @@ func _watch_theater(label: String) -> void:
 	var state := GameStateManager.state
 	var visits := int(state.drama_progress.get("theater_visits", 0)) + 1
 	state.drama_progress["theater_visits"] = visits
-	if label.contains("锣鼓"):
+	if label.contains("剧场铃"):
 		state.drama_progress["zhou_beat_lesson"] = true
 		_show_message("周德顺把鼓槌递给你：“别使劲砸，听板眼。”你跟着敲了四拍，他难得没挑毛病。")
 		return
 	if Array(state.events.get("done", [])).has("zhou_e3"):
-		_show_message("周德顺看见你，抬手把台口让出一块。台上唱到《大西厢》的团圆段，台下有人跟着哼。"
+		_show_message("周德顺看见你，抬手把台口让出一块。台上唱到《月桂谣》的团圆段，台下有人跟着哼。"
 			+ "他说：“这满台，不是等来的。”")
 	elif Array(state.events.get("done", [])).has("zhou_e1"):
-		_show_message("周德顺在后台调弦，见你来了，清了清嗓子唱半段《大西厢》。"
+		_show_message("周德顺在后台调弦，见你来了，清了清嗓子唱半段《月桂谣》。"
 			+ "唱到高处，他停了一下，说：“后头那几句，得有人接。”")
 	else:
 		state.flags["watched_zhou_stage"] = true
 		_show_message("周德顺正弯着腰扫台。他指着台口说：“戏不是天天有，台得天天扫。”"
-			+ "扫到第三级台阶，又给你哼了两句《大西厢》。")
+			+ "扫到第三级台阶，又给你哼了两句《月桂谣》。")
 
 func _collect_forage(item: Dictionary) -> void:
 	var key := ForageSystem.point_key_for(map, String(item.get("id", "")),
@@ -392,7 +482,12 @@ func _placeholder_hint(action: String) -> String:
 		"workshop": return "赵长河量了量院子的尺寸，说还能再扩。"
 		"fishing": return "水面泛着光，鱼星在不远处打转。"
 		"forage": return "林子里有新鲜的脚印和菌丝。"
-		"theater": return "戏台空着，风从后台穿过。"
+		"theater": return "剧场空着，风从后台穿过。"
+		"crafting": return "工作台上还缺几样材料。"
+		"shipping": return "运输箱的盖板被风吹得轻响。"
+		"mine": return "矿洞口往里冒着冷气。"
+		"museum": return "镇史馆的灯还亮着。"
+		"community": return "工程板上的清单又被人添了一笔。"
 	return "这里还没有开放。"
 
 func _debug_leave() -> void:
@@ -418,16 +513,18 @@ func _open_postbox() -> void:
 
 func _wait_one_day() -> void:
 	GameStateManager.advance_day()
-	_show_message("一觉到天亮 · %s" % GameStateManager.state.calendar.date_string())
+	var cal := GameStateManager.state.calendar
+	_show_message("一觉到天亮 · %s · 体力已恢复 · 今日%s" % [
+		cal.date_short(), WeatherSystem.weather_cn(GameStateManager.state.weather.today)])
 
-## 睡觉必须回农舍并靠近火炕;T 只是 E 交互的快捷键,不是随处跳天。
+## 睡觉必须回农舍并靠近木床;T 只是 E 交互的快捷键,不是随处跳天。
 func _try_sleep() -> bool:
 	if location_id != "L02":
-		_show_message("得回农舍火炕上睡。")
+		_show_message("得回农舍木床上睡。")
 		return false
 	var bed := MapDatabase.nearest_interactable(map, player.global_position)
 	if bed.is_empty() or String(bed.get("action", "")) != "sleep":
-		_show_message("走近火炕再睡。")
+		_show_message("走近木床再睡。")
 		return false
 	_wait_one_day()
 	return true
@@ -436,7 +533,7 @@ func _plot_near_player() -> int:
 	if player == null or _views.is_empty():
 		return -1
 	var best := -1
-	var best_dist := 150.0
+	var best_dist := 128.0
 	for i in _views.size():
 		var view := _views[i] as FarmPlotView
 		if view == null:
@@ -447,6 +544,37 @@ func _plot_near_player() -> int:
 			best = i
 	return best
 
+## 靠近地块按 E 时,按地块当前阶段给出唯一合理动作。
+## 这样玩家不需要先背 J/K/L/I 四个键,也能从荒地一路种到收获。
+func _plot_context(index: int) -> Dictionary:
+	var plot := GameStateManager.state.farm.get_plot(index)
+	if plot == null:
+		return {"tool": ToolBar.Tool.TILL, "label": "翻土"}
+	match plot.state:
+		FarmPlot.State.UNTILLED, FarmPlot.State.FALLOW:
+			return {"tool": ToolBar.Tool.TILL, "label": "翻土"}
+		FarmPlot.State.TILLED:
+			return {"tool": ToolBar.Tool.SEED, "label": "播种"}
+		FarmPlot.State.PLANTED, FarmPlot.State.GROWING:
+			return {"tool": ToolBar.Tool.WATER, "label": "浇水"}
+		FarmPlot.State.READY:
+			return {"tool": ToolBar.Tool.HARVEST, "label": "收获"}
+		FarmPlot.State.DEAD:
+			return {"tool": ToolBar.Tool.TILL, "label": "清理枯株"}
+	return {"tool": ToolBar.Tool.TILL, "label": "翻土"}
+
+func _refresh_plot_highlight() -> void:
+	if _views.is_empty():
+		return
+	var idx := _plot_near_player() if location_id == "L01" else -1
+	if idx == _highlighted_plot:
+		return
+	_highlighted_plot = idx
+	for i in _views.size():
+		var view := _views[i] as FarmPlotView
+		if view != null:
+			view.set_highlight(i == idx)
+
 func _use_tool(tool: int) -> void:
 	var idx := _plot_near_player()
 	if idx < 0:
@@ -455,13 +583,30 @@ func _use_tool(tool: int) -> void:
 	var farm := GameStateManager.state.farm
 	var weather_mult := WeatherSystem.outdoor_stamina_multiplier(
 		GameStateManager.state.weather.today)
+	var energy_before := GameStateManager.state.player.energy
 	var result := ToolBar.apply_tool(tool, farm, idx, GameStateManager.state.player,
 		_selected_crop, weather_mult)
+	var spent := maxi(0, energy_before - GameStateManager.state.player.energy)
 	if tool == ToolBar.Tool.HARVEST and bool(result.get("ok", false)):
 		var harvested := int(Dictionary(result.get("result", {})).get("amount", 0))
 		if harvested > 0:
 			QuestSystem.progress(GameStateManager.state, "harvest", harvested)
-	_show_message(String(result.get("message", "")))
+			GameStateManager.state.flags["harvested_total"] = \
+				int(GameStateManager.state.flags.get("harvested_total", 0)) + harvested
+	if bool(result.get("ok", false)):
+		var minutes: int = int({
+			ToolBar.Tool.TILL: 15,
+			ToolBar.Tool.WATER: 6,
+			ToolBar.Tool.SEED: 8,
+			ToolBar.Tool.HARVEST: 12,
+		}.get(tool, 8))
+		GameStateManager.spend_time(minutes)
+	var message := String(result.get("message", ""))
+	if bool(result.get("ok", false)) and spent > 0:
+		message += " · 体力 -%d（剩 %d）" % [spent, GameStateManager.state.player.energy]
+	if tool == ToolBar.Tool.HARVEST and bool(result.get("ok", false)):
+		message += "\n" + DramaSystem.farm_progress_text(GameStateManager.state)
+	_show_message(message)
 	_refresh_views()
 
 func _use_autumn_plough() -> void:
@@ -473,6 +618,8 @@ func _use_autumn_plough() -> void:
 		GameStateManager.state.weather.today)
 	var result := ToolBar.apply_autumn_plough(GameStateManager.state.farm, idx,
 		GameStateManager.state.player, weather_mult)
+	if bool(result.get("ok", false)):
+		GameStateManager.spend_time(20)
 	_show_message(String(result.get("message", "")))
 	_refresh_views()
 
@@ -486,11 +633,12 @@ func _refresh_plot_info() -> void:
 		return
 	var idx := _plot_near_player()
 	if idx < 0:
-		plot_info_label.text = ""
+		_set_plot_info("")
 		return
 	var farm := GameStateManager.state.farm
-	plot_info_label.text = "【%d 号地】%s" % [idx + 1,
-		FarmAlmanac.plot_tag(farm.get_plot(idx), farm.calendar)]
+	var context := _plot_context(idx)
+	_set_plot_info("【%d 号地】%s" % [idx + 1,
+		FarmAlmanac.plot_tag(farm.get_plot(idx), farm.calendar)])
 
 func _on_day_started(_day: int) -> void:
 	_refresh_views()
@@ -521,3 +669,23 @@ func _maybe_trigger_event() -> bool:
 func _show_message(text: String) -> void:
 	if message_label != null:
 		message_label.text = text
+	if text != _last_message:
+		_last_message = text
+		_emit_context()
+
+func _set_prompt(text: String) -> void:
+	if prompt_label != null:
+		prompt_label.text = text
+	if text != _last_prompt:
+		_last_prompt = text
+		_emit_context()
+
+func _set_plot_info(text: String) -> void:
+	if plot_info_label != null:
+		plot_info_label.text = text
+	if text != _last_plot_info:
+		_last_plot_info = text
+		_emit_context()
+
+func _emit_context() -> void:
+	GameStateManager.location_context_changed.emit(_last_message, _last_prompt, _last_plot_info)
