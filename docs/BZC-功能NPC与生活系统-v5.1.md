@@ -75,18 +75,17 @@
 
 ## 6. 发行包与本地验证
 
-2026-11-14 已从当前工作区重新导出双平台发行包:
+2026-11-16 已从当前工作区重新导出双平台发行包:
 
 | 平台 | 最终文件 | 大小 | SHA-256 |
 |---|---|---:|---|
-| macOS Universal 2 | `/Users/chu/localspace/BinzhouTown-macOS-universal.dmg` | 64 MB | `0f3b47a814d09ddae141d0567641f4ffdd71dd378c5850ecf715e7fd63b540d7` |
-| Windows x86_64 | `/Users/chu/localspace/BinzhouTown-Windows-x86_64.zip` | 37 MB | `ced5a8bb73c742f7bb69588036b66cea2b5128af6fff487f78d27727507c572a` |
+| macOS Universal 2 | `/Users/chu/localspace/BinzhouTown-macOS-universal.dmg` | 78 MB | `c81132b021e57e5918638af6c50e26c21063df8bce16a887d4112da1ff92757d` |
+| Windows x86_64 | `/Users/chu/localspace/BinzhouTown-Windows-x86_64.zip` | 51 MB | `f842df5d47d21559b040ab621351f4b10aedff29c640527bf8c0119c6746e115` |
 
 验证记录:
 
-- macOS 应用包含 `x86_64 + arm64` 两个切片,ad-hoc 签名通过 `codesign --verify --deep --strict`。
-- DMG 通过 `hdiutil verify`;已实际挂载,应用包含 `/Applications` 快捷方式,并安装到 `/Applications/Binzhou Town.app` 与 `~/Applications/Binzhou Town.app`。
-- 从最终 DMG 安装后的 `/Applications/Binzhou Town.app` 实机验证主菜单、新游戏春季农场、HUD、地块 E 翻土与体力 `100→96`、背包、杂货店购买、暂停、存档、立即读档、铁匠服务面板与聊两句、暂停菜单退出。
+- macOS `Meadowbrook.app` 包含 `x86_64 + arm64` 两个切片,ad-hoc 签名通过 `codesign --verify --deep --strict`。
+- DMG 通过 `hdiutil verify`;已实际挂载,应用包含 `/Applications` 快捷方式,挂载后的成品通过 headless 启动冒烟。
 - Windows 包内包含 `BinzhouTown.exe`、`BinzhouTown.pck` 与 `README-Windows.txt`;ZIP 通过 `unzip -tq`,exe 为 PE32+ x86-64,PCK 头为 `GDPC`,导出过滤已排除 `build/docs/tools/scripts/tests` 资源。
-- Windows 导出时的 `rcedit` 警告只影响可执行文件资源元数据,不阻断导出;本机没有 Windows/Wine 运行环境,因此 Windows 侧完成了包结构、架构与资源完整性校验,运行性由同一 Godot 工程的 1893 项测试、19 场景冒烟及 macOS 发行包启动测试共同覆盖。
+- Windows 导出时的 `rcedit` 警告只影响可执行文件资源元数据,不阻断导出;本机没有 Windows/Wine 运行环境,因此 Windows 侧完成了包结构、架构与资源完整性校验,运行性由同一 Godot 工程的 1993 项测试、19 场景冒烟及 macOS 发行包启动测试共同覆盖。
 - 发行包未做 Apple 公证或 Windows 代码签名,首次启动可能触发 Gatekeeper/SmartScreen 提示。
